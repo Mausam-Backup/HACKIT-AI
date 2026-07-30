@@ -1,9 +1,10 @@
 import React, { useState, useRef, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { toast } from 'sonner';
 import { 
   Trophy, Zap, MessageSquare, Brain, 
   CheckCircle2, RotateCcw, Move,
-  Lightbulb, Sparkles, AlertTriangle, Activity, Quote
+  Lightbulb, Sparkles, AlertTriangle, Activity, Quote, Download, FileText
 } from 'lucide-react';
 import { RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, ResponsiveContainer } from 'recharts';
 import { InterviewReplay, ReplayNode } from './interview-replay';
@@ -452,9 +453,221 @@ export const DemoFeedback: React.FC<DemoFeedbackProps> = ({ onRestart, analysis,
     setRadarPos({ x: 81, y: 50 });
   };
 
+  const handleExportPDF = () => {
+    toast.info('Preparing PDF Report...');
+
+    // Helper to generate SVG radar polygon
+    const generateRadarSvg = (scores: number[]) => {
+      const center = 110;
+      const radius = 75;
+      const labels = ['Comm', 'Tech', 'Problem', 'Code', 'Executive', 'Overall'];
+
+      const ringsHtml = [0.25, 0.5, 0.75, 1.0].map(scale => {
+        const pts = labels.map((_, i) => {
+          const angle = (i * 60 - 90) * (Math.PI / 180);
+          const x = center + radius * scale * Math.cos(angle);
+          const y = center + radius * scale * Math.sin(angle);
+          return `${x.toFixed(1)},${y.toFixed(1)}`;
+        }).join(' ');
+        return `<polygon points="${pts}" fill="none" stroke="#e2e8f0" stroke-width="1.5" />`;
+      }).join('');
+
+      const axisHtml = labels.map((label, i) => {
+        const angle = (i * 60 - 90) * (Math.PI / 180);
+        const x2 = center + radius * Math.cos(angle);
+        const y2 = center + radius * Math.sin(angle);
+        const lx = center + (radius + 22) * Math.cos(angle);
+        const ly = center + (radius + 22) * Math.sin(angle);
+        return `
+          <line x1="${center}" y1="${center}" x2="${x2.toFixed(1)}" y2="${y2.toFixed(1)}" stroke="#cbd5e1" stroke-width="1.5" stroke-dasharray="3 3" />
+          <text x="${lx.toFixed(1)}" y="${ly.toFixed(1)}" text-anchor="middle" dominant-baseline="central" font-size="10" font-weight="800" fill="#475569">${label}</text>
+        `;
+      }).join('');
+
+      const candPts = scores.map((score, i) => {
+        const angle = (i * 60 - 90) * (Math.PI / 180);
+        const val = (Math.max(10, score) / 100) * radius;
+        const x = center + val * Math.cos(angle);
+        const y = center + val * Math.sin(angle);
+        return `${x.toFixed(1)},${y.toFixed(1)}`;
+      }).join(' ');
+
+      return `
+        <svg width="260" height="260" viewBox="0 0 220 220" style="overflow: visible; display: block; margin: 0 auto;">
+          ${ringsHtml}
+          ${axisHtml}
+          <polygon points="${candPts}" fill="rgba(79, 70, 229, 0.2)" stroke="#4f46e5" stroke-width="3" />
+          ${scores.map((score, i) => {
+            const angle = (i * 60 - 90) * (Math.PI / 180);
+            const val = (Math.max(10, score) / 100) * radius;
+            const x = center + val * Math.cos(angle);
+            const y = center + val * Math.sin(angle);
+            return `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="4.5" fill="#4f46e5" stroke="#ffffff" stroke-width="2" />`;
+          }).join('')}
+        </svg>
+      `;
+    };
+
+    const dateStr = new Date().toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    });
+
+    const categoryBarsHtml = categories.map(c => `
+      <div style="margin-bottom: 12px;">
+        <div style="display: flex; justify-content: space-between; font-size: 12px; font-weight: 700; color: #0f172a; margin-bottom: 4px;">
+          <span>${c.name}</span>
+          <span style="color: #4f46e5; font-weight: 800;">${c.score}%</span>
+        </div>
+        <div style="width: 100%; height: 8px; background: #e2e8f0; border-radius: 9999px; overflow: hidden;">
+          <div style="width: ${c.score}%; height: 100%; background: #4f46e5; border-radius: 9999px;"></div>
+        </div>
+      </div>
+    `).join('');
+
+    const timelineHtml = timelineNodes.map((node, i) => `
+      <div style="border: 1px solid #e2e8f0; border-radius: 12px; padding: 14px; margin-bottom: 12px; background: #ffffff; page-break-inside: avoid;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+          <span style="font-size: 11px; font-weight: 800; color: #4f46e5; letter-spacing: 0.5px;">QUESTION #${i + 1} (${node.duration}s)</span>
+          <span style="font-size: 10px; font-weight: 800; background: ${node.quality === 'strong' ? '#dcfce7' : node.quality === 'okay' ? '#fef3c7' : '#ffe4e6'}; color: ${node.quality === 'strong' ? '#15803d' : node.quality === 'okay' ? '#b45309' : '#be123c'}; padding: 3px 8px; border-radius: 4px; text-transform: uppercase;">
+            ${node.quality} Response (${node.score}/100)
+          </span>
+        </div>
+        <div style="font-size: 13px; font-weight: 700; color: #0f172a; margin-bottom: 6px;">${node.question}</div>
+        <div style="font-size: 11px; font-style: italic; color: #334155; background: #f8fafc; padding: 10px; border-radius: 6px; border: 1px solid #e2e8f0; margin-bottom: 6px;">
+          "${node.answer}"
+        </div>
+        <div style="font-size: 11px; color: #475569; margin-bottom: 4px;"><strong>AI Critique:</strong> ${node.analysis}</div>
+        <div style="font-size: 11px; color: #4f46e5; font-weight: 700; background: #f5f3ff; padding: 6px 10px; border-radius: 6px;"><strong>Coaching:</strong> ${node.aiFeedback}</div>
+      </div>
+    `).join('');
+
+    const scoresForRadar = [commScore, techScore, probScore, codeScore, execScore, overallScore];
+    const radarSvgHtml = generateRadarSvg(scoresForRadar);
+
+    const iframe = document.createElement('iframe');
+    iframe.style.position = 'fixed';
+    iframe.style.right = '0';
+    iframe.style.bottom = '0';
+    iframe.style.width = '0';
+    iframe.style.height = '0';
+    iframe.style.border = 'none';
+    document.body.appendChild(iframe);
+
+    const doc = iframe.contentDocument || iframe.contentWindow?.document;
+    if (!doc) {
+      toast.error('PDF environment error');
+      document.body.removeChild(iframe);
+      return;
+    }
+
+    doc.open();
+    doc.write(`
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <title>HAC-KIT AI Executive Report</title>
+          <style>
+            @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
+            * { box-sizing: border-box; }
+            body {
+              margin: 0;
+              padding: 24px;
+              font-family: 'Plus Jakarta Sans', sans-serif;
+              color: #0f172a;
+              background: #ffffff;
+              -webkit-print-color-adjust: exact;
+              print-color-adjust: exact;
+            }
+            @media print {
+              body {
+                padding: 0;
+              }
+            }
+          </style>
+        </head>
+        <body>
+          <!-- Report Header -->
+          <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid #4f46e5; padding-bottom: 14px; margin-bottom: 20px;">
+            <div>
+              <div style="font-size: 24px; font-weight: 800; color: #0f172a; letter-spacing: -0.5px;">HAC-KIT AI</div>
+              <div style="font-size: 11px; color: #64748b; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-top: 2px;">Executive Performance & STAR Evaluation</div>
+              <div style="font-size: 11px; color: #64748b; margin-top: 4px;">Assessment Date: ${dateStr}</div>
+            </div>
+            <div style="text-align: right;">
+              <div style="font-size: 10px; font-weight: 800; color: #64748b; text-transform: uppercase; margin-bottom: 4px;">Overall Competency</div>
+              <div style="background: #4f46e5; color: #ffffff; padding: 6px 18px; border-radius: 9999px; font-size: 18px; font-weight: 800;">
+                ${overallScore}%
+              </div>
+            </div>
+          </div>
+
+          <!-- Competency Visual Radar & Bar Charts -->
+          <div style="margin-bottom: 20px;">
+            <div style="font-size: 12px; font-weight: 800; color: #0f172a; text-transform: uppercase; letter-spacing: 0.5px; border-left: 4px solid #4f46e5; padding-left: 8px; margin-bottom: 12px;">
+              Multi-Axis Competency Radar & Metric Visuals
+            </div>
+            <div style="display: flex; gap: 20px; align-items: center; background: #f8fafc; padding: 16px; border-radius: 12px; border: 1px solid #e2e8f0;">
+              <div style="width: 250px; text-align: center;">
+                ${radarSvgHtml}
+              </div>
+              <div style="flex: 1;">
+                ${categoryBarsHtml}
+              </div>
+            </div>
+          </div>
+
+          <!-- Executive AI Summary -->
+          <div style="margin-bottom: 20px; page-break-inside: avoid;">
+            <div style="font-size: 12px; font-weight: 800; color: #0f172a; text-transform: uppercase; letter-spacing: 0.5px; border-left: 4px solid #4f46e5; padding-left: 8px; margin-bottom: 10px;">
+              Executive AI Synthesis
+            </div>
+            <div style="background: #f5f3ff; border: 1px solid #ddd6fe; border-radius: 10px; padding: 14px; font-size: 11px; line-height: 1.6; color: #4338ca; font-weight: 600;">
+              ${analysis?.summary || 'Candidate demonstrated structured responses with technical clarity across problem solving, system architecture, and communication rubrics.'}
+            </div>
+          </div>
+
+          <!-- Question Timeline -->
+          <div style="margin-bottom: 20px;">
+            <div style="font-size: 12px; font-weight: 800; color: #0f172a; text-transform: uppercase; letter-spacing: 0.5px; border-left: 4px solid #4f46e5; padding-left: 8px; margin-bottom: 12px;">
+              Question-by-Question STAR Rubric Log
+            </div>
+            ${timelineHtml}
+          </div>
+
+          <!-- Footer -->
+          <div style="border-top: 1px solid #e2e8f0; padding-top: 12px; text-align: center; font-size: 10px; color: #94a3b8; font-weight: 600;">
+            Generated by HAC-KIT AI Executive Evaluation Engine · Confidential Candidate Evaluation
+          </div>
+          
+          <script>
+            window.onload = () => {
+              window.print();
+            };
+          </script>
+        </body>
+      </html>
+    `);
+    doc.close();
+
+    // Clean up iframe after printing is done or user closes dialog
+    iframe.contentWindow?.addEventListener('afterprint', () => {
+      document.body.removeChild(iframe);
+      toast.success('PDF report generated!');
+    });
+    
+    // Fallback cleanup in case afterprint doesn't fire
+    setTimeout(() => {
+      if (document.body.contains(iframe)) {
+        document.body.removeChild(iframe);
+      }
+    }, 10000);
+  };
+
   if (showReplay) {
     return (
-      <div className="h-screen w-screen overflow-auto bg-slate-950 p-6">
+      <div className="h-screen w-screen overflow-auto bg-slate-50 p-6">
         <InterviewReplay
           nodes={timelineNodes}
           overallScore={overallScore}
@@ -486,6 +699,12 @@ export const DemoFeedback: React.FC<DemoFeedbackProps> = ({ onRestart, analysis,
           className="bg-white/95 backdrop-blur-xl border border-slate-200/90 hover:bg-slate-50 rounded-2xl px-4 py-2 text-xs font-extrabold text-slate-800 transition-all flex items-center gap-2 shadow-sm"
         >
           <Sparkles className="w-3.5 h-3.5 text-indigo-600" /> Questions Timeline
+        </button>
+        <button 
+          onClick={handleExportPDF} 
+          className="bg-indigo-600 hover:bg-indigo-700 text-white border border-indigo-500/30 rounded-2xl px-4 py-2 text-xs font-extrabold transition-all flex items-center gap-2 shadow-md hover:shadow-indigo-500/20"
+        >
+          <Download className="w-3.5 h-3.5 text-white" /> Export PDF Report
         </button>
         <button onClick={resetPositions} className="bg-white/95 backdrop-blur-xl border border-slate-200/90 hover:bg-slate-50 rounded-2xl px-4 py-2 text-xs font-extrabold text-slate-700 transition-all flex items-center gap-2 shadow-sm">
           <RotateCcw className="w-3.5 h-3.5 text-slate-500" /> Reset Layout

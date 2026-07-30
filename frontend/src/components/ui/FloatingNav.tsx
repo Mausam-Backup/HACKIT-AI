@@ -6,18 +6,18 @@ export default function FloatingNav() {
   const [isHovered, setIsHovered] = useState(false);
 
   return (
-    <div className="fixed top-8 left-1/2 -translate-x-1/2 z-[100]">
+    <div className="fixed top-8 left-1/2 -translate-x-1/2 z-[100] w-[95vw] max-w-fit">
       <div 
-        className="flex items-center justify-between rounded-full border border-black/5 shadow-2xl transition-all duration-500 ease-out overflow-hidden text-black w-fit mx-auto bg-white"
+        className="flex items-center justify-between rounded-full border border-black/5 shadow-2xl transition-all duration-500 ease-out overflow-x-auto no-scrollbar text-black w-full bg-white"
         style={{
-          padding: isHovered ? '12px 32px' : '12px 24px',
-          gap: isHovered ? '40px' : '24px',
+          padding: isHovered ? '12px 24px' : '12px 16px',
+          gap: isHovered ? '24px' : '16px',
         }}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
         {/* Left Side: Icons + Text */}
-        <div className="flex items-center gap-6 shrink-0">
+        <div className="flex items-center gap-4 shrink-0 sm:gap-6">
           <a href="/" className="group flex items-center gap-1.5 text-black/60 hover:text-black transition-colors">
             <i className="ph ph-house text-lg"></i>
             <span className="text-sm font-medium tracking-wide whitespace-nowrap">Home</span>
@@ -49,8 +49,8 @@ export default function FloatingNav() {
         </div>
         
         {/* Right Side: Name */}
-        <div className="flex items-center shrink-0">
-          <div className="bg-black text-white px-5 py-2 rounded-full font-bold text-xs tracking-wide shadow-md transition-transform duration-300 hover:scale-105 cursor-pointer whitespace-nowrap">
+        <div className="flex items-center shrink-0 ml-4">
+          <div className="bg-black text-white px-4 py-1.5 sm:px-5 sm:py-2 rounded-full font-bold text-xs tracking-wide shadow-md transition-transform duration-300 hover:scale-105 cursor-pointer whitespace-nowrap">
             HAC-KIT AI
           </div>
         </div>
