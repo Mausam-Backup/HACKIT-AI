@@ -1,0 +1,23 @@
+{
+  "id": "fastapi-vue",
+  "name": "Vue 3 + Python FastAPI",
+  "description": "Vue 3 Vite frontend with Python FastAPI backend and SQLite database.",
+  "frontend": {
+    "framework": "Vue 3",
+    "build_tool": "Vite 5.x",
+    "icons": "lucide-vue-next",
+    "dir": "./frontend",
+    "build_script": "npm run build",
+    "test_script": "echo 'no tests yet' && exit 0"
+  },
+  "backend": {
+    "framework": "Python 3 / FastAPI",
+    "database": "SQLite (SQLAlchemy / Pydantic v2)",
+    "dir": "./backend",
+    "port_env": "PORT_BACKEND",
+    "build_script": "python -m py_compile main.py",
+    "test_script": "echo 'no tests yet' && exit 0"
+  },
+  "custom_instructions": "Use Pydantic v2 schemas for FastAPI endpoints. Serve API routes under /api/*.",
+  "base_template_dir": ""
+}

@@ -1,0 +1,16 @@
+The project has been built. Review the actual implementation and update HACKATHON.md.
+
+Read these files for context:
+- `HACKATHON.md` (current pitch and demo script)
+- `PLAN.md` (original plan)
+- `tasks/frontend-task.md`
+- `tasks/backend-task.md`
+
+Then inspect the actual code in `./frontend/` and `./backend/` to see what was actually implemented.
+
+Update HACKATHON.md to reflect what was actually built:
+1. Update the demo script to match the actual working features
+2. Update the pitch outline if any features changed
+3. Remove any features that weren't implemented
+4. Add any features that were added beyond the original plan
+5. Make sure the pitch is honest about what the project does

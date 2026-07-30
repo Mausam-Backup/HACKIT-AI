@@ -1,0 +1,19 @@
+Read `tasks/frontend-task.md` and implement everything specified in it.
+
+Build the frontend in the {{FRONTEND_DIR|default('./frontend/')}} directory:
+- Create {{FRONTEND_DIR|default('./frontend/')}} with all necessary files
+- Create a `.gitignore` file inside {{FRONTEND_DIR|default('./frontend/')}} to ignore node_modules/ and build outputs
+- Create dependency manifest (e.g. package.json) and install dependencies
+- Run {{FRONTEND_BUILD_CMD|default('npm run build')}} at the end to verify it compiles
+- Add a `"test": "{{FRONTEND_TEST_CMD|default("echo 'no tests yet' && exit 0")}}"` script
+
+Target Tech Stack Specification:
+- Framework: {{FRONTEND_FRAMEWORK|default('React 18.x')}}
+- Build Tool: {{FRONTEND_BUILD_TOOL|default('Vite 5.x')}}
+- UI / Icon Library: {{FRONTEND_ICONS|default('lucide-react 0.469.x')}}
+
+Configure API proxy so `/api` requests forward to http://localhost:3001.
+
+{{CUSTOM_INSTRUCTIONS|default('')}}
+
+Do NOT touch backend code or root integration. Only build files inside {{FRONTEND_DIR|default('./frontend/')}}.

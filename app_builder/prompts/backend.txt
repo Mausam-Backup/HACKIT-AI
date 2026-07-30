@@ -1,0 +1,22 @@
+Read `tasks/backend-task.md` and implement everything specified in it.
+
+Build the backend in the {{BACKEND_DIR|default('./backend/')}} directory:
+- Create {{BACKEND_DIR|default('./backend/')}} with all necessary files
+- Create a `.gitignore` file inside {{BACKEND_DIR|default('./backend/')}} to ignore dependencies, `.env`, and database files
+- Create dependency manifest and install dependencies
+- Run {{BACKEND_BUILD_CMD|default('node --check server.js')}} at the end to verify server compiles/runs
+- Add a `"test": "{{BACKEND_TEST_CMD|default("echo 'no tests yet' && exit 0")}}"` script
+
+Target Tech Stack Specification:
+- Framework: {{BACKEND_FRAMEWORK|default('Node.js / Express')}}
+- Database: {{BACKEND_DATABASE|default('SQLite (better-sqlite3)')}}
+
+Listen on {{BACKEND_PORT_ENV|default('PORT_BACKEND')}} env var (default 3001).
+Configure CORS with `origin: true`.
+Serve frontend dist from `../frontend/dist/` in production if applicable.
+
+Make sure your API routes are under `/api/*` prefix.
+
+{{CUSTOM_INSTRUCTIONS|default('')}}
+
+Do NOT touch frontend code or root integration. Only build files inside {{BACKEND_DIR|default('./backend/')}}.

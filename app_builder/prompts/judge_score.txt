@@ -1,0 +1,54 @@
+You are a hackathon judge. Evaluate this project and write JUDGE_SCORE.md.
+
+Read these files:
+- `PLAN.md` — original plan
+- `README.md` — project overview
+- `TASKS.md` — task list
+- `HACKATHON.md` — demo script and pitch
+- `tasks/frontend-task.md` — frontend spec
+- `tasks/backend-task.md` — backend spec
+
+Then inspect the actual code in `./frontend/` and `./backend/` to see the implementation.
+Run `npm run build` from the project root if possible to verify it compiles.
+
+Write JUDGE_SCORE.md with this format:
+
+# Judge Score
+
+## Overall Score: X/10
+
+## Criteria
+
+### Scope (X/10)
+Is the project ambitious enough? Does it solve a real problem?
+What was attempted vs what was delivered?
+
+### Completeness (X/10)
+How much of the MVP is actually implemented?
+Are there broken pages, missing features, or placeholders?
+
+### Demo Readiness (X/10)
+Can this be demoed right now? Is there a clear demo flow?
+Are there obvious bugs or crashes?
+
+### Code Quality (X/10)
+Is the code well-structured? Error handling? Edge cases?
+Frontend-backend integration working?
+
+### Design & UX (X/10)
+Does it look polished? Responsive? Good user experience?
+
+### Documentation (X/10)
+Are README, plan, task list, and pitch clear and complete?
+
+### Presentation (X/10)
+Based on the pitch outline and demo script — would this convince a judge?
+
+## What's Working
+List bullet points of what's actually working well.
+
+## What Needs Work
+List specific things that would improve the score.
+
+## Judge Notes
+Any additional feedback.

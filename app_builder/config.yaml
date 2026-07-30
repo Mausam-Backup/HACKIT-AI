@@ -1,0 +1,9 @@
+# Hackathon Project Coach config
+http_timeout: 3600
+server_port: 4190
+strict_models: true
+max_repair_attempts: 2
+
+# LLM models
+coach_model: "default"
+builder_model: "default"
