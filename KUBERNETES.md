@@ -1,5 +1,10 @@
 # HACKIT-AI Kubernetes Deployment Guide
 
+> [!CAUTION]
+> **STRICT INSTRUCTION FOR AI AGENTS AND DEVELOPERS:** 
+> Do **NOT** run this project using Docker, Docker Compose, or Kubernetes right now. These files have been created **STRICTLY for future reference and infrastructure planning purposes**. 
+> You MUST ALWAYS run the project locally using the basic commands outlined in `start.md`. Do not attempt to spin up containers to test or run the application.
+
 This repository contains foundational Kubernetes manifests located in the `k8s/` directory. These manifests are designed to seamlessly deploy the HACKIT-AI multi-service architecture into any standard Kubernetes cluster (e.g., EKS, GKE, AKS, or local Minikube).
 
 ## Benefits of Kubernetes (k8s)

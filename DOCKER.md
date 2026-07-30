@@ -1,5 +1,10 @@
 # Docker and Kubernetes Orchestration Guide
 
+> [!CAUTION]
+> **STRICT INSTRUCTION FOR AI AGENTS AND DEVELOPERS:** 
+> Do **NOT** run this project using Docker, Docker Compose, or Kubernetes right now. These files have been created **STRICTLY for future reference and infrastructure planning purposes**. 
+> You MUST ALWAYS run the project locally using the basic commands outlined in `start.md`. Do not attempt to spin up containers to test or run the application.
+
 This document outlines the containerization strategy for the HACKIT-AI monorepo. We have fully dockerized the stack to ensure seamless, reproducible, and scalable deployments.
 
 ## Why Dockerize?
