@@ -250,13 +250,13 @@ export default function MermaidPanel({
 
   if (isCollapsed) {
     return (
-      <aside className="w-12 h-screen bg-white border-l border-slate-200 flex flex-col items-center justify-center shrink-0 z-20 select-none">
+      <aside className="w-12 h-screen bg-white border-l border-zinc-200 flex flex-col items-center justify-center shrink-0 z-20 select-none">
         <button
           onClick={onToggleCollapse}
-          className="p-2.5 rounded-xl text-slate-400 hover:text-cyan-600 hover:bg-slate-100 transition-colors"
+          className="p-2.5 rounded-xl text-zinc-400 hover:text-zinc-900 hover:bg-zinc-100 transition-colors"
           title="Expand Mermaid Studio"
         >
-          <PanelRightOpen className="size-4 text-cyan-600" />
+          <PanelRightOpen className="size-4 text-zinc-900" />
         </button>
       </aside>
     );
@@ -266,22 +266,22 @@ export default function MermaidPanel({
     <aside
       className={`${
         isExpanded ? "w-[520px]" : "w-[360px]"
-      } h-screen bg-white border-l border-slate-200 flex flex-col shrink-0 transition-all duration-300 z-20 select-none overflow-hidden`}
+      } h-screen bg-white border-l border-zinc-200 flex flex-col shrink-0 transition-all duration-300 z-20 select-none overflow-hidden`}
     >
       {/* Top Header */}
-      <div className="p-3 border-b border-slate-100 flex items-center justify-between shrink-0">
+      <div className="p-3 border-b border-zinc-100 flex items-center justify-between shrink-0">
         <div className="flex items-center gap-2">
-          <div className="p-1.5 rounded-lg bg-cyan-50 text-cyan-600">
+          <div className="p-1.5 rounded-lg bg-zinc-100 text-zinc-900">
             <Wand2 className="size-4" />
           </div>
           <div>
-            <h3 className="text-xs font-bold text-slate-900 flex items-center gap-1.5 flex-wrap">
+            <h3 className="text-xs font-bold text-zinc-900 flex items-center gap-1.5 flex-wrap">
               <span>Mermaid AI Studio</span>
               <span className="inline-flex items-center px-1.5 py-0.5 rounded bg-cyan-100 text-cyan-800 font-mono text-[9px] uppercase font-bold whitespace-nowrap leading-none">
                 GROQ 70B&nbsp;LIVE
               </span>
             </h3>
-            <span className="text-[10px] text-cyan-600 font-semibold">
+            <span className="text-[10px] text-zinc-900 font-semibold">
               LLM Flowchart &amp; Canvas Synthesizer
             </span>
           </div>
@@ -290,7 +290,7 @@ export default function MermaidPanel({
         <div className="flex items-center gap-1">
           <button
             onClick={handleDownloadPNG}
-            className="flex items-center gap-1 px-2 py-1 rounded-lg bg-cyan-50 hover:bg-cyan-100 text-cyan-700 text-[11px] font-bold transition-colors"
+            className="flex items-center gap-1 px-2 py-1 rounded-lg bg-zinc-100 hover:bg-cyan-100 text-cyan-700 text-[11px] font-bold transition-colors"
             title="Download PNG"
           >
             <ImageIcon className="size-3" />
@@ -298,7 +298,7 @@ export default function MermaidPanel({
           </button>
           <button
             onClick={handleDownloadSVG}
-            className="flex items-center gap-1 px-2 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-[11px] font-bold transition-colors"
+            className="flex items-center gap-1 px-2 py-1 rounded-lg bg-zinc-100 hover:bg-zinc-200 text-zinc-700 text-[11px] font-bold transition-colors"
             title="Download SVG"
           >
             <Download className="size-3" />
@@ -306,7 +306,7 @@ export default function MermaidPanel({
           </button>
           <button
             onClick={() => setIsExpanded(!isExpanded)}
-            className="p-1.5 rounded-lg hover:bg-slate-100 text-slate-400 hover:text-slate-700 transition-colors"
+            className="p-1.5 rounded-lg hover:bg-zinc-100 text-zinc-400 hover:text-zinc-700 transition-colors"
             title={isExpanded ? "Standard Width" : "Expand Width"}
           >
             {isExpanded ? <Minimize2 className="size-4" /> : <Maximize2 className="size-4" />}
@@ -314,7 +314,7 @@ export default function MermaidPanel({
           {onToggleCollapse && (
             <button
               onClick={onToggleCollapse}
-              className="p-1.5 rounded-lg hover:bg-slate-100 text-slate-400 hover:text-slate-700 transition-colors"
+              className="p-1.5 rounded-lg hover:bg-zinc-100 text-zinc-400 hover:text-zinc-700 transition-colors"
               title="Close Right Panel"
             >
               <PanelRightClose className="size-4" />
@@ -324,8 +324,8 @@ export default function MermaidPanel({
       </div>
 
       {/* Preset Templates */}
-      <div className="p-2.5 border-b border-slate-100 bg-slate-50/50 shrink-0">
-        <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1.5">
+      <div className="p-2.5 border-b border-zinc-100 bg-zinc-50/50 shrink-0">
+        <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider block mb-1.5">
           Preset Architecture Flowcharts (Fallback)
         </span>
         <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-1">
@@ -335,8 +335,8 @@ export default function MermaidPanel({
               onClick={() => handleTemplateSelect(key)}
               className={`px-2.5 py-1 rounded-lg text-xs font-semibold whitespace-nowrap transition-all ${
                 activeTemplate === key
-                  ? "bg-cyan-500 text-white shadow-xs"
-                  : "bg-white border border-slate-200 text-slate-600 hover:bg-slate-100"
+                  ? "bg-zinc-900 text-white shadow-xs"
+                  : "bg-white border border-zinc-200 text-zinc-600 hover:bg-zinc-100"
               }`}
             >
               {item.label}
@@ -346,14 +346,14 @@ export default function MermaidPanel({
       </div>
 
       {/* Section View Mode Controller */}
-      <div className="px-3 py-1.5 bg-slate-100/70 border-b border-slate-200 flex items-center justify-between text-xs shrink-0">
-        <div className="flex items-center gap-1 bg-white p-0.5 rounded-lg border border-slate-200">
+      <div className="px-3 py-1.5 bg-zinc-100/70 border-b border-zinc-200 flex items-center justify-between text-xs shrink-0">
+        <div className="flex items-center gap-1 bg-white p-0.5 rounded-lg border border-zinc-200">
           <button
             onClick={() => setViewMode("split")}
             className={`flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-semibold transition-all ${
               viewMode === "split"
-                ? "bg-cyan-500 text-white shadow-2xs"
-                : "text-slate-600 hover:bg-slate-100"
+                ? "bg-zinc-900 text-white shadow-2xs"
+                : "text-zinc-600 hover:bg-zinc-100"
             }`}
           >
             <LayoutGrid className="size-3" />
@@ -363,8 +363,8 @@ export default function MermaidPanel({
             onClick={() => setViewMode("diagram")}
             className={`flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-semibold transition-all ${
               viewMode === "diagram"
-                ? "bg-cyan-500 text-white shadow-2xs"
-                : "text-slate-600 hover:bg-slate-100"
+                ? "bg-zinc-900 text-white shadow-2xs"
+                : "text-zinc-600 hover:bg-zinc-100"
             }`}
           >
             <Eye className="size-3" />
@@ -374,8 +374,8 @@ export default function MermaidPanel({
             onClick={() => setViewMode("code")}
             className={`flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-semibold transition-all ${
               viewMode === "code"
-                ? "bg-cyan-500 text-white shadow-2xs"
-                : "text-slate-600 hover:bg-slate-100"
+                ? "bg-zinc-900 text-white shadow-2xs"
+                : "text-zinc-600 hover:bg-zinc-100"
             }`}
           >
             <CodeIcon className="size-3" />
@@ -385,10 +385,10 @@ export default function MermaidPanel({
 
         {/* Diagram Zoom Controls */}
         {viewMode !== "code" && (
-          <div className="flex items-center gap-1 text-slate-500">
+          <div className="flex items-center gap-1 text-zinc-500">
             <button
               onClick={() => setZoomScale((z) => Math.max(0.6, z - 0.1))}
-              className="p-1 hover:bg-white rounded text-slate-600 border border-slate-200"
+              className="p-1 hover:bg-white rounded text-zinc-600 border border-zinc-200"
               title="Zoom Out Diagram"
             >
               <ZoomOut className="size-3" />
@@ -398,7 +398,7 @@ export default function MermaidPanel({
             </span>
             <button
               onClick={() => setZoomScale((z) => Math.min(1.6, z + 0.1))}
-              className="p-1 hover:bg-white rounded text-slate-600 border border-slate-200"
+              className="p-1 hover:bg-white rounded text-zinc-600 border border-zinc-200"
               title="Zoom In Diagram"
             >
               <ZoomIn className="size-3" />
@@ -408,11 +408,11 @@ export default function MermaidPanel({
       </div>
 
       {/* Main Body Content Container */}
-      <div className="flex-1 min-h-0 flex flex-col overflow-hidden bg-slate-50/40">
+      <div className="flex-1 min-h-0 flex flex-col overflow-hidden bg-zinc-50/40">
         {/* 1. Live Diagram Render Preview Box */}
         {(viewMode === "split" || viewMode === "diagram") && (
           <div
-            className={`p-4 overflow-auto flex items-start justify-center border-b border-slate-200 transition-all ${
+            className={`p-4 overflow-auto flex items-start justify-center border-b border-zinc-200 transition-all ${
               viewMode === "diagram" ? "flex-1" : "h-1/2 min-h-[200px]"
             }`}
           >
@@ -424,7 +424,7 @@ export default function MermaidPanel({
                 dangerouslySetInnerHTML={{ __html: svgContent }}
               />
             ) : (
-              <div className="text-center text-xs text-slate-400 mt-12">Rendering Diagram...</div>
+              <div className="text-center text-xs text-zinc-400 mt-12">Rendering Diagram...</div>
             )}
           </div>
         )}
@@ -432,18 +432,18 @@ export default function MermaidPanel({
         {/* 2. Light Mode Code Editor Box */}
         {(viewMode === "split" || viewMode === "code") && (
           <div
-            className={`p-3 bg-white text-slate-800 font-mono text-xs flex flex-col overflow-hidden border-b border-slate-200 ${
+            className={`p-3 bg-white text-zinc-800 font-mono text-xs flex flex-col overflow-hidden border-b border-zinc-200 ${
               viewMode === "code" ? "flex-1" : "h-1/2 min-h-[180px]"
             }`}
           >
-            <div className="flex items-center justify-between pb-2 mb-1.5 border-b border-slate-100 text-[11px] text-slate-500 font-sans shrink-0">
+            <div className="flex items-center justify-between pb-2 mb-1.5 border-b border-zinc-100 text-[11px] text-zinc-500 font-sans shrink-0">
               <div className="flex items-center gap-1.5 font-bold">
-                <FileCode className="size-3.5 text-cyan-600" />
+                <FileCode className="size-3.5 text-zinc-900" />
                 <span>Mermaid Syntax Editor</span>
               </div>
               <button
                 onClick={handleCopy}
-                className="flex items-center gap-1 text-slate-600 hover:text-slate-900 transition-colors font-medium"
+                className="flex items-center gap-1 text-zinc-600 hover:text-zinc-900 transition-colors font-medium"
               >
                 {copied ? <Check className="size-3 text-emerald-600" /> : <Copy className="size-3" />}
                 <span>{copied ? "Copied" : "Copy Code"}</span>
@@ -453,7 +453,7 @@ export default function MermaidPanel({
             <textarea
               value={mermaidCode}
               onChange={(e) => setMermaidCode(e.target.value)}
-              className="flex-1 w-full bg-slate-50 p-3 rounded-xl border border-slate-200 text-slate-800 focus:outline-none focus:border-cyan-500 focus:bg-white resize-none overflow-y-auto font-mono text-xs leading-relaxed shadow-2xs"
+              className="flex-1 w-full bg-zinc-50 p-3 rounded-xl border border-zinc-200 text-zinc-800 focus:outline-none focus:border-zinc-900 focus:bg-white resize-none overflow-y-auto font-mono text-xs leading-relaxed shadow-2xs"
               placeholder="graph TD..."
             />
           </div>
@@ -461,8 +461,8 @@ export default function MermaidPanel({
       </div>
 
       {/* Example Prompt Command Chips */}
-      <div className="px-3 pt-2 bg-white border-t border-slate-100">
-        <div className="flex items-center gap-1 mb-1.5 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+      <div className="px-3 pt-2 bg-white border-t border-zinc-100">
+        <div className="flex items-center gap-1 mb-1.5 text-[10px] font-bold text-zinc-400 uppercase tracking-wider">
           <Lightbulb className="size-3 text-amber-500" />
           <span>Example Hackathon Commands:</span>
         </div>
@@ -471,7 +471,7 @@ export default function MermaidPanel({
             <button
               key={idx}
               onClick={() => handleRunExamplePrompt(p)}
-              className="px-2.5 py-1 rounded-full bg-slate-100 hover:bg-cyan-50 hover:text-cyan-700 hover:border-cyan-300 border border-slate-200 text-[11px] font-medium text-slate-700 whitespace-nowrap transition-colors"
+              className="px-2.5 py-1 rounded-full bg-zinc-100 hover:bg-zinc-100 hover:text-cyan-700 hover:border-cyan-300 border border-zinc-200 text-[11px] font-medium text-zinc-700 whitespace-nowrap transition-colors"
             >
               {p}
             </button>
@@ -483,14 +483,14 @@ export default function MermaidPanel({
       <div className="p-3 bg-white relative shrink-0">
         {/* Command History Dropdown Popup */}
         {showHistoryDropdown && (
-          <div className="absolute bottom-16 left-3 right-3 bg-white rounded-xl shadow-2xl border border-slate-200 p-2 z-50 animate-in fade-in slide-in-from-bottom-2 duration-150">
-            <div className="flex items-center justify-between px-2 py-1 border-b border-slate-100 text-[11px] font-bold text-slate-500">
+          <div className="absolute bottom-16 left-3 right-3 bg-white rounded-xl shadow-2xl border border-zinc-200 p-2 z-50 animate-in fade-in slide-in-from-bottom-2 duration-150">
+            <div className="flex items-center justify-between px-2 py-1 border-b border-zinc-100 text-[11px] font-bold text-zinc-500">
               <span className="flex items-center gap-1">
-                <History className="size-3 text-cyan-600" /> Command History:
+                <History className="size-3 text-zinc-900" /> Command History:
               </span>
               <button
                 onClick={() => setShowHistoryDropdown(false)}
-                className="text-slate-400 hover:text-slate-600"
+                className="text-zinc-400 hover:text-zinc-600"
               >
                 ✕
               </button>
@@ -500,7 +500,7 @@ export default function MermaidPanel({
                 <div
                   key={idx}
                   onClick={() => handleRunExamplePrompt(item)}
-                  className="p-2 rounded-lg hover:bg-cyan-50 text-xs font-medium text-slate-700 hover:text-cyan-700 cursor-pointer transition-colors truncate"
+                  className="p-2 rounded-lg hover:bg-zinc-100 text-xs font-medium text-zinc-700 hover:text-cyan-700 cursor-pointer transition-colors truncate"
                 >
                   ⚡ {item}
                 </div>
@@ -511,23 +511,23 @@ export default function MermaidPanel({
 
         <form
           onSubmit={handleAiGenerate}
-          className="flex items-center gap-2 p-1.5 rounded-xl border border-slate-200 bg-slate-50/80 focus-within:border-cyan-500 focus-within:bg-white transition-all"
+          className="flex items-center gap-2 p-1.5 rounded-xl border border-zinc-200 bg-zinc-50/80 focus-within:border-zinc-900 focus-within:bg-white transition-all"
         >
-          <Sparkles className="size-4 text-cyan-600 shrink-0 ml-1.5" />
+          <Sparkles className="size-4 text-zinc-900 shrink-0 ml-1.5" />
           <input
             type="text"
             id="mermaid-ai-input"
             value={aiPrompt}
             onChange={(e) => setAiPrompt(e.target.value)}
             placeholder="Type any natural language command (Groq AI)..."
-            className="flex-1 bg-transparent text-xs text-slate-800 placeholder-slate-400 focus:outline-none"
+            className="flex-1 bg-transparent text-xs text-zinc-800 placeholder-slate-400 focus:outline-none"
           />
 
           {/* History Button */}
           <button
             type="button"
             onClick={() => setShowHistoryDropdown(!showHistoryDropdown)}
-            className="p-1 text-slate-400 hover:text-cyan-600 transition-colors"
+            className="p-1 text-zinc-400 hover:text-zinc-900 transition-colors"
             title="Command History"
           >
             <History className="size-4" />
@@ -536,7 +536,7 @@ export default function MermaidPanel({
           <button
             type="submit"
             disabled={isAiGenerating || !aiPrompt.trim()}
-            className="p-1.5 rounded-lg bg-cyan-500 hover:bg-cyan-600 text-white disabled:opacity-40 transition-colors shadow-xs flex items-center gap-1"
+            className="p-1.5 rounded-lg bg-zinc-900 hover:bg-zinc-900 text-white disabled:opacity-40 transition-colors shadow-xs flex items-center gap-1"
           >
             {isAiGenerating ? (
               <RefreshCw className="size-3.5 animate-spin" />

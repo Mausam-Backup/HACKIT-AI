@@ -273,22 +273,22 @@ export default function WorkflowCanvas({
     <div
       onMouseMove={handleCanvasMouseMove}
       onMouseUp={handleCanvasMouseUp}
-      className="flex-1 h-screen flex flex-col bg-slate-50 relative overflow-hidden select-none transition-all duration-200"
+      className="flex-1 h-screen flex flex-col bg-zinc-50 relative overflow-hidden select-none transition-all duration-200"
     >
       {/* Canvas Top Bar */}
-      <header className="h-16 bg-white border-b border-slate-200 px-6 flex items-center justify-between shrink-0 z-10">
+      <header className="h-16 bg-white border-b border-zinc-200 px-6 flex items-center justify-between shrink-0 z-10">
         <div className="flex items-center gap-3">
           {isLeftCollapsed && onToggleLeft && (
             <button
               onClick={onToggleLeft}
-              className="p-1.5 rounded-lg border border-slate-200 hover:bg-slate-100 text-cyan-600 transition-colors"
+              className="p-1.5 rounded-lg border border-zinc-200 hover:bg-zinc-100 text-zinc-900 transition-colors"
               title="Expand Left Sidebar"
             >
               <PanelLeftOpen className="size-4" />
             </button>
           )}
           <div>
-            <h2 className="text-sm font-bold text-slate-900 tracking-tight flex items-center gap-2">
+            <h2 className="text-sm font-bold text-zinc-900 tracking-tight flex items-center gap-2">
               <span>Canvas Workspace</span>
               <span className="px-1.5 py-0.5 rounded flex items-center gap-1 bg-red-50 text-red-600 text-[9px] font-bold uppercase tracking-wider border border-red-100">
                 <span className="size-1.5 rounded-full bg-red-500 animate-pulse" />
@@ -301,7 +301,7 @@ export default function WorkflowCanvas({
                 </span>
               )}
             </h2>
-            <p className="text-xs text-slate-400">
+            <p className="text-xs text-zinc-400">
               Type natural language prompts to draw interactive pipelines powered by Groq 70B.
             </p>
           </div>
@@ -311,15 +311,15 @@ export default function WorkflowCanvas({
           <button
             onClick={handleTestAutomation}
             disabled={isExecuting}
-            className="flex items-center gap-2 px-4 py-2 rounded-xl border border-slate-200 text-slate-700 text-xs font-semibold hover:bg-slate-100 transition-colors disabled:opacity-50"
+            className="flex items-center gap-2 px-4 py-2 rounded-xl border border-zinc-200 text-zinc-700 text-xs font-semibold hover:bg-zinc-100 transition-colors disabled:opacity-50"
           >
-            <RefreshCw className={`size-3.5 ${isExecuting ? "animate-spin text-cyan-600" : ""}`} />
+            <RefreshCw className={`size-3.5 ${isExecuting ? "animate-spin text-zinc-900" : ""}`} />
             <span>{isExecuting ? "Running..." : "Test Pipeline"}</span>
           </button>
 
           <button
             onClick={() => setIsAddNodeOpen(true)}
-            className="flex items-center gap-2 px-4 py-2 rounded-xl bg-cyan-500 hover:bg-cyan-600 text-white text-xs font-bold shadow-md shadow-cyan-500/20 transition-colors"
+            className="flex items-center gap-2 px-4 py-2 rounded-xl bg-zinc-900 hover:bg-zinc-900 text-white text-xs font-bold shadow-md shadow-zinc-900/20 transition-colors"
           >
             <Plus className="size-4" />
             <span>New Node</span>
@@ -328,7 +328,7 @@ export default function WorkflowCanvas({
           {isRightCollapsed && onToggleRight && (
             <button
               onClick={onToggleRight}
-              className="p-1.5 rounded-lg border border-slate-200 hover:bg-slate-100 text-cyan-600 transition-colors"
+              className="p-1.5 rounded-lg border border-zinc-200 hover:bg-zinc-100 text-zinc-900 transition-colors"
               title="Expand Mermaid Studio"
             >
               <PanelRightOpen className="size-4" />
@@ -395,22 +395,22 @@ export default function WorkflowCanvas({
 
         {/* Floating Entry Point Card — only shown on empty canvas */}
         {nodes.length === 0 && (
-          <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 p-5 bg-white/95 backdrop-blur rounded-2xl border border-slate-200 shadow-2xl w-72 z-10 text-center">
-            <div className="size-12 mx-auto mb-3 rounded-2xl bg-cyan-50 flex items-center justify-center">
-              <Sparkles className="size-6 text-cyan-500" />
+          <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 p-5 bg-white/95 backdrop-blur rounded-2xl border border-zinc-200 shadow-2xl w-72 z-10 text-center">
+            <div className="size-12 mx-auto mb-3 rounded-2xl bg-zinc-100 flex items-center justify-center">
+              <Sparkles className="size-6 text-zinc-900" />
             </div>
-            <h3 className="text-sm font-bold text-slate-900 mb-1">Start Your Pipeline</h3>
-            <p className="text-[11px] text-slate-400 mb-4">Type a prompt in the toolbar or pick an entry method below</p>
+            <h3 className="text-sm font-bold text-zinc-900 mb-1">Start Your Pipeline</h3>
+            <p className="text-[11px] text-zinc-400 mb-4">Type a prompt in the toolbar or pick an entry method below</p>
             <div className="space-y-2 text-xs font-semibold">
               <div
                 onClick={() => setIsFormSpecOpen(true)}
-                className="p-2.5 rounded-xl bg-slate-50 border border-slate-200 hover:border-cyan-400 hover:bg-cyan-50 cursor-pointer transition-all flex items-center gap-2"
+                className="p-2.5 rounded-xl bg-zinc-50 border border-zinc-200 hover:border-zinc-900 hover:bg-zinc-100 cursor-pointer transition-all flex items-center gap-2"
               >
                 <span>📄</span><span>Direct Spec Entry (Groq AI)</span>
               </div>
               <div
                 onClick={() => setIsToolsDrawerOpen(true)}
-                className="p-2.5 rounded-xl bg-slate-50 border border-slate-200 hover:border-cyan-400 hover:bg-cyan-50 cursor-pointer transition-all flex items-center gap-2"
+                className="p-2.5 rounded-xl bg-zinc-50 border border-zinc-200 hover:border-zinc-900 hover:bg-zinc-100 cursor-pointer transition-all flex items-center gap-2"
               >
                 <span>⚡</span><span>FastMCP Pipeline Tools</span>
               </div>
@@ -420,16 +420,16 @@ export default function WorkflowCanvas({
 
         {/* Floating Prompt Box (Triggered by 'Ask AI' toolbar button) */}
         {showAiPromptBox && (
-          <div className="absolute bottom-24 left-1/2 -translate-x-1/2 z-40 bg-white p-3 rounded-2xl shadow-2xl border border-slate-200 w-96 animate-in fade-in slide-in-from-bottom-2 duration-150">
+          <div className="absolute bottom-24 left-1/2 -translate-x-1/2 z-40 bg-white p-3 rounded-2xl shadow-2xl border border-zinc-200 w-96 animate-in fade-in slide-in-from-bottom-2 duration-150">
             <form onSubmit={handleAiSubmit} className="space-y-2">
-              <div className="flex items-center justify-between text-xs font-bold text-slate-800">
-                <span className="flex items-center gap-1.5 text-cyan-600">
+              <div className="flex items-center justify-between text-xs font-bold text-zinc-800">
+                <span className="flex items-center gap-1.5 text-zinc-900">
                   <Sparkles className="size-4" /> Groq 70B Workflow AI
                 </span>
                 <button
                   type="button"
                   onClick={() => setShowAiPromptBox(false)}
-                  className="text-slate-400 hover:text-slate-600"
+                  className="text-zinc-400 hover:text-zinc-600"
                 >
                   ✕
                 </button>
@@ -439,13 +439,13 @@ export default function WorkflowCanvas({
                 value={aiPrompt}
                 onChange={(e) => setAiPrompt(e.target.value)}
                 placeholder="Describe your hackathon workflow (e.g. Health AI app)..."
-                className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:outline-none focus:border-cyan-500"
+                className="w-full p-2.5 bg-zinc-50 border border-zinc-200 rounded-xl text-xs focus:outline-none focus:border-zinc-900"
                 autoFocus
               />
               <button
                 type="submit"
                 disabled={isAiGenerating || !aiPrompt.trim()}
-                className="w-full py-2 bg-cyan-500 hover:bg-cyan-600 text-white font-bold text-xs rounded-xl shadow-md flex items-center justify-center gap-1.5"
+                className="w-full py-2 bg-zinc-900 hover:bg-zinc-900 text-white font-bold text-xs rounded-xl shadow-md flex items-center justify-center gap-1.5"
               >
                 {isAiGenerating ? (
                   <>
@@ -467,18 +467,18 @@ export default function WorkflowCanvas({
         {isAiGenerating && (
           <div className="absolute inset-0 z-20 pointer-events-none">
             {/* Dimming tint */}
-            <div className="absolute inset-0 bg-slate-50/80 backdrop-blur-[1px]" />
+            <div className="absolute inset-0 bg-zinc-50/80 backdrop-blur-[1px]" />
 
             {/* Floating status banner */}
             <div className="absolute top-6 left-1/2 -translate-x-1/2 z-30 pointer-events-auto">
-              <div className="flex items-center gap-3 px-5 py-3 rounded-2xl bg-white border border-cyan-200 shadow-2xl shadow-cyan-500/10">
-                <div className="relative flex items-center justify-center size-8 rounded-xl bg-cyan-50">
-                  <RefreshCw className="size-4 text-cyan-500 animate-spin" />
-                  <span className="absolute -top-1 -right-1 size-2.5 rounded-full bg-cyan-500 animate-pulse border-2 border-white" />
+              <div className="flex items-center gap-3 px-5 py-3 rounded-2xl bg-white border border-cyan-200 shadow-2xl shadow-zinc-900/10">
+                <div className="relative flex items-center justify-center size-8 rounded-xl bg-zinc-100">
+                  <RefreshCw className="size-4 text-zinc-900 animate-spin" />
+                  <span className="absolute -top-1 -right-1 size-2.5 rounded-full bg-zinc-900 animate-pulse border-2 border-white" />
                 </div>
                 <div>
-                  <p className="text-xs font-bold text-slate-900">Groq 70B is synthesizing your pipeline…</p>
-                  <p className="text-[10px] text-slate-400 font-medium">Building canvas nodes &amp; Mermaid flowchart</p>
+                  <p className="text-xs font-bold text-zinc-900">Groq 70B is synthesizing your pipeline…</p>
+                  <p className="text-[10px] text-zinc-400 font-medium">Building canvas nodes &amp; Mermaid flowchart</p>
                 </div>
                 <div className="flex gap-1 ml-2">
                   {[0, 1, 2].map((i) => (
@@ -526,7 +526,7 @@ export default function WorkflowCanvas({
             ].map((s, i) => (
               <div
                 key={i}
-                className="absolute rounded-2xl bg-white border border-slate-200 shadow-md overflow-hidden"
+                className="absolute rounded-2xl bg-white border border-zinc-200 shadow-md overflow-hidden"
                 style={{ left: s.x, top: s.y, width: s.w, height: s.h }}
               >
                 {/* shimmer sweep */}
@@ -539,10 +539,10 @@ export default function WorkflowCanvas({
                   }}
                 />
                 <div className="p-3 flex items-center gap-3">
-                  <div className="size-9 rounded-xl bg-slate-100 animate-pulse shrink-0" />
+                  <div className="size-9 rounded-xl bg-zinc-100 animate-pulse shrink-0" />
                   <div className="flex-1 space-y-2">
-                    <div className="h-2.5 rounded-full bg-slate-100 animate-pulse w-4/5" />
-                    <div className="h-2 rounded-full bg-slate-100 animate-pulse w-3/5" />
+                    <div className="h-2.5 rounded-full bg-zinc-100 animate-pulse w-4/5" />
+                    <div className="h-2 rounded-full bg-zinc-100 animate-pulse w-3/5" />
                   </div>
                 </div>
               </div>
@@ -561,26 +561,26 @@ export default function WorkflowCanvas({
               onContextMenu={(e) => handleNodeContextMenu(e, node)}
               style={{ left: `${node.x}px`, top: `${node.y}px` }}
               className={`absolute z-10 cursor-grab active:cursor-grabbing transition-shadow ${
-                isDragging ? "shadow-2xl ring-2 ring-cyan-500 scale-105" : "hover:shadow-lg"
+                isDragging ? "shadow-2xl ring-2 ring-zinc-900 scale-105" : "hover:shadow-lg"
               }`}
             >
               {/* ── TRIGGER NODE ── */}
               {node.type === "trigger" && (
-                <div className="flex items-center gap-2 px-5 py-3 rounded-full border-2 border-dashed border-cyan-400 bg-white shadow-md text-sm font-bold text-slate-700 hover:border-cyan-500 transition-colors">
-                  <span className="size-2 rounded-full bg-cyan-500 animate-ping shrink-0" />
+                <div className="flex items-center gap-2 px-5 py-3 rounded-full border-2 border-dashed border-zinc-900 bg-white shadow-md text-sm font-bold text-zinc-700 hover:border-zinc-900 transition-colors">
+                  <span className="size-2 rounded-full bg-zinc-900 animate-ping shrink-0" />
                   <span>{node.title}</span>
-                  <Plus className="size-3.5 text-slate-400 opacity-60" />
+                  <Plus className="size-3.5 text-zinc-400 opacity-60" />
                 </div>
               )}
 
               {/* ── QUEUE / PROCESSOR NODE ── */}
               {node.type === "queue" && (
-                <div className="w-52 p-4 rounded-2xl bg-white border border-slate-200 shadow-lg text-center hover:border-cyan-300 transition-colors">
-                  <div className="size-11 mx-auto rounded-xl bg-cyan-50 border border-cyan-100 flex items-center justify-center text-cyan-600 mb-2.5">
+                <div className="w-52 p-4 rounded-2xl bg-white border border-zinc-200 shadow-lg text-center hover:border-cyan-300 transition-colors">
+                  <div className="size-11 mx-auto rounded-xl bg-zinc-100 border border-zinc-200 flex items-center justify-center text-zinc-900 mb-2.5">
                     <FileText className="size-5" />
                   </div>
-                  <h4 className="text-sm font-bold text-slate-800">{node.title}</h4>
-                  <span className="text-[11px] text-slate-400 font-medium">Auto-dispatching</span>
+                  <h4 className="text-sm font-bold text-zinc-800">{node.title}</h4>
+                  <span className="text-[11px] text-zinc-400 font-medium">Auto-dispatching</span>
                 </div>
               )}
 
@@ -602,14 +602,14 @@ export default function WorkflowCanvas({
 
               {/* ── LIVE / STREAMING NODE ── */}
               {node.type === "live" && (
-                <div className="w-60 p-4 rounded-2xl bg-white border-2 border-cyan-500 shadow-xl shadow-cyan-500/10 flex items-center gap-3 hover:border-cyan-600 transition-colors">
-                  <div className="size-11 rounded-xl bg-cyan-50 text-cyan-600 flex items-center justify-center shrink-0 border border-cyan-100">
+                <div className="w-60 p-4 rounded-2xl bg-white border-2 border-zinc-900 shadow-xl shadow-zinc-900/10 flex items-center gap-3 hover:border-zinc-900 transition-colors">
+                  <div className="size-11 rounded-xl bg-zinc-100 text-zinc-900 flex items-center justify-center shrink-0 border border-zinc-200">
                     <Zap className="size-5" />
                   </div>
                   <div>
-                    <h4 className="text-sm font-bold text-slate-900">{node.title}</h4>
-                    <span className="text-[11px] text-cyan-600 font-bold flex items-center gap-1">
-                      <span className="size-1.5 rounded-full bg-cyan-500 animate-pulse" />
+                    <h4 className="text-sm font-bold text-zinc-900">{node.title}</h4>
+                    <span className="text-[11px] text-zinc-900 font-bold flex items-center gap-1">
+                      <span className="size-1.5 rounded-full bg-zinc-900 animate-pulse" />
                       Mem0 SSE Active
                     </span>
                   </div>
@@ -630,7 +630,7 @@ export default function WorkflowCanvas({
 
       {/* Floating Bottom Toolbar */}
       <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-30 flex items-center gap-4">
-        <div className="flex items-center gap-1 p-1.5 rounded-2xl bg-white border border-slate-200 shadow-2xl text-slate-600 text-xs font-medium shrink-0">
+        <div className="flex items-center gap-1 p-1.5 rounded-2xl bg-white border border-zinc-200 shadow-2xl text-zinc-600 text-xs font-medium shrink-0">
           {[
             { name: "Move", icon: MousePointer },
             { name: "Shape", icon: Square },
@@ -647,8 +647,8 @@ export default function WorkflowCanvas({
                 onClick={() => handleToolClick(tool.name)}
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl transition-all shrink-0 whitespace-nowrap ${
                   isSelected
-                    ? "bg-cyan-500 text-white font-bold shadow-md shadow-cyan-500/20"
-                    : "hover:bg-slate-100 hover:text-slate-900"
+                    ? "bg-zinc-900 text-white font-bold shadow-md shadow-zinc-900/20"
+                    : "hover:bg-zinc-100 hover:text-zinc-900"
                 }`}
               >
                 <Icon className="size-3.5 shrink-0" />
@@ -659,10 +659,10 @@ export default function WorkflowCanvas({
         </div>
 
         {/* Zoom Controls */}
-        <div className="flex items-center gap-1 px-3 py-1.5 rounded-2xl bg-white border border-slate-200 shadow-2xl text-slate-600 text-xs font-semibold">
+        <div className="flex items-center gap-1 px-3 py-1.5 rounded-2xl bg-white border border-zinc-200 shadow-2xl text-zinc-600 text-xs font-semibold">
           <button
             onClick={() => setZoom((z) => Math.max(40, z - 10))}
-            className="p-1 hover:bg-slate-100 rounded-lg"
+            className="p-1 hover:bg-zinc-100 rounded-lg"
             title="Zoom out"
           >
             <ZoomOut className="size-3.5" />
@@ -670,15 +670,15 @@ export default function WorkflowCanvas({
           <span className="w-10 text-center font-mono">{zoom}%</span>
           <button
             onClick={() => setZoom((z) => Math.min(200, z + 10))}
-            className="p-1 hover:bg-slate-100 rounded-lg"
+            className="p-1 hover:bg-zinc-100 rounded-lg"
             title="Zoom in"
           >
             <ZoomIn className="size-3.5" />
           </button>
-          <div className="w-px h-4 bg-slate-200 mx-1" />
+          <div className="w-px h-4 bg-zinc-200 mx-1" />
           <button
             onClick={() => setZoom(100)}
-            className="px-2 py-0.5 rounded-lg hover:bg-slate-100 text-[10px] font-bold text-slate-500 hover:text-slate-800 transition-colors whitespace-nowrap"
+            className="px-2 py-0.5 rounded-lg hover:bg-zinc-100 text-[10px] font-bold text-zinc-500 hover:text-zinc-800 transition-colors whitespace-nowrap"
             title="Reset to 100%"
           >
             Fit

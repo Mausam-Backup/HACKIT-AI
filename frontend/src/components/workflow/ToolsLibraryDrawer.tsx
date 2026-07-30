@@ -65,22 +65,22 @@ export default function ToolsLibraryDrawer({
   ];
 
   return (
-    <div className="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-xs flex justify-end">
-      <div className="bg-white w-full max-w-sm h-full shadow-2xl border-l border-slate-200 flex flex-col overflow-hidden animate-in slide-in-from-right duration-200">
+    <div className="fixed inset-0 z-50 bg-zinc-900/40 backdrop-blur-xs flex justify-end">
+      <div className="bg-white w-full max-w-sm h-full shadow-2xl border-l border-zinc-200 flex flex-col overflow-hidden animate-in slide-in-from-right duration-200">
         {/* Header */}
-        <div className="p-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
+        <div className="p-4 border-b border-zinc-100 flex items-center justify-between bg-zinc-50/50">
           <div className="flex items-center gap-2">
-            <div className="p-2 rounded-xl bg-blue-50 text-blue-600">
+            <div className="p-2 rounded-xl bg-zinc-100 text-zinc-900">
               <Wrench className="size-4" />
             </div>
             <div>
-              <h3 className="text-xs font-bold text-slate-900">HAC-KIT Backend Tools</h3>
-              <p className="text-[10px] text-slate-400">Click any tool to add to canvas</p>
+              <h3 className="text-xs font-bold text-zinc-900">HAC-KIT Backend Tools</h3>
+              <p className="text-[10px] text-zinc-400">Click any tool to add to canvas</p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="p-1 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors"
+            className="p-1 rounded-lg text-zinc-400 hover:text-zinc-700 hover:bg-zinc-100 transition-colors"
           >
             <X className="size-4" />
           </button>
@@ -101,25 +101,25 @@ export default function ToolsLibraryDrawer({
                   });
                   onClose();
                 }}
-                className="p-3 rounded-2xl border border-slate-200 hover:border-blue-500 hover:bg-blue-50/30 cursor-pointer transition-all group"
+                className="p-3 rounded-2xl border border-zinc-200 hover:border-zinc-900 hover:bg-zinc-100/30 cursor-pointer transition-all group"
               >
                 <div className="flex items-start justify-between mb-1">
                   <div className="flex items-center gap-2">
-                    <div className="p-2 rounded-xl bg-slate-100 group-hover:bg-blue-600 group-hover:text-white transition-colors text-slate-600">
+                    <div className="p-2 rounded-xl bg-zinc-100 group-hover:bg-zinc-900 group-hover:text-white transition-colors text-zinc-600">
                       <Icon className="size-4" />
                     </div>
                     <div>
-                      <h4 className="text-xs font-bold text-slate-900 group-hover:text-blue-700 transition-colors">
+                      <h4 className="text-xs font-bold text-zinc-900 group-hover:text-blue-700 transition-colors">
                         {tool.title}
                       </h4>
-                      <span className="text-[9px] font-bold uppercase tracking-wider text-slate-400">
+                      <span className="text-[9px] font-bold uppercase tracking-wider text-zinc-400">
                         {tool.tag}
                       </span>
                     </div>
                   </div>
-                  <Plus className="size-4 text-slate-300 group-hover:text-blue-600 transition-colors" />
+                  <Plus className="size-4 text-zinc-300 group-hover:text-zinc-900 transition-colors" />
                 </div>
-                <p className="text-[11px] text-slate-500 leading-snug mt-1">{tool.desc}</p>
+                <p className="text-[11px] text-zinc-500 leading-snug mt-1">{tool.desc}</p>
               </div>
             );
           })}

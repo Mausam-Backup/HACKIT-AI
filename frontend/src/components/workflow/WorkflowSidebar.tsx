@@ -79,11 +79,11 @@ export default function WorkflowSidebar({
 
   if (isCollapsed) {
     return (
-      <aside className="w-14 h-screen bg-white border-r border-slate-200/80 flex flex-col items-center pt-3 pb-4 shrink-0 select-none font-sans z-20">
+      <aside className="w-14 h-screen bg-white border-r border-zinc-200/80 flex flex-col items-center pt-3 pb-4 shrink-0 select-none font-sans z-20">
         {/* Logo — click to expand */}
         <button
           onClick={onToggleCollapse}
-          className="size-9 rounded-xl bg-gradient-to-br from-zinc-800 to-zinc-950 border border-zinc-700/50 flex items-center justify-center text-white shadow-md hover:border-cyan-500/60 transition-all mb-4"
+          className="size-9 rounded-xl bg-gradient-to-br from-zinc-800 to-zinc-950 border border-zinc-700/50 flex items-center justify-center text-white shadow-md hover:border-zinc-900/60 transition-all mb-4"
           title="Expand Sidebar"
         >
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -106,8 +106,8 @@ export default function WorkflowSidebar({
                 title={item.name}
                 className={`p-2.5 rounded-xl transition-all ${
                   isActive
-                    ? "bg-cyan-500 text-white shadow-sm shadow-cyan-500/25"
-                    : "text-slate-400 hover:bg-slate-100 hover:text-slate-800"
+                    ? "bg-zinc-900 text-white shadow-sm shadow-zinc-900/25"
+                    : "text-zinc-400 hover:bg-zinc-100 hover:text-zinc-800"
                 }`}
               >
                 <Icon className="size-[18px]" />
@@ -119,7 +119,7 @@ export default function WorkflowSidebar({
         {/* Expand trigger at bottom */}
         <button
           onClick={onToggleCollapse}
-          className="p-2 rounded-xl text-slate-400 hover:text-cyan-600 hover:bg-slate-100 transition-colors mt-2"
+          className="p-2 rounded-xl text-zinc-400 hover:text-zinc-900 hover:bg-zinc-100 transition-colors mt-2"
           title="Expand Sidebar"
         >
           <PanelLeftOpen className="size-4" />
@@ -130,19 +130,19 @@ export default function WorkflowSidebar({
 
   return (
     <>
-      <aside className="w-64 h-screen bg-white border-r border-slate-200/80 flex flex-col justify-between shrink-0 select-none text-slate-700 text-sm font-sans z-20 transition-all duration-200">
+      <aside className="w-64 h-screen bg-white border-r border-zinc-200/80 flex flex-col justify-between shrink-0 select-none text-zinc-700 text-sm font-sans z-20 transition-all duration-200">
         {/* Top Header & Logo */}
         <div>
-          <div className="p-4 flex items-center justify-between border-b border-slate-100">
+          <div className="p-4 flex items-center justify-between border-b border-zinc-100">
             <div className="flex items-center gap-3">
-              <div className="size-9 rounded-xl flex items-center justify-center bg-white shadow-md border border-slate-200 overflow-hidden">
+              <div className="size-9 rounded-xl flex items-center justify-center bg-white shadow-md border border-zinc-200 overflow-hidden">
                 <img src="/logo.png" alt="Logo" className="w-full h-full object-contain p-1" />
               </div>
               <div>
-                <h1 className="font-bold text-slate-900 tracking-tight text-base leading-none">
+                <h1 className="font-bold text-zinc-900 tracking-tight text-base leading-none">
                   HAC-KIT Flow
                 </h1>
-                <span className="text-[11px] text-cyan-600 font-semibold">
+                <span className="text-[11px] text-zinc-900 font-semibold">
                   Multi-Agent Canvas
                 </span>
               </div>
@@ -150,7 +150,7 @@ export default function WorkflowSidebar({
 
             <button
               onClick={onToggleCollapse}
-              className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors"
+              className="p-1.5 rounded-lg text-zinc-400 hover:text-zinc-700 hover:bg-zinc-100 transition-colors"
               title="Collapse Sidebar"
             >
               <PanelLeftClose className="size-4" />
@@ -161,13 +161,13 @@ export default function WorkflowSidebar({
           <div className="px-4 pt-4 pb-2">
             <div
               onClick={() => setIsSearchOpen(true)}
-              className="flex items-center justify-between px-3 py-1.5 rounded-lg bg-slate-100/70 border border-slate-200/60 text-slate-400 text-xs hover:bg-slate-100 cursor-pointer transition-colors"
+              className="flex items-center justify-between px-3 py-1.5 rounded-lg bg-zinc-100/70 border border-zinc-200/60 text-zinc-400 text-xs hover:bg-zinc-100 cursor-pointer transition-colors"
             >
               <span className="flex items-center gap-2">
                 <i className="ph ph-magnifying-glass text-sm"></i>
                 Search nodes...
               </span>
-              <kbd className="px-1.5 py-0.5 rounded bg-white text-[10px] font-mono text-slate-500 border border-slate-200 shadow-2xs">
+              <kbd className="px-1.5 py-0.5 rounded bg-white text-[10px] font-mono text-zinc-500 border border-zinc-200 shadow-2xs">
                 ⌘K
               </kbd>
             </div>
@@ -175,7 +175,7 @@ export default function WorkflowSidebar({
 
           {/* Main Menu List */}
           <div className="px-3 pt-3">
-            <span className="px-3 text-[10px] font-bold tracking-wider text-slate-400 uppercase">
+            <span className="px-3 text-[10px] font-bold tracking-wider text-zinc-400 uppercase">
               Main Menu
             </span>
             <nav className="mt-2 space-y-1">
@@ -188,12 +188,12 @@ export default function WorkflowSidebar({
                     onClick={() => handleSelect(item.name)}
                     className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-semibold transition-all duration-150 ${
                       isActive
-                        ? "bg-cyan-500 text-white shadow-md shadow-cyan-500/20"
-                        : "text-slate-600 hover:bg-slate-100/80 hover:text-slate-900"
+                        ? "bg-zinc-900 text-white shadow-md shadow-zinc-900/20"
+                        : "text-zinc-600 hover:bg-zinc-100/80 hover:text-zinc-900"
                     }`}
                   >
                     <div className="flex items-center gap-2.5">
-                      <Icon className={`size-4 ${isActive ? "text-white" : "text-slate-500"}`} />
+                      <Icon className={`size-4 ${isActive ? "text-white" : "text-zinc-500"}`} />
                       <span>{item.name}</span>
                     </div>
                     {isActive && <div className="size-1.5 rounded-full bg-white animate-pulse" />}
@@ -204,45 +204,45 @@ export default function WorkflowSidebar({
           </div>
 
           {/* Sub Groups */}
-          <div className="px-3 pt-4 border-t border-slate-100 mt-4">
-            <div className="space-y-1 text-xs font-medium text-slate-500">
+          <div className="px-3 pt-4 border-t border-zinc-100 mt-4">
+            <div className="space-y-1 text-xs font-medium text-zinc-500">
               <button
                 onClick={() => setIsIntegrationsOpen(true)}
-                className="w-full flex items-center justify-between px-3 py-1.5 rounded-lg hover:bg-slate-100/70 transition-colors text-slate-600"
+                className="w-full flex items-center justify-between px-3 py-1.5 rounded-lg hover:bg-zinc-100/70 transition-colors text-zinc-600"
               >
                 <span>App Components</span>
-                <ChevronRight className="size-3.5 text-slate-400" />
+                <ChevronRight className="size-3.5 text-zinc-400" />
               </button>
               <button
                 onClick={() => setIsControlCenterOpen(true)}
-                className="w-full flex items-center justify-between px-3 py-1.5 rounded-lg hover:bg-slate-100/70 transition-colors text-slate-600"
+                className="w-full flex items-center justify-between px-3 py-1.5 rounded-lg hover:bg-zinc-100/70 transition-colors text-zinc-600"
               >
                 <span>Sync History</span>
-                <ChevronRight className="size-3.5 text-slate-400" />
+                <ChevronRight className="size-3.5 text-zinc-400" />
               </button>
             </div>
           </div>
         </div>
 
         {/* Bottom General & Profile */}
-        <div className="p-3 border-t border-slate-100 space-y-3">
+        <div className="p-3 border-t border-zinc-100 space-y-3">
           <div>
-            <span className="px-3 text-[10px] font-bold tracking-wider text-slate-400 uppercase">
+            <span className="px-3 text-[10px] font-bold tracking-wider text-zinc-400 uppercase">
               General
             </span>
-            <div className="mt-1.5 space-y-0.5 text-xs text-slate-600">
+            <div className="mt-1.5 space-y-0.5 text-xs text-zinc-600">
               <button
                 onClick={() => setIsSettingsOpen(true)}
-                className="w-full flex items-center gap-2.5 px-3 py-1.5 rounded-lg hover:bg-slate-100/70 transition-colors"
+                className="w-full flex items-center gap-2.5 px-3 py-1.5 rounded-lg hover:bg-zinc-100/70 transition-colors"
               >
-                <Settings className="size-4 text-slate-400" />
+                <Settings className="size-4 text-zinc-400" />
                 <span>Settings</span>
               </button>
               <button
                 onClick={() => setIsHelpOpen(true)}
-                className="w-full flex items-center gap-2.5 px-3 py-1.5 rounded-lg hover:bg-slate-100/70 transition-colors"
+                className="w-full flex items-center gap-2.5 px-3 py-1.5 rounded-lg hover:bg-zinc-100/70 transition-colors"
               >
-                <HelpCircle className="size-4 text-slate-400" />
+                <HelpCircle className="size-4 text-zinc-400" />
                 <span>Help Desk</span>
               </button>
               <Link
@@ -258,15 +258,15 @@ export default function WorkflowSidebar({
           {/* User Profile Badge with AMOLED Dark Icon */}
           <div
             onClick={() => setIsProfileOpen(true)}
-            className="p-2.5 rounded-xl bg-slate-50 border border-slate-200/60 flex items-center justify-between cursor-pointer hover:bg-slate-100 transition-colors"
+            className="p-2.5 rounded-xl bg-zinc-50 border border-zinc-200/60 flex items-center justify-between cursor-pointer hover:bg-zinc-100 transition-colors"
           >
             <div className="flex items-center gap-2.5 overflow-hidden">
               <div className="size-8 rounded-lg bg-zinc-950 text-white font-bold flex items-center justify-center text-xs shrink-0 shadow-xs border border-zinc-800">
                 HK
               </div>
               <div className="truncate">
-                <p className="text-xs font-bold text-slate-900 truncate">HAC-KIT Admin</p>
-                <span className="text-[10px] text-cyan-600 font-semibold">System Operator</span>
+                <p className="text-xs font-bold text-zinc-900 truncate">HAC-KIT Admin</p>
+                <span className="text-[10px] text-zinc-900 font-semibold">System Operator</span>
               </div>
             </div>
           </div>
