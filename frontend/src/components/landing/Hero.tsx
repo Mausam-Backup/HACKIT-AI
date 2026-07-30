@@ -1,5 +1,6 @@
 "use client";
 
+import React, { useState, useEffect } from "react";
 import "./hero-styles.css";
 import Aurora from "@/components/ui/Aurora";
 import GlobeWireframe from '@/components/ui/globe-wireframe';
@@ -51,6 +52,16 @@ const connections = [
 ];
 
 export default function Hero() {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  // We removed the blocky skeleton return statement.
+  // The UI will now render immediately, and only the heavy Globe component 
+  // will use a sleek, minimalist wireframe skeleton until mounted.
+
   return (
     <section className="home-hero">
       <Aurora
@@ -61,8 +72,8 @@ export default function Hero() {
       />
 
       <h1 className="hero-title">
-        We Build and <img src="/assets/rocket.png" alt="rocket" className="title-emoji" />
-        Launch Your <br /> Startup MVP in Just <span className="accent">2 Weeks</span>
+        Build and <img src="/assets/rocket.png" alt="rocket" className="title-emoji" />
+        Launch Your <br /> Hackathon Project in Just <span className="accent">48 Hours</span>
       </h1>
 
       <div 
@@ -81,12 +92,18 @@ export default function Hero() {
 
         {/* Globe */}
         <div className="absolute top-0 flex justify-center w-full">
-          <GlobeWireframe 
-            className='w-[450px] h-[450px] z-50 relative' 
-            variant='solid' 
-            locations={locations}
-            connections={connections}
-          />
+          {mounted ? (
+            <div className="animate-in fade-in duration-1000 ease-in-out">
+              <GlobeWireframe 
+                className='w-[450px] h-[450px] z-50 relative' 
+                variant='solid' 
+                locations={locations}
+                connections={connections}
+              />
+            </div>
+          ) : (
+            <div className="w-[450px] h-[450px] rounded-full border-[1px] border-blue-500/10 shadow-[0_0_80px_rgba(59,130,246,0.05)] animate-pulse z-50 relative" />
+          )}
         </div>
       </div>
 
