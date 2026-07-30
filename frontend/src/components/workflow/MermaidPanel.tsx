@@ -118,7 +118,7 @@ export default function MermaidPanel({
   const [svgContent, setSvgContent] = useState<string>("");
   const [aiPrompt, setAiPrompt] = useState("");
   const [copied, setCopied] = useState(false);
-  const [isExpanded, setIsExpanded] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(true);
 
   // Command History State
   const [history, setHistory] = useState<string[]>([
