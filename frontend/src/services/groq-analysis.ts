@@ -108,180 +108,66 @@ export function getMockAnalysis(
   }, 0);
 
   const fullUserText = userMessages.map((m) => m.content || '').join(' ');
-  const lowerText = fullUserText.toLowerCase();
-
-  // Detect filler words count
-  const fillerMatches = lowerText.match(/\b(um|uh|like|you know|basically|so|i guess)\b/g) || [];
-  const fillerCount = fillerMatches.length;
-
-  // Detect negative / dismissive / unprofessional / junk phrasing
-  const negativeMatches = lowerText.match(/\b(sucks|hate|terrible|bad|whatever|idk|dunno|garbage|crap|shit|useless|bro)\b/g) || [];
-  const negativeCount = negativeMatches.length;
-
-  // Count technical terms
-  const techTerms = lowerText.match(/\b(react|node|api|database|sql|system|architecture|function|code|algorithm|async|state|backend|frontend|microservice|cache|redis|postgres|docker|kubernetes|aws|cloud|rest|graphql|design|pattern|optimization|performance|scale|security|auth|latency|queue|kafka)\b/g) || [];
-  const techTermCount = techTerms.length;
-
-  // Count reasoning / problem solving terms
-  const logicTerms = lowerText.match(/\b(because|approach|solution|trade-off|first|then|finally|optimized|therefore|handled|implemented|reduced|increased|improved|scale|benchmark|result)\b/g) || [];
-  const logicTermCount = logicTerms.length;
-
-  // STRICT Dynamic Scoring Logic based on actual response substance:
-  let commScore = 0;
-  let techScore = 0;
-  let probScore = 0;
-  let codeScore = 0;
-
-  if (totalUserWords === 0) {
-    commScore = 0;
-    techScore = 0;
-    probScore = 0;
-    codeScore = 0;
-  } else if (totalUserWords < 15) {
-    // Extremely brief answer (< 15 words)
-    if (negativeCount > 0 || techTermCount === 0) {
-      commScore = negativeCount > 0 ? 0 : 0.20;
-      techScore = techTermCount > 0 ? 0.35 : 0;
-      probScore = logicTermCount > 0 ? 0.35 : 0;
-      codeScore = 0;
-    } else {
-      commScore = 0.35;
-      techScore = 0.35;
-      probScore = 0.35;
-      codeScore = 0;
-    }
-  } else if (totalUserWords < 40) {
-    // Brief answer (15 - 40 words)
-    commScore = negativeCount > 0 ? 0.15 : 0.50;
-    techScore = techTermCount > 0 ? 0.55 : 0.10;
-    probScore = logicTermCount > 0 ? 0.55 : 0.10;
-    codeScore = 0;
-  } else if (totalUserWords < 100) {
-    // Medium answer (40 - 100 words)
-    commScore = negativeCount > 0 ? 0.30 : 0.72;
-    techScore = techTermCount > 0 ? Math.min(0.85, 0.40 + techTermCount * 0.08) : 0.20;
-    probScore = logicTermCount > 0 ? Math.min(0.85, 0.40 + logicTermCount * 0.08) : 0.20;
-    codeScore = (lowerText.includes('code') || lowerText.includes('function')) ? 0.50 : 0.10;
-  } else {
-    // Detailed answer (100+ words)
-    commScore = negativeCount > 0 ? 0.40 : 0.85;
-    techScore = techTermCount > 0 ? Math.min(0.95, 0.55 + techTermCount * 0.06) : 0.30;
-    probScore = logicTermCount > 0 ? Math.min(0.95, 0.55 + logicTermCount * 0.06) : 0.30;
-    codeScore = (lowerText.includes('code') || lowerText.includes('function')) ? 0.75 : 0.20;
-  }
-
-  // Deduct for filler words
-  if (fillerCount > 5) commScore = Math.max(0, commScore - 0.15);
-  else if (fillerCount > 2) commScore = Math.max(0, commScore - 0.08);
-
-  const overall = Math.round(((commScore + techScore + probScore + codeScore) / 4) * 100) / 100;
-
-  // Real quote excerpt
   const sampleUserMsg = userMessages.find((m) => m.content.length > 5)?.content || fullUserText || 'No response recorded.';
   const snippet = sampleUserMsg.length > 90 ? sampleUserMsg.slice(0, 90) + '...' : sampleUserMsg;
 
-  // Build accurate detected issues
+  // Simple proportional baseline if Groq API key is not present
+  const wordRatio = Math.min(1.0, totalUserWords / 120);
+  const commScore = Math.round(wordRatio * 85) / 100;
+  const techScore = Math.round(wordRatio * 80) / 100;
+  const probScore = Math.round(wordRatio * 82) / 100;
+  const codeScore = totalUserWords > 30 ? 0.60 : 0.0;
+
+  const overall = Math.round(((commScore + techScore + probScore + codeScore) / 4) * 100) / 100;
+
   const detected_issues: DetectedIssue[] = [];
-  if (negativeCount > 0) {
-    detected_issues.push({
-      issue_type: 'unprofessional_tone',
-      severity: 'high',
-      description: `Used dismissive/unprofessional phrase ("${negativeMatches.slice(0, 3).join('", "')}")`,
-      count: negativeCount,
-      context: snippet
-    });
-  }
   if (totalUserWords < 20 && totalUserWords > 0) {
     detected_issues.push({
-      issue_type: 'extremely_brief_answer',
-      severity: 'high',
-      description: `Response was extremely brief (${totalUserWords} total words)`,
+      issue_type: 'brief_answer',
+      severity: 'medium',
+      description: `Response duration was brief (${totalUserWords} total words)`,
       count: 1,
       context: snippet
     });
   }
-  if (fillerCount > 0) {
-    detected_issues.push({
-      issue_type: 'filler_words',
-      severity: fillerCount > 4 ? 'medium' : 'low',
-      description: `Used filler phrases ${fillerCount} time(s)`,
-      count: fillerCount,
-      context: snippet
-    });
-  }
-
-  // Construct realistic strengths, weaknesses, summary
-  let summary = '';
-  let strengths: string[] = [];
-  let weaknesses: string[] = [];
-  let recommendations: string[] = [];
-
-  if (totalUserWords < 15 || negativeCount > 0) {
-    summary = `Candidate provided an extremely brief response (${totalUserWords} total words) with negative/unprofessional phrasing ("${snippet}"). Failed to demonstrate technical architecture, engineering depth, or problem-solving reasoning.`;
-    strengths = userMessages.length > 0 ? [`Session initiated (${userMessages.length} turn)`] : [];
-    weaknesses = [
-      `Response was extremely short (${totalUserWords} total words)`,
-      negativeCount > 0 ? `Used unprofessional phrase: "${snippet}"` : 'No technical concepts or system architecture discussed',
-      'Lacks structured STAR format (Situation, Task, Action, Result)'
-    ];
-    recommendations = [
-      'Provide comprehensive technical responses with architectural detail',
-      'Maintain professional executive demeanor and constructive dialogue',
-      'Structure behavioral answers strictly with the STAR framework'
-    ];
-  } else {
-    summary = `Candidate provided ${userMessages.length} response turn(s) (${totalUserWords} total words). Demonstrates basic conversational engagement with room to expand technical depth.`;
-    strengths = [
-      `Active engagement across ${userMessages.length} prompt exchange(s)`,
-      `Spoke ${totalUserWords} total words during technical discussion`,
-      'Maintained conversational response flow'
-    ];
-    weaknesses = [
-      techTermCount < 2 ? 'Lacks specific system architecture trade-offs' : 'Could tighten response conciseness',
-      logicTermCount < 2 ? 'Could articulate step-by-step problem-solving methodology' : 'Could quantify engineering impact metrics'
-    ];
-    recommendations = [
-      'Deep-dive into specific system architecture trade-offs',
-      'Structure behavioral answers using Situation-Task-Action-Result',
-      'Quantify engineering achievements with measurable metrics'
-    ];
-  }
 
   return {
-    overall_score: Math.max(0, Math.min(0.98, overall)),
-    communication_score: Math.max(0, Math.min(0.98, Math.round(commScore * 100) / 100)),
-    technical_score: Math.max(0, Math.min(0.98, Math.round(techScore * 100) / 100)),
-    problem_solving_score: Math.max(0, Math.min(0.98, Math.round(probScore * 100) / 100)),
-    code_quality_score: Math.max(0, Math.min(0.98, Math.round(codeScore * 100) / 100)),
-    summary,
-    detailed_feedback: `Evaluated ${userMessages.length} candidate turn(s). Response length: ${totalUserWords} words. Technical terms: ${techTermCount}. Quote: "${snippet}"`,
-    strengths,
-    weaknesses,
-    recommendations,
+    overall_score: overall,
+    communication_score: commScore,
+    technical_score: techScore,
+    problem_solving_score: probScore,
+    code_quality_score: codeScore,
+    summary: totalUserWords > 0 
+      ? `Candidate provided ${userMessages.length} turn(s) (${totalUserWords} total words): "${snippet}"` 
+      : 'No response transcript recorded.',
+    detailed_feedback: `Evaluated ${userMessages.length} candidate turn(s) across total transcript volume of ${totalUserWords} words.`,
+    strengths: userMessages.length > 0 ? [`Completed ${userMessages.length} response turn(s)`] : [],
+    weaknesses: totalUserWords < 40 ? ['Expand response length and technical detail'] : [],
+    recommendations: ['Elaborate on system design trade-offs and STAR framework examples'],
     detected_issues,
     skill_breakdown: {
       communication: {
-        score: Math.round(commScore * 100) / 100,
-        strengths: commScore > 0.5 ? ['Conversational flow'] : [],
-        weaknesses: commScore <= 0.5 ? ['Extremely brief response', 'Unprofessional tone'] : ['Cadence variance'],
-        recommendations: ['Maintain professional tone and elaborate on answers']
+        score: commScore,
+        strengths: commScore > 0.5 ? ['Conversational engagement'] : [],
+        weaknesses: commScore <= 0.5 ? ['Brief response length'] : [],
+        recommendations: ['Elaborate further on verbal answers']
       },
       technical: {
-        score: Math.round(techScore * 100) / 100,
-        strengths: techScore > 0.5 ? ['Domain concepts mentioned'] : [],
-        weaknesses: techScore <= 0.5 ? ['No system architecture or technical depth provided'] : ['Elaborate on trade-offs'],
-        recommendations: ['Explain system design principles and technical choices']
+        score: techScore,
+        strengths: techScore > 0.5 ? ['Technical discussion'] : [],
+        weaknesses: techScore <= 0.5 ? ['Expand system architecture details'] : [],
+        recommendations: ['Discuss architecture trade-offs']
       },
       problem_solving: {
-        score: Math.round(probScore * 100) / 100,
-        strengths: probScore > 0.5 ? ['Logical reasoning'] : [],
-        weaknesses: probScore <= 0.5 ? ['No problem-solving methodology shown'] : ['Ask clarifying questions'],
-        recommendations: ['Break down problems step-by-step']
+        score: probScore,
+        strengths: probScore > 0.5 ? ['Problem solving steps'] : [],
+        weaknesses: probScore <= 0.5 ? ['Provide step-by-step methodology'] : [],
+        recommendations: ['Structure answers with STAR framework']
       },
       code_quality: {
-        score: Math.round(codeScore * 100) / 100,
-        strengths: codeScore > 0.5 ? ['Clean structure'] : [],
-        weaknesses: codeScore <= 0.5 ? ['No code or algorithm logic submitted'] : ['Edge cases'],
+        score: codeScore,
+        strengths: codeScore > 0.5 ? ['Code concepts'] : [],
+        weaknesses: codeScore <= 0.5 ? ['Provide code implementation'] : [],
         recommendations: ['Provide algorithmic solutions']
       }
     }
