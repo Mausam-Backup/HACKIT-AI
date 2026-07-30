@@ -288,8 +288,12 @@ export default function WorkflowCanvas({
             </button>
           )}
           <div>
-            <h2 className="text-base font-bold text-slate-900 tracking-tight flex items-center gap-2">
-              <span>Hi, Hackathon Builder! 👋</span>
+            <h2 className="text-sm font-bold text-slate-900 tracking-tight flex items-center gap-2">
+              <span>Canvas Workspace</span>
+              <span className="px-1.5 py-0.5 rounded flex items-center gap-1 bg-red-50 text-red-600 text-[9px] font-bold uppercase tracking-wider border border-red-100">
+                <span className="size-1.5 rounded-full bg-red-500 animate-pulse" />
+                Experimental
+              </span>
               {isAiGenerating && (
                 <span className="px-2 py-0.5 rounded-full bg-cyan-100 text-cyan-800 text-[10px] font-bold flex items-center gap-1 animate-pulse">
                   <RefreshCw className="size-3 animate-spin" />
