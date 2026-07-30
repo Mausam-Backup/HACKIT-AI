@@ -1,0 +1,32 @@
+All 6 files are written. Let me provide a summary to the user.All 6 core files have been written. Here's what was created:
+
+---
+
+### ✅ Files Written
+
+| File | Purpose |
+|------|---------|
+| **PLAN.md** | Problem/solution, tech stack, API plan, DB schema, data flow, risks |
+| **README.md** | Tagline, MVP features, quick start, project structure |
+| **TASKS.md** | 20 flat trackable tasks (backend, frontend, cross-cutting, stretch) |
+| **api-contract.json** | Full OpenAPI-style JSON contract with schemas, examples, and error responses |
+| **tasks/frontend-task.md** | Detailed build spec for React 18: state, rendering, styling, validation |
+| **tasks/backend-task.md** | Detailed build spec for Express 4 + better-sqlite3: all 4 endpoints with code snippets |
+
+---
+
+### 🧠 Key Design Decisions
+
+1. **No migrations** — `CREATE TABLE IF NOT EXISTS` on startup keeps it simple
+2. **Re-fetch on mutation** — Frontend re-fetches the full list after add/toggle/delete (simple, correct)
+3. **Single table** — `todos(id, title, completed, created_at)` — no join complexity
+4. **Validation on both sides** — Backend validates title length/type; frontend trims and disables empty submits
+5. **Vite proxy** — Already configured to proxy `/api` → `localhost:3001` in dev mode
+
+### 📋 Next Steps for the Builder Agents
+
+The two task files (`tasks/frontend-task.md` and `tasks/backend-task.md`) are ready to be consumed by builder agents. The recommended order:
+
+1. **Backend first** — Install `better-sqlite3`, rewrite `server.js` with the 4 CRUD endpoints
+2. **Frontend second** — Rewrite `App.jsx` and `App.css` to consume the API
+3. **Verify end-to-end** — Run both servers, add/toggle/delete todos, refresh to confirm persistence

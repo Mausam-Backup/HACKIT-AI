@@ -1,0 +1,141 @@
+{
+  "idea": "help me build  todolist\n\n[TECH STACK REQUIRED: Vanilla HTML + JS + CSS]",
+  "all_tasks": [
+    {
+      "task": "`backend/package.json` \u2014 Add `better-sqlite3` dependency",
+      "done": false
+    },
+    {
+      "task": "`backend/server.js` \u2014 Require and initialize better-sqlite3, create `data/` directory",
+      "done": false
+    },
+    {
+      "task": "`backend/server.js` \u2014 Create `todos` table via `CREATE TABLE IF NOT EXISTS` on startup",
+      "done": false
+    },
+    {
+      "task": "`backend/server.js` \u2014 Implement `GET /api/todos` \u2014 return all todos, optional ?completed filter",
+      "done": false
+    },
+    {
+      "task": "`backend/server.js` \u2014 Implement `POST /api/todos` \u2014 accept `{ title }`, insert row, return 201 + new todo",
+      "done": false
+    },
+    {
+      "task": "`backend/server.js` \u2014 Implement `PATCH /api/todos/:id` \u2014 toggle `completed` or update `title`, return updated todo",
+      "done": false
+    },
+    {
+      "task": "`backend/server.js` \u2014 Implement `DELETE /api/todos/:id` \u2014 delete row, return 204",
+      "done": false
+    },
+    {
+      "task": "`backend/server.js` \u2014 Add input validation (title required, non-empty string, max 200 chars)",
+      "done": false
+    },
+    {
+      "task": "`backend/server.js` \u2014 Remove old `/api/data` and `/api/health` sample endpoints (or keep health)",
+      "done": false
+    },
+    {
+      "task": "`frontend/src/App.jsx` \u2014 Replace boilerplate with Todo List app",
+      "done": false
+    },
+    {
+      "task": "`frontend/src/App.jsx` \u2014 Add `useState` for `todos` array, `newTodo` text, `loading` flag",
+      "done": false
+    },
+    {
+      "task": "`frontend/src/App.jsx` \u2014 `useEffect` to `GET /api/todos` on mount",
+      "done": false
+    },
+    {
+      "task": "`frontend/src/App.jsx` \u2014 Render todo items: checkbox (completed), title text, delete button",
+      "done": false
+    },
+    {
+      "task": "`frontend/src/App.jsx` \u2014 Add todo form: text input + \"Add\" button, calls `POST /api/todos`",
+      "done": false
+    },
+    {
+      "task": "`frontend/src/App.jsx` \u2014 Toggle completion: `PATCH /api/todos/:id` with `{ completed: !current }`",
+      "done": false
+    },
+    {
+      "task": "`frontend/src/App.jsx` \u2014 Delete todo: `DELETE /api/todos/:id`, remove from local state",
+      "done": false
+    },
+    {
+      "task": "`frontend/src/App.jsx` \u2014 Loading spinner / \"No todos yet\" empty state",
+      "done": false
+    },
+    {
+      "task": "`frontend/src/App.css` \u2014 Style everything: clean, minimal, mobile-friendly",
+      "done": false
+    },
+    {
+      "task": "`frontend/index.html` \u2014 Update `<title>` to \"Todo List\"",
+      "done": false
+    },
+    {
+      "task": "Backend + frontend communicate correctly via proxy (`/api` \u2192 `localhost:3001`)",
+      "done": false
+    },
+    {
+      "task": "App works end-to-end: add \u2192 see in list \u2192 toggle \u2192 delete \u2192 refresh persists",
+      "done": false
+    },
+    {
+      "task": "Inline edit todo title (double-click to edit)",
+      "done": false
+    },
+    {
+      "task": "Filter tabs: All / Active / Completed",
+      "done": false
+    },
+    {
+      "task": "Search input to filter by title text",
+      "done": false
+    },
+    {
+      "task": "Due date with `<input type=\"date\">`",
+      "done": false
+    },
+    {
+      "task": "Keyboard shortcut: Enter to add, Escape to blur",
+      "done": false
+    }
+  ],
+  "completed": [],
+  "remaining": [
+    "`backend/package.json` \u2014 Add `better-sqlite3` dependency",
+    "`backend/server.js` \u2014 Require and initialize better-sqlite3, create `data/` directory",
+    "`backend/server.js` \u2014 Create `todos` table via `CREATE TABLE IF NOT EXISTS` on startup",
+    "`backend/server.js` \u2014 Implement `GET /api/todos` \u2014 return all todos, optional ?completed filter",
+    "`backend/server.js` \u2014 Implement `POST /api/todos` \u2014 accept `{ title }`, insert row, return 201 + new todo",
+    "`backend/server.js` \u2014 Implement `PATCH /api/todos/:id` \u2014 toggle `completed` or update `title`, return updated todo",
+    "`backend/server.js` \u2014 Implement `DELETE /api/todos/:id` \u2014 delete row, return 204",
+    "`backend/server.js` \u2014 Add input validation (title required, non-empty string, max 200 chars)",
+    "`backend/server.js` \u2014 Remove old `/api/data` and `/api/health` sample endpoints (or keep health)",
+    "`frontend/src/App.jsx` \u2014 Replace boilerplate with Todo List app",
+    "`frontend/src/App.jsx` \u2014 Add `useState` for `todos` array, `newTodo` text, `loading` flag",
+    "`frontend/src/App.jsx` \u2014 `useEffect` to `GET /api/todos` on mount",
+    "`frontend/src/App.jsx` \u2014 Render todo items: checkbox (completed), title text, delete button",
+    "`frontend/src/App.jsx` \u2014 Add todo form: text input + \"Add\" button, calls `POST /api/todos`",
+    "`frontend/src/App.jsx` \u2014 Toggle completion: `PATCH /api/todos/:id` with `{ completed: !current }`",
+    "`frontend/src/App.jsx` \u2014 Delete todo: `DELETE /api/todos/:id`, remove from local state",
+    "`frontend/src/App.jsx` \u2014 Loading spinner / \"No todos yet\" empty state",
+    "`frontend/src/App.css` \u2014 Style everything: clean, minimal, mobile-friendly",
+    "`frontend/index.html` \u2014 Update `<title>` to \"Todo List\"",
+    "Backend + frontend communicate correctly via proxy (`/api` \u2192 `localhost:3001`)",
+    "App works end-to-end: add \u2192 see in list \u2192 toggle \u2192 delete \u2192 refresh persists",
+    "Inline edit todo title (double-click to edit)",
+    "Filter tabs: All / Active / Completed",
+    "Search input to filter by title text",
+    "Due date with `<input type=\"date\">`",
+    "Keyboard shortcut: Enter to add, Escape to blur"
+  ],
+  "risks": [],
+  "status": "planned",
+  "progress_pct": 0
+}

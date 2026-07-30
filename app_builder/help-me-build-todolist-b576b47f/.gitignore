@@ -1,0 +1,7 @@
+node_modules/
+.opencode/_prompt_*
+dist/
+.env
+.env.*
+*.tsbuildinfo
+data/*.db
