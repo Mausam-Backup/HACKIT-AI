@@ -55,6 +55,10 @@ export default function FloatingNav() {
             <i className="ph ph-chalkboard-teacher text-lg"></i>
             <span className="text-sm font-semibold tracking-wide whitespace-nowrap">AI Coach</span>
           </a>
+          <a href="/workflow" className="group flex items-center gap-1.5 text-black/60 hover:text-black transition-colors">
+            <i className="ph ph-git-fork text-lg"></i>
+            <span className="text-sm font-semibold tracking-wide whitespace-nowrap">AI Workflow</span>
+          </a>
           <a href="/dashboard" className="group flex items-center gap-1.5 text-black/60 hover:text-black transition-colors">
             <i className="ph ph-presentation-chart text-lg"></i>
             <span className="text-sm font-semibold tracking-wide whitespace-nowrap">Presentations</span>
