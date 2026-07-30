@@ -18,6 +18,11 @@ export default function ExecutionLogsDrawer({
 }: ExecutionLogsDrawerProps) {
   const [copied, setCopied] = useState(false);
   const [filter, setFilter] = useState("all");
+  
+  // Dragging state
+  const [offset, setOffset] = useState({ x: 0, y: 0 });
+  const [isDragging, setIsDragging] = useState(false);
+  const dragStart = React.useRef({ mouseX: 0, mouseY: 0, startX: 0, startY: 0 });
 
   if (!isOpen) return null;
 
@@ -27,11 +32,50 @@ export default function ExecutionLogsDrawer({
     setTimeout(() => setCopied(false), 2000);
   };
 
+  const handlePointerDown = (e: React.PointerEvent) => {
+    // Only initiate drag if clicking the header itself (not the buttons)
+    if ((e.target as HTMLElement).closest("button")) return;
+    
+    setIsDragging(true);
+    dragStart.current = {
+      mouseX: e.clientX,
+      mouseY: e.clientY,
+      startX: offset.x,
+      startY: offset.y,
+    };
+    (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
+  };
+
+  const handlePointerMove = (e: React.PointerEvent) => {
+    if (!isDragging) return;
+    const dx = e.clientX - dragStart.current.mouseX;
+    const dy = e.clientY - dragStart.current.mouseY;
+    setOffset({
+      x: dragStart.current.startX + dx,
+      y: dragStart.current.startY + dy,
+    });
+  };
+
+  const handlePointerUp = (e: React.PointerEvent) => {
+    if (isDragging) {
+      setIsDragging(false);
+      (e.currentTarget as HTMLElement).releasePointerCapture(e.pointerId);
+    }
+  };
+
   return (
-    <div className="absolute left-6 bottom-20 z-40 w-[480px] bg-white text-slate-800 rounded-2xl shadow-2xl border border-slate-200 overflow-hidden font-mono text-xs animate-in fade-in slide-in-from-bottom-4 duration-200 select-none">
-      {/* Console Header */}
-      <div className="px-4 py-3 bg-slate-50 border-b border-slate-200 flex items-center justify-between font-sans">
-        <div className="flex items-center gap-2">
+    <div 
+      className={`absolute left-6 bottom-20 z-40 w-[480px] bg-white text-slate-800 rounded-2xl border border-slate-200 overflow-hidden font-mono text-xs select-none transition-shadow ${isDragging ? "shadow-2xl shadow-slate-900/10 ring-2 ring-cyan-400/30" : "shadow-xl shadow-slate-900/5 animate-in fade-in slide-in-from-bottom-4 duration-200"}`}
+      style={{ transform: `translate(${offset.x}px, ${offset.y}px)` }}
+    >
+      {/* Console Header (Drag Handle) */}
+      <div 
+        className={`px-4 py-3 bg-slate-50 border-b border-slate-200 flex items-center justify-between font-sans ${isDragging ? "cursor-grabbing" : "cursor-grab"}`}
+        onPointerDown={handlePointerDown}
+        onPointerMove={handlePointerMove}
+        onPointerUp={handlePointerUp}
+      >
+        <div className="flex items-center gap-2 pointer-events-none">
           <div className="p-1 rounded-lg bg-emerald-100 text-emerald-700">
             <Terminal className="size-4" />
           </div>
