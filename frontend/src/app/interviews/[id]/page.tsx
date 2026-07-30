@@ -43,6 +43,7 @@ export default function ActiveInterviewPage() {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [analysisData, setAnalysisData] = useState<InterviewAnalysis | null>(null);
   const [elapsed, setElapsed] = useState(0);
+  const [transcriptHistory, setTranscriptHistory] = useState<Array<{ role: string; content: string }>>([]);
 
   const {
     isCallActive,
@@ -74,10 +75,11 @@ export default function ActiveInterviewPage() {
 
     try {
       const history = vapiMessages.map((m: any) => ({
-        role: m.role || 'user',
+        role: m.role || (m.source === 'user' ? 'user' : 'assistant'),
         content: m.transcript || m.content || m.message || ''
-      }));
+      })).filter((m: any) => Boolean(m.content));
 
+      setTranscriptHistory(history);
       const result = await analyzeInterview(history, `Practice Session #${interviewId}`);
       setAnalysisData(result);
       setShowFeedback(true);
@@ -96,9 +98,11 @@ export default function ActiveInterviewPage() {
       <div className="h-screen w-screen overflow-hidden bg-white">
         <DemoFeedback
           analysis={analysisData}
+          history={transcriptHistory}
           onRestart={() => {
             setShowFeedback(false);
             setAnalysisData(null);
+            setTranscriptHistory([]);
           }}
         />
       </div>
@@ -169,7 +173,7 @@ export default function ActiveInterviewPage() {
 
           {!isCallActive ? (
             <button
-              onClick={startCall}
+              onClick={() => startCall()}
               className="h-8 px-4 rounded-xl bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white font-bold text-xs shadow-[0_0_20px_rgba(139,92,246,0.35)] hover:shadow-[0_0_28px_rgba(139,92,246,0.5)] transition-all flex items-center gap-1.5"
             >
               <Play className="w-3 h-3 fill-current" />
