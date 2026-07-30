@@ -105,10 +105,7 @@ export default function Hero() {
             <div className="w-[450px] h-[450px] rounded-full border-[1px] border-blue-500/10 shadow-[0_0_80px_rgba(59,130,246,0.05)] animate-pulse z-50 relative" />
           )}
         </div>
-      </div>
-
-
-      {/* CURVED LINES (SVG) */}
+      </div>      {/* CURVED LINES (SVG) */}
       <div className="hero-lines">
         <div className="line-group left-outer">
           <img src="/assets/Vector 2681.png" alt="Left Outer Line" className="line" />
@@ -130,7 +127,6 @@ export default function Hero() {
           <img src="/assets/monitor.png" alt="monitor" className="icon-card" />
         </div>
       </div>
-
       {/* brands row */}
       <div className="brands-row">
         <span>Trusted by Founders from</span>

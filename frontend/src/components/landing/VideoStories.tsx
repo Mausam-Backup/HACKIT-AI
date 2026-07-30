@@ -44,10 +44,9 @@ export default function VideoStories() {
   return (
     <section ref={containerRef} className="video-stories" id="our-team" aria-labelledby="video-stories-title">
       <div className="video-stories__header">
-        <h2 id="video-stories-title">Hackathon stories from teams that shipped with HAC-KIT AI.</h2>
+        <h2 id="video-stories-title">The Ultimate Multi-Agent Hackathon Winning Kit</h2>
         <p>
-          Short field notes from captains, builders, and pitchers who used AI agents to move from
-          problem statement to working demo — and made it to the finals.
+          Everything you need to ideate, build, and pitch your hackathon project. Leverage specialized AI agents for coaching, coding, and presentations to secure your spot on the podium.
         </p>
       </div>
 
@@ -57,9 +56,9 @@ export default function VideoStories() {
             <source src="/resources and hacakthons.mp4" type="video/mp4" />
           </video>
           <div className="story-card__content">
-            <p>Problem to Prototype</p>
-            <h3>How a first-time team went from blank page to working MVP in under 12 hours.</h3>
-            <span>Health hackathon · 04:20</span>
+            <p>Global Hackathon Neural Network</p>
+            <h3>Access an enterprise-grade curated pipeline of tier-1 hackathons, integrated directly into your workflow with zero-friction onboarding.</h3>
+            <span>Discovery · Always Updated</span>
           </div>
         </article>
 
@@ -68,9 +67,9 @@ export default function VideoStories() {
             <source src="/ai-interview-demo.mp4" type="video/mp4" />
           </video>
           <div className="story-card__content">
-            <p>Pitch Coaching</p>
-            <h3>The agent that turned a messy build log into a winning 3-minute pitch narrative.</h3>
-            <span>Fintech hackathon · 03:45</span>
+            <p>Predictive Pitch Engine</p>
+            <h3>Real-time NLP analysis and adversarial interview simulations powered by our proprietary conversational AI to perfect your narrative.</h3>
+            <span>Pitch Prep · Real-time Feedback</span>
           </div>
         </article>
 
@@ -79,9 +78,9 @@ export default function VideoStories() {
             <source src="/IDE.mp4" type="video/mp4" />
           </video>
           <div className="story-card__content">
-            <p>Multi-Agent Architecture</p>
-            <h3>Three AI agents collaborating in real-time to ship a full-stack app in 24 hours.</h3>
-            <span>AI hackathon · 05:10</span>
+            <p>Enterprise-Grade AI CLI</p>
+            <h3>Powered by our custom fine-tuned 8-billion parameter foundation model running completely locally on-device. Zero-latency context switching entirely independent of third-party APIs.</h3>
+            <span>Development · Local LLM</span>
           </div>
         </article>
 
@@ -90,9 +89,9 @@ export default function VideoStories() {
             <source src="/hack-coach-demo.mp4" type="video/mp4" />
           </video>
           <div className="story-card__content">
-            <p>Strategy First</p>
-            <h3>How problem analysis and task decomposition gave one team a 2-hour head start.</h3>
-            <span>Sustainability track · 04:55</span>
+            <p>Autonomous Strategic Orchestrator</p>
+            <h3>Leverage our fine-tuned reasoning models for dynamic task decomposition, deterministic problem analysis, and 24/7 strategic guidance.</h3>
+            <span>Strategy · 24/7 Guidance</span>
           </div>
         </article>
 
@@ -101,9 +100,9 @@ export default function VideoStories() {
             <source src="/ppt-demo.mp4" type="video/mp4" />
           </video>
           <div className="story-card__content">
-            <p>From Zero to Podium</p>
-            <h3>A solo developer with no team — and how HAC-KIT AI became their co-founder.</h3>
-            <span>Open category · 03:30</span>
+            <p>Generative Pitch Deck Synthesizer</p>
+            <h3>Instantly compile multi-modal code representations into stunning, investor-ready presentations with our advanced automated design engine.</h3>
+            <span>Pitch Deck · Automated</span>
           </div>
         </article>
       </div>

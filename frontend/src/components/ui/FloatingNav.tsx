@@ -1,12 +1,37 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 export default function FloatingNav() {
   const [isHovered, setIsHovered] = useState(false);
+  const [isHidden, setIsHidden] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const section = document.querySelector('.video-stories');
+      if (section) {
+        // GSAP might wrap the pinned section in a pin-spacer
+        const pinSpacer = section.closest('.pin-spacer') || section;
+        const rect = pinSpacer.getBoundingClientRect();
+        
+        // Hide the navbar if the video-stories section is currently overlapping the top area
+        if (rect.top <= 150 && rect.bottom >= 150) {
+          setIsHidden(true);
+        } else {
+          setIsHidden(false);
+        }
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    // Initial check
+    handleScroll();
+
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   return (
-    <div className="fixed top-8 left-1/2 -translate-x-1/2 z-[100] w-[95vw] max-w-fit">
+    <div className={`fixed left-1/2 -translate-x-1/2 z-[100] w-[95vw] max-w-fit transition-all duration-500 ease-in-out ${isHidden ? '-top-32 opacity-0 pointer-events-none' : 'top-8 opacity-100'}`}>
       <div 
         className="flex items-center justify-between rounded-full border border-black/5 shadow-2xl transition-all duration-500 ease-out overflow-x-auto no-scrollbar text-black w-full bg-white"
         style={{

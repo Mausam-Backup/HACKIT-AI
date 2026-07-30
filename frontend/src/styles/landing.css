@@ -1266,15 +1266,15 @@
   position: relative;
   z-index: 90;
   min-height: 100vh;
-  padding: clamp(46px, 5vw, 88px) 0 clamp(44px, 4vw, 74px);
+  padding: clamp(140px, 12vw, 180px) 0 clamp(44px, 4vw, 74px);
   overflow: hidden;
   background: #f7f8f8;
   color: #111111;
 }
 
-.video-stories__header { width: min(100% - 96px, 900px); margin: 0 auto clamp(38px, 4vw, 74px); }
+.video-stories__header { width: min(100% - 96px, 1400px); margin: 0 auto clamp(38px, 4vw, 74px); }
 .video-stories__header h2 { margin: 0; color: #111111; font-size: clamp(38px, 4.4vw, 76px); font-weight: 300; letter-spacing: 0; line-height: 1.08; }
-.video-stories__header p { max-width: 720px; margin: 22px 0 0; color: #697272; font-size: clamp(16px, 1.25vw, 21px); font-weight: 420; line-height: 1.55; }
+.video-stories__header p { max-width: none; margin: 22px 0 0; color: #697272; font-size: clamp(16px, 1.25vw, 21px); font-weight: 420; line-height: 1.55; }
 
 .video-stories__rail {
   display: grid;
@@ -1316,19 +1316,19 @@
 .story-card__content h3 { max-width: 680px; margin: 0; color: #252b2b; font-size: clamp(18px, 1.22vw, 24px); font-weight: 520; letter-spacing: 0; line-height: 1.38; }
 .story-card__content span { display: block; margin-top: 14px; color: #858d8d; font-size: 14px; line-height: 1.4; }
 
-.video-stories__footer { display: flex; align-items: center; gap: 8px; width: min(100% - 96px, 900px); margin: 28px auto 0; }
+.video-stories__footer { display: flex; align-items: center; gap: 8px; width: min(100% - 96px, 1400px); margin: 28px auto 0; }
 .video-stories__footer span { display: block; width: 56px; height: 4px; border-radius: 999px; background: #cfd4d4; }
 .video-stories__footer span:nth-child(3) { width: 320px; background: #111111; }
 .video-stories__footer strong { margin-left: 18px; color: #7a8282; font-size: 14px; font-weight: 650; letter-spacing: 0.02em; }
 
 @media (max-width: 860px) {
-  .video-stories__header, .video-stories__footer { width: min(100% - 48px, 900px); }
+  .video-stories__header, .video-stories__footer { width: min(100% - 48px, 1400px); }
   .video-stories__rail { grid-auto-columns: minmax(320px, 82vw); padding: 0 24px 30px; }
   .story-card { opacity: 1; transform: none; }
 }
 
 @media (max-width: 560px) {
-  .video-stories__header, .video-stories__footer { width: min(100% - 32px, 900px); }
+  .video-stories__header, .video-stories__footer { width: min(100% - 32px, 1400px); }
   .story-card__content { padding: 18px 4px 0; }
   .video-stories__footer span:nth-child(3) { width: 150px; }
 }
