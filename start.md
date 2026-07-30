@@ -75,6 +75,22 @@ _The backend API will now be active at `http://localhost:8000`_
 
 ---
 
+## 4. Start the App Builder CLI (Optional)
+
+The App Builder CLI runs independently and allows you to generate code architectures and multi-agent systems from your terminal.
+
+Open a **third** terminal and run:
+
+```powershell
+cd app_builder
+pip install -r requirements-runtime.txt
+python tui.py
+```
+
+_The interactive Hackit App Builder TUI will launch in your terminal!_
+
+---
+
 ## How It Works Under the Hood
 
 1. **The Client (Frontend):** You interact with the Next.js frontend on `http://localhost:3000`. This provides the beautiful UI, drag-and-drop slide editors, and dashboard.

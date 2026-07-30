@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app-builder
+  labels:
+    app: hackit
+    component: app-builder
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hackit
+      component: app-builder
+  template:
+    metadata:
+      labels:
+        app: hackit
+        component: app-builder
+    spec:
+      containers:
+      - name: app-builder
+        image: hackit-app-builder:latest
+        ports:
+        - containerPort: 4097
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: app-builder-service
+spec:
+  type: LoadBalancer
+  selector:
+    app: hackit
+    component: app-builder
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 4097

@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      - ENV=development
+    volumes:
+      - ./backend:/app
+    networks:
+      - hackit-net
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_API_URL=http://backend:8000
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    depends_on:
+      - backend
+    networks:
+      - hackit-net
+
+  app-builder:
+    build:
+      context: ./app_builder
+      dockerfile: Dockerfile
+    ports:
+      - "4097:4097"
+    volumes:
+      - ./app_builder:/app
+    networks:
+      - hackit-net
+
+networks:
+  hackit-net:
+    driver: bridge
