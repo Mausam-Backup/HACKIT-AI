@@ -21,6 +21,9 @@ import {
   Terminal as CodeIcon,
   ZoomIn,
   ZoomOut,
+  RefreshCw,
+  History,
+  Lightbulb,
 } from "lucide-react";
 
 mermaid.initialize({
@@ -81,22 +84,48 @@ const TEMPLATES: Record<string, { label: string; code: string }> = {
   },
 };
 
+const EXAMPLE_PROMPTS = [
+  "🩺 Healthcare AI: OCR Medical Records -> Mem0 Memory -> FastAPI -> Pitch Deck",
+  "⚡ Fintech Fraud: SSE Stream -> LiteParse Transaction Logs -> FastMCP Server",
+  "🎓 EdTech Tutor: Speech-to-Text -> LLM Quiz Generator -> 5-Slide Presentation",
+  "🛡️ Cyber Swarm: Threat Log Parsing -> Express 2FA -> Multi-Agent Router",
+  "🚀 SaaS Pitch: Raw PDF Spec -> Groq 70B -> Interactive Canvas & PPT Export",
+];
+
 interface MermaidPanelProps {
+  mermaidCode?: string;
+  setMermaidCode?: (code: string) => void;
   isCollapsed?: boolean;
   onToggleCollapse?: () => void;
+  onGenerateAi?: (prompt: string) => void;
+  isAiGenerating?: boolean;
 }
 
 export default function MermaidPanel({
+  mermaidCode: externalCode,
+  setMermaidCode: setExternalCode,
   isCollapsed = false,
   onToggleCollapse,
+  onGenerateAi,
+  isAiGenerating = false,
 }: MermaidPanelProps) {
   const [activeTemplate, setActiveTemplate] = useState("swarm");
-  const [mermaidCode, setMermaidCode] = useState(TEMPLATES["swarm"].code);
+  const [internalCode, setInternalCode] = useState(TEMPLATES["swarm"].code);
+
+  const mermaidCode = externalCode !== undefined ? externalCode : internalCode;
+  const setMermaidCode = setExternalCode || setInternalCode;
+
   const [svgContent, setSvgContent] = useState<string>("");
   const [aiPrompt, setAiPrompt] = useState("");
-  const [isGenerating, setIsGenerating] = useState(false);
   const [copied, setCopied] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
+
+  // Command History State
+  const [history, setHistory] = useState<string[]>([
+    "Build a healthcare AI assistant hackathon project with OCR and Mem0",
+    "Create a real-time fintech fraud detector SSE pipeline",
+  ]);
+  const [showHistoryDropdown, setShowHistoryDropdown] = useState(false);
 
   // View Mode: 'split' | 'diagram' | 'code'
   const [viewMode, setViewMode] = useState<"split" | "diagram" | "code">("split");
@@ -129,21 +158,24 @@ export default function MermaidPanel({
     setMermaidCode(TEMPLATES[key].code);
   };
 
-  const handleAiGenerate = () => {
+  const handleAiGenerate = (e: React.FormEvent) => {
+    e.preventDefault();
     if (!aiPrompt.trim()) return;
-    setIsGenerating(true);
-
-    setTimeout(() => {
-      const generatedCode = `graph TD
-    Input([Prompt: ${aiPrompt}]) --> Agent[HAC-KIT Agent]
-    Agent -->|Execute| FastMCP[FastMCP Context Server]
-    FastMCP --> Mem0[(Mem0 Store)]
-    Mem0 --> Result([Generated Pipeline Output])`;
-
-      setMermaidCode(generatedCode);
+    if (onGenerateAi) {
+      onGenerateAi(aiPrompt);
+      setHistory((prev) => [aiPrompt, ...prev.filter((h) => h !== aiPrompt)].slice(0, 10));
       setAiPrompt("");
-      setIsGenerating(false);
-    }, 800);
+      setShowHistoryDropdown(false);
+    }
+  };
+
+  const handleRunExamplePrompt = (promptText: string) => {
+    setAiPrompt(promptText);
+    if (onGenerateAi) {
+      onGenerateAi(promptText);
+      setHistory((prev) => [promptText, ...prev.filter((h) => h !== promptText)].slice(0, 10));
+      setShowHistoryDropdown(false);
+    }
   };
 
   const handleCopy = () => {
@@ -218,13 +250,13 @@ export default function MermaidPanel({
 
   if (isCollapsed) {
     return (
-      <aside className="w-12 h-screen bg-white border-l border-slate-200 flex flex-col items-center py-4 justify-between shrink-0 z-20 select-none">
+      <aside className="w-12 h-screen bg-white border-l border-slate-200 flex flex-col items-center justify-center shrink-0 z-20 select-none">
         <button
           onClick={onToggleCollapse}
-          className="p-2 rounded-xl text-slate-500 hover:bg-slate-100 transition-colors"
+          className="p-2.5 rounded-xl text-slate-400 hover:text-cyan-600 hover:bg-slate-100 transition-colors"
           title="Expand Mermaid Studio"
         >
-          <PanelRightOpen className="size-5 text-cyan-600" />
+          <PanelRightOpen className="size-4 text-cyan-600" />
         </button>
       </aside>
     );
@@ -233,7 +265,7 @@ export default function MermaidPanel({
   return (
     <aside
       className={`${
-        isExpanded ? "w-[600px]" : "w-[420px]"
+        isExpanded ? "w-[520px]" : "w-[360px]"
       } h-screen bg-white border-l border-slate-200 flex flex-col shrink-0 transition-all duration-300 z-20 select-none overflow-hidden`}
     >
       {/* Top Header */}
@@ -243,9 +275,14 @@ export default function MermaidPanel({
             <Wand2 className="size-4" />
           </div>
           <div>
-            <h3 className="text-xs font-bold text-slate-900">Mermaid AI Studio</h3>
+            <h3 className="text-xs font-bold text-slate-900 flex items-center gap-1.5 flex-wrap">
+              <span>Mermaid AI Studio</span>
+              <span className="inline-flex items-center px-1.5 py-0.5 rounded bg-cyan-100 text-cyan-800 font-mono text-[9px] uppercase font-bold whitespace-nowrap leading-none">
+                GROQ 70B&nbsp;LIVE
+              </span>
+            </h3>
             <span className="text-[10px] text-cyan-600 font-semibold">
-              Live Code & Export Engine
+              LLM Flowchart &amp; Canvas Synthesizer
             </span>
           </div>
         </div>
@@ -289,7 +326,7 @@ export default function MermaidPanel({
       {/* Preset Templates */}
       <div className="p-2.5 border-b border-slate-100 bg-slate-50/50 shrink-0">
         <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1.5">
-          Preset Architecture Flowcharts
+          Preset Architecture Flowcharts (Fallback)
         </span>
         <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-1">
           {Object.entries(TEMPLATES).map(([key, item]) => (
@@ -308,7 +345,7 @@ export default function MermaidPanel({
         </div>
       </div>
 
-      {/* Section View Mode Controller (Split View / Diagram Focus / Code Focus) */}
+      {/* Section View Mode Controller */}
       <div className="px-3 py-1.5 bg-slate-100/70 border-b border-slate-200 flex items-center justify-between text-xs shrink-0">
         <div className="flex items-center gap-1 bg-white p-0.5 rounded-lg border border-slate-200">
           <button
@@ -423,13 +460,57 @@ export default function MermaidPanel({
         )}
       </div>
 
-      {/* AI Prompt Input Bar */}
-      <div className="p-3 bg-white border-t border-slate-200 shrink-0">
+      {/* Example Prompt Command Chips */}
+      <div className="px-3 pt-2 bg-white border-t border-slate-100">
+        <div className="flex items-center gap-1 mb-1.5 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+          <Lightbulb className="size-3 text-amber-500" />
+          <span>Example Hackathon Commands:</span>
+        </div>
+        <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-1">
+          {EXAMPLE_PROMPTS.map((p, idx) => (
+            <button
+              key={idx}
+              onClick={() => handleRunExamplePrompt(p)}
+              className="px-2.5 py-1 rounded-full bg-slate-100 hover:bg-cyan-50 hover:text-cyan-700 hover:border-cyan-300 border border-slate-200 text-[11px] font-medium text-slate-700 whitespace-nowrap transition-colors"
+            >
+              {p}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* AI Prompt Input Bar with History Dropdown */}
+      <div className="p-3 bg-white relative shrink-0">
+        {/* Command History Dropdown Popup */}
+        {showHistoryDropdown && (
+          <div className="absolute bottom-16 left-3 right-3 bg-white rounded-xl shadow-2xl border border-slate-200 p-2 z-50 animate-in fade-in slide-in-from-bottom-2 duration-150">
+            <div className="flex items-center justify-between px-2 py-1 border-b border-slate-100 text-[11px] font-bold text-slate-500">
+              <span className="flex items-center gap-1">
+                <History className="size-3 text-cyan-600" /> Command History:
+              </span>
+              <button
+                onClick={() => setShowHistoryDropdown(false)}
+                className="text-slate-400 hover:text-slate-600"
+              >
+                ✕
+              </button>
+            </div>
+            <div className="max-h-40 overflow-y-auto space-y-1 mt-1">
+              {history.map((item, idx) => (
+                <div
+                  key={idx}
+                  onClick={() => handleRunExamplePrompt(item)}
+                  className="p-2 rounded-lg hover:bg-cyan-50 text-xs font-medium text-slate-700 hover:text-cyan-700 cursor-pointer transition-colors truncate"
+                >
+                  ⚡ {item}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
         <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            handleAiGenerate();
-          }}
+          onSubmit={handleAiGenerate}
           className="flex items-center gap-2 p-1.5 rounded-xl border border-slate-200 bg-slate-50/80 focus-within:border-cyan-500 focus-within:bg-white transition-all"
         >
           <Sparkles className="size-4 text-cyan-600 shrink-0 ml-1.5" />
@@ -438,15 +519,30 @@ export default function MermaidPanel({
             id="mermaid-ai-input"
             value={aiPrompt}
             onChange={(e) => setAiPrompt(e.target.value)}
-            placeholder="Ask AI to generate or modify flowchart..."
+            placeholder="Type any natural language command (Groq AI)..."
             className="flex-1 bg-transparent text-xs text-slate-800 placeholder-slate-400 focus:outline-none"
           />
+
+          {/* History Button */}
+          <button
+            type="button"
+            onClick={() => setShowHistoryDropdown(!showHistoryDropdown)}
+            className="p-1 text-slate-400 hover:text-cyan-600 transition-colors"
+            title="Command History"
+          >
+            <History className="size-4" />
+          </button>
+
           <button
             type="submit"
-            disabled={isGenerating || !aiPrompt.trim()}
-            className="p-1.5 rounded-lg bg-cyan-500 hover:bg-cyan-600 text-white disabled:opacity-40 transition-colors shadow-xs"
+            disabled={isAiGenerating || !aiPrompt.trim()}
+            className="p-1.5 rounded-lg bg-cyan-500 hover:bg-cyan-600 text-white disabled:opacity-40 transition-colors shadow-xs flex items-center gap-1"
           >
-            <Send className="size-3.5" />
+            {isAiGenerating ? (
+              <RefreshCw className="size-3.5 animate-spin" />
+            ) : (
+              <Send className="size-3.5" />
+            )}
           </button>
         </form>
       </div>

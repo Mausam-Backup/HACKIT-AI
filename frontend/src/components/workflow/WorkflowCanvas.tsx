@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import {
   Plus,
   CheckCircle2,
@@ -18,6 +18,7 @@ import {
   Move,
   PanelLeftOpen,
   PanelRightOpen,
+  Send,
 } from "lucide-react";
 
 import AddNodeModal from "./AddNodeModal";
@@ -25,41 +26,78 @@ import NodeInspectorModal from "./NodeInspectorModal";
 import FormSpecModal from "./FormSpecModal";
 import ToolsLibraryDrawer from "./ToolsLibraryDrawer";
 import ExecutionLogsDrawer from "./ExecutionLogsDrawer";
-
-interface NodeData {
-  id: string;
-  title: string;
-  type: string;
-  status: string;
-  x: number;
-  y: number;
-}
+import { CanvasNodeData } from "@/lib/groqGenerator";
 
 interface WorkflowCanvasProps {
+  nodes?: CanvasNodeData[];
+  setNodes?: React.Dispatch<React.SetStateAction<CanvasNodeData[]>>;
   isLeftCollapsed?: boolean;
   onToggleLeft?: () => void;
   isRightCollapsed?: boolean;
   onToggleRight?: () => void;
+  onGenerateAi?: (prompt: string) => void;
+  isAiGenerating?: boolean;
 }
 
 export default function WorkflowCanvas({
+  nodes: externalNodes,
+  setNodes: setExternalNodes,
   isLeftCollapsed,
   onToggleLeft,
   isRightCollapsed,
   onToggleRight,
+  onGenerateAi,
+  isAiGenerating = false,
 }: WorkflowCanvasProps) {
   const [zoom, setZoom] = useState(100);
   const [activeTool, setActiveTool] = useState("Move");
   const [isExecuting, setIsExecuting] = useState(false);
   const [executionLog, setExecutionLog] = useState<string[]>([]);
   const [showLogsDrawer, setShowLogsDrawer] = useState(false);
+  const canvasRef = useRef<HTMLDivElement>(null);
 
   // Modals & Drawers state
   const [isAddNodeOpen, setIsAddNodeOpen] = useState(false);
   const [isFormSpecOpen, setIsFormSpecOpen] = useState(false);
   const [isToolsDrawerOpen, setIsToolsDrawerOpen] = useState(false);
-  const [selectedNode, setSelectedNode] = useState<NodeData | null>(null);
+  const [selectedNode, setSelectedNode] = useState<CanvasNodeData | null>(null);
   const [showComments, setShowComments] = useState(false);
+  const [showAiPromptBox, setShowAiPromptBox] = useState(false);
+  const [aiPrompt, setAiPrompt] = useState("");
+
+  // Internal Nodes state fallback (starts empty — user decides)
+  const [internalNodes, setInternalNodes] = useState<CanvasNodeData[]>([]);
+
+  const nodes = externalNodes || internalNodes;
+  const setNodes = setExternalNodes || setInternalNodes;
+
+  // Pan offset — used to auto-center the node group
+  const [panX, setPanX] = useState(0);
+  const [panY, setPanY] = useState(0);
+
+  // Auto-center whenever the node set changes (fires after new AI generation)
+  useEffect(() => {
+    if (!nodes.length || !canvasRef.current) return;
+
+    const NODE_W = 230;
+    const NODE_H = 110;
+
+    const xs = nodes.map((n) => n.x);
+    const ys = nodes.map((n) => n.y);
+    const minX = Math.min(...xs);
+    const maxX = Math.max(...xs) + NODE_W;
+    const minY = Math.min(...ys);
+    const maxY = Math.max(...ys) + NODE_H;
+
+    const groupCenterX = (minX + maxX) / 2;
+    const groupCenterY = (minY + maxY) / 2;
+
+    const { clientWidth, clientHeight } = canvasRef.current;
+
+    // Translate so the bounding-box center sits at the viewport center
+    setPanX(clientWidth / 2 - groupCenterX);
+    setPanY(clientHeight / 2 - groupCenterY);
+  }, [nodes]); // intentionally omit zoom so centering doesn't re-fire on zoom
 
   // Node Dragging State
   const [draggingNodeId, setDraggingNodeId] = useState<string | null>(null);
@@ -71,52 +109,8 @@ export default function WorkflowCanvas({
     hasMoved: false,
   });
 
-  // Interactive Nodes State
-  const [nodes, setNodes] = useState<NodeData[]>([
-    {
-      id: "trigger-1",
-      title: "5 New Problem Statements",
-      type: "trigger",
-      x: 380,
-      y: 80,
-      status: "ready",
-    },
-    {
-      id: "queue-1",
-      title: "Task Queue / FastMCP",
-      type: "queue",
-      x: 380,
-      y: 200,
-      status: "active",
-    },
-    {
-      id: "review-1",
-      title: "3 Tasks Need Review",
-      type: "review",
-      x: 360,
-      y: 340,
-      status: "warning",
-    },
-    {
-      id: "final-1",
-      title: "12 Tasks Finalized",
-      type: "success",
-      x: 360,
-      y: 480,
-      status: "success",
-    },
-    {
-      id: "live-1",
-      title: "Live Processing (Mem0)",
-      type: "live",
-      x: 680,
-      y: 290,
-      status: "live",
-    },
-  ]);
-
   // Dragging & Interaction Handlers
-  const handleNodeMouseDown = (e: React.MouseEvent, node: NodeData) => {
+  const handleNodeMouseDown = (e: React.MouseEvent, node: CanvasNodeData) => {
     if (e.button !== 0) return;
     e.stopPropagation();
     setDraggingNodeId(node.id);
@@ -158,7 +152,7 @@ export default function WorkflowCanvas({
     setDraggingNodeId(null);
   };
 
-  const handleNodeMouseUp = (e: React.MouseEvent, node: NodeData) => {
+  const handleNodeMouseUp = (e: React.MouseEvent, node: CanvasNodeData) => {
     if (e.button !== 0) return;
     e.stopPropagation();
     if (!dragStartRef.current.hasMoved) {
@@ -167,58 +161,58 @@ export default function WorkflowCanvas({
     setDraggingNodeId(null);
   };
 
-  const handleNodeContextMenu = (e: React.MouseEvent, node: NodeData) => {
+  const handleNodeContextMenu = (e: React.MouseEvent, node: CanvasNodeData) => {
     e.preventDefault();
     e.stopPropagation();
     setSelectedNode(node);
   };
 
   // Dynamic Center Coordinates for Connected Lines
-  const getNodeCenter = (id: string, fallbackX: number, fallbackY: number) => {
-    const n = nodes.find((node) => node.id === id);
+  const getNodePos = (index: number, fallbackX: number, fallbackY: number) => {
+    const n = nodes[index];
     return n ? { x: n.x + 90, y: n.y + 35 } : { x: fallbackX, y: fallbackY };
   };
 
-  const triggerPos = getNodeCenter("trigger-1", 470, 115);
-  const queuePos = getNodeCenter("queue-1", 470, 235);
-  const reviewPos = getNodeCenter("review-1", 450, 365);
-  const finalPos = getNodeCenter("final-1", 450, 505);
-  const livePos = getNodeCenter("live-1", 770, 325);
+  const pos0 = getNodePos(0, 470, 115);
+  const pos1 = getNodePos(1, 470, 235);
+  const pos2 = getNodePos(2, 450, 365);
+  const pos3 = getNodePos(3, 450, 505);
+  const pos4 = getNodePos(4, 770, 325);
 
   const handleTestAutomation = () => {
     setIsExecuting(true);
     setShowLogsDrawer(true);
-    const newLogs = ["[0.0s] Initializing FastMCP Context Server..."];
+    const newLogs = ["[0.0s] Initializing Groq LLM & FastMCP Pipeline..."];
     setExecutionLog(newLogs);
 
     setTimeout(() => {
       setExecutionLog((prev) => [
         ...prev,
-        "[0.4s] Parsing problem statement via LiteParse engine...",
+        "[0.4s] Querying Groq llama-3.3-70b-versatile endpoint...",
       ]);
     }, 600);
 
     setTimeout(() => {
       setExecutionLog((prev) => [
         ...prev,
-        "[1.2s] Querying Mem0 vector embeddings & session memory...",
+        "[1.2s] Synthesizing Mem0 vector embeddings & Mermaid flowchart...",
       ]);
     }, 1200);
 
     setTimeout(() => {
       setExecutionLog((prev) => [
         ...prev,
-        "[1.8s] Generating interactive slide deck & SSE stream... Complete!",
+        "[1.8s] Rendering dynamic canvas nodes & SSE stream... Complete!",
       ]);
       setIsExecuting(false);
     }, 2000);
   };
 
   const handleAddNode = (newNode: { title: string; type: string; status: string }) => {
-    const node: NodeData = {
+    const node: CanvasNodeData = {
       id: `node-${Date.now()}`,
       title: newNode.title,
-      type: newNode.type,
+      type: newNode.type as any,
       status: newNode.status,
       x: 300 + Math.random() * 150,
       y: 200 + Math.random() * 150,
@@ -226,7 +220,7 @@ export default function WorkflowCanvas({
     setNodes((prev) => [...prev, node]);
   };
 
-  const handleUpdateNode = (updated: NodeData) => {
+  const handleUpdateNode = (updated: CanvasNodeData) => {
     setNodes((prev) => prev.map((n) => (n.id === updated.id ? updated : n)));
   };
 
@@ -234,8 +228,8 @@ export default function WorkflowCanvas({
     setNodes((prev) => prev.filter((n) => n.id !== id));
   };
 
-  const handleDuplicateNode = (node: NodeData) => {
-    const dup: NodeData = {
+  const handleDuplicateNode = (node: CanvasNodeData) => {
+    const dup: CanvasNodeData = {
       ...node,
       id: `node-${Date.now()}`,
       x: node.x + 40,
@@ -245,15 +239,9 @@ export default function WorkflowCanvas({
   };
 
   const handleGenerateFromSpec = (specText: string) => {
-    const createdNode: NodeData = {
-      id: `node-${Date.now()}`,
-      title: `Parsed Spec: ${specText.slice(0, 24)}...`,
-      type: "trigger",
-      status: "ready",
-      x: 200,
-      y: 140,
-    };
-    setNodes((prev) => [...prev, createdNode]);
+    if (onGenerateAi) {
+      onGenerateAi(specText);
+    }
   };
 
   const handleToolClick = (toolName: string) => {
@@ -267,8 +255,17 @@ export default function WorkflowCanvas({
     } else if (toolName === "Comment") {
       setShowComments(!showComments);
     } else if (toolName === "Ask AI") {
-      const inputEl = document.getElementById("mermaid-ai-input");
-      if (inputEl) inputEl.focus();
+      setShowAiPromptBox(!showAiPromptBox);
+    }
+  };
+
+  const handleAiSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!aiPrompt.trim()) return;
+    if (onGenerateAi) {
+      onGenerateAi(aiPrompt);
+      setAiPrompt("");
+      setShowAiPromptBox(false);
     }
   };
 
@@ -291,11 +288,17 @@ export default function WorkflowCanvas({
             </button>
           )}
           <div>
-            <h2 className="text-base font-bold text-slate-900 tracking-tight">
-              Hi, Hackathon Builder! 👋
+            <h2 className="text-base font-bold text-slate-900 tracking-tight flex items-center gap-2">
+              <span>Hi, Hackathon Builder! 👋</span>
+              {isAiGenerating && (
+                <span className="px-2 py-0.5 rounded-full bg-cyan-100 text-cyan-800 text-[10px] font-bold flex items-center gap-1 animate-pulse">
+                  <RefreshCw className="size-3 animate-spin" />
+                  Groq LLM Generating...
+                </span>
+              )}
             </h2>
             <p className="text-xs text-slate-400">
-              Drag nodes, build multi-agent pipelines, and auto-export flowcharts.
+              Type natural language prompts to draw interactive pipelines powered by Groq 70B.
             </p>
           </div>
         </div>
@@ -330,68 +333,218 @@ export default function WorkflowCanvas({
         </div>
       </header>
 
-      {/* Grid Canvas Area */}
+      {/* Grid Canvas Area — fills all remaining space, scrollable */}
       <div
-        className="flex-1 relative overflow-auto bg-[radial-gradient(#cbd5e1_1px,transparent_1px)] [background-size:20px_20px]"
-        style={{ transform: `scale(${zoom / 100})`, transformOrigin: "center center" }}
+        ref={canvasRef}
+        className="flex-1 relative overflow-hidden bg-[radial-gradient(#cbd5e1_1px,transparent_1px)] [background-size:20px_20px]"
       >
+        {/* Inner panned+scaled surface */}
+        <div
+          className="absolute"
+          style={{
+            width: "3000px",
+            height: "2400px",
+            left: 0,
+            top: 0,
+            transform: `translate(${panX}px, ${panY}px) scale(${zoom / 100})`,
+            transformOrigin: "0 0",
+          }}
+        >
         {/* Dynamic SVG Connecting Lines */}
         <svg className="absolute inset-0 size-full pointer-events-none z-0">
-          <path
-            d={`M ${triggerPos.x} ${triggerPos.y} C ${triggerPos.x} ${(triggerPos.y + queuePos.y) / 2}, ${queuePos.x} ${(triggerPos.y + queuePos.y) / 2}, ${queuePos.x} ${queuePos.y}`}
-            fill="none"
-            stroke="#06b6d4"
-            strokeWidth="2"
-            strokeDasharray="6 6"
-          />
-
-          <path
-            d={`M ${queuePos.x} ${queuePos.y} C ${queuePos.x} ${(queuePos.y + reviewPos.y) / 2}, ${reviewPos.x} ${(queuePos.y + reviewPos.y) / 2}, ${reviewPos.x} ${reviewPos.y}`}
-            fill="none"
-            stroke="#f59e0b"
-            strokeWidth="2"
-            strokeDasharray="4 4"
-          />
-
-          <path
-            d={`M ${reviewPos.x} ${reviewPos.y} C ${reviewPos.x} ${(reviewPos.y + finalPos.y) / 2}, ${finalPos.x} ${(reviewPos.y + finalPos.y) / 2}, ${finalPos.x} ${finalPos.y}`}
-            fill="none"
-            stroke="#10b981"
-            strokeWidth="2"
-          />
-
-          <path
-            d={`M ${queuePos.x} ${queuePos.y} C ${(queuePos.x + livePos.x) / 2} ${queuePos.y}, ${(queuePos.x + livePos.x) / 2} ${livePos.y}, ${livePos.x} ${livePos.y}`}
-            fill="none"
-            stroke="#06b6d4"
-            strokeWidth="2.5"
-            strokeDasharray="6 6"
-          />
+          {nodes.length >= 2 && (
+            <path
+              d={`M ${pos0.x} ${pos0.y} C ${pos0.x} ${(pos0.y + pos1.y) / 2}, ${pos1.x} ${(pos0.y + pos1.y) / 2}, ${pos1.x} ${pos1.y}`}
+              fill="none"
+              stroke="#06b6d4"
+              strokeWidth="2"
+              strokeDasharray="6 6"
+            />
+          )}
+          {nodes.length >= 3 && (
+            <path
+              d={`M ${pos1.x} ${pos1.y} C ${pos1.x} ${(pos1.y + pos2.y) / 2}, ${pos2.x} ${(pos1.y + pos2.y) / 2}, ${pos2.x} ${pos2.y}`}
+              fill="none"
+              stroke="#f59e0b"
+              strokeWidth="2"
+              strokeDasharray="4 4"
+            />
+          )}
+          {nodes.length >= 4 && (
+            <path
+              d={`M ${pos2.x} ${pos2.y} C ${pos2.x} ${(pos2.y + pos3.y) / 2}, ${pos3.x} ${(pos2.y + pos3.y) / 2}, ${pos3.x} ${pos3.y}`}
+              fill="none"
+              stroke="#10b981"
+              strokeWidth="2"
+            />
+          )}
+          {nodes.length >= 5 && (
+            <path
+              d={`M ${pos1.x} ${pos1.y} C ${(pos1.x + pos4.x) / 2} ${pos1.y}, ${(pos1.x + pos4.x) / 2} ${pos4.y}, ${pos4.x} ${pos4.y}`}
+              fill="none"
+              stroke="#06b6d4"
+              strokeWidth="2.5"
+              strokeDasharray="6 6"
+            />
+          )}
         </svg>
 
-        {/* Floating Entry Point Card */}
-        <div className="absolute left-28 top-36 p-4 bg-white/90 backdrop-blur rounded-2xl border border-slate-200 shadow-xl w-64 z-10">
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">
-              Choose Entry Point
-            </span>
-            <Sparkles className="size-3.5 text-cyan-600" />
-          </div>
-          <div className="space-y-2 text-xs font-semibold">
-            <div
-              onClick={() => setIsFormSpecOpen(true)}
-              className="p-2 rounded-lg bg-slate-50 border border-slate-100 hover:border-cyan-400 cursor-pointer transition-colors"
-            >
-              📄 Direct Spec Entry
+        {/* Floating Entry Point Card — only shown on empty canvas */}
+        {nodes.length === 0 && (
+          <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 p-5 bg-white/95 backdrop-blur rounded-2xl border border-slate-200 shadow-2xl w-72 z-10 text-center">
+            <div className="size-12 mx-auto mb-3 rounded-2xl bg-cyan-50 flex items-center justify-center">
+              <Sparkles className="size-6 text-cyan-500" />
             </div>
-            <div
-              onClick={() => setIsToolsDrawerOpen(true)}
-              className="p-2 rounded-lg bg-slate-50 border border-slate-100 hover:border-cyan-400 cursor-pointer transition-colors"
-            >
-              ⚡ FastMCP Pipeline
+            <h3 className="text-sm font-bold text-slate-900 mb-1">Start Your Pipeline</h3>
+            <p className="text-[11px] text-slate-400 mb-4">Type a prompt in the toolbar or pick an entry method below</p>
+            <div className="space-y-2 text-xs font-semibold">
+              <div
+                onClick={() => setIsFormSpecOpen(true)}
+                className="p-2.5 rounded-xl bg-slate-50 border border-slate-200 hover:border-cyan-400 hover:bg-cyan-50 cursor-pointer transition-all flex items-center gap-2"
+              >
+                <span>📄</span><span>Direct Spec Entry (Groq AI)</span>
+              </div>
+              <div
+                onClick={() => setIsToolsDrawerOpen(true)}
+                className="p-2.5 rounded-xl bg-slate-50 border border-slate-200 hover:border-cyan-400 hover:bg-cyan-50 cursor-pointer transition-all flex items-center gap-2"
+              >
+                <span>⚡</span><span>FastMCP Pipeline Tools</span>
+              </div>
             </div>
           </div>
-        </div>
+        )}
+
+        {/* Floating Prompt Box (Triggered by 'Ask AI' toolbar button) */}
+        {showAiPromptBox && (
+          <div className="absolute bottom-24 left-1/2 -translate-x-1/2 z-40 bg-white p-3 rounded-2xl shadow-2xl border border-slate-200 w-96 animate-in fade-in slide-in-from-bottom-2 duration-150">
+            <form onSubmit={handleAiSubmit} className="space-y-2">
+              <div className="flex items-center justify-between text-xs font-bold text-slate-800">
+                <span className="flex items-center gap-1.5 text-cyan-600">
+                  <Sparkles className="size-4" /> Groq 70B Workflow AI
+                </span>
+                <button
+                  type="button"
+                  onClick={() => setShowAiPromptBox(false)}
+                  className="text-slate-400 hover:text-slate-600"
+                >
+                  ✕
+                </button>
+              </div>
+              <input
+                type="text"
+                value={aiPrompt}
+                onChange={(e) => setAiPrompt(e.target.value)}
+                placeholder="Describe your hackathon workflow (e.g. Health AI app)..."
+                className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:outline-none focus:border-cyan-500"
+                autoFocus
+              />
+              <button
+                type="submit"
+                disabled={isAiGenerating || !aiPrompt.trim()}
+                className="w-full py-2 bg-cyan-500 hover:bg-cyan-600 text-white font-bold text-xs rounded-xl shadow-md flex items-center justify-center gap-1.5"
+              >
+                {isAiGenerating ? (
+                  <>
+                    <RefreshCw className="size-3.5 animate-spin" />
+                    <span>Generating Pipeline...</span>
+                  </>
+                ) : (
+                  <>
+                    <Send className="size-3.5" />
+                    <span>Generate Workflow & Canvas</span>
+                  </>
+                )}
+              </button>
+            </form>
+          </div>
+        )}
+
+        {/* ── AI Generation Skeleton Overlay ── */}
+        {isAiGenerating && (
+          <div className="absolute inset-0 z-20 pointer-events-none">
+            {/* Dimming tint */}
+            <div className="absolute inset-0 bg-slate-50/80 backdrop-blur-[1px]" />
+
+            {/* Floating status banner */}
+            <div className="absolute top-6 left-1/2 -translate-x-1/2 z-30 pointer-events-auto">
+              <div className="flex items-center gap-3 px-5 py-3 rounded-2xl bg-white border border-cyan-200 shadow-2xl shadow-cyan-500/10">
+                <div className="relative flex items-center justify-center size-8 rounded-xl bg-cyan-50">
+                  <RefreshCw className="size-4 text-cyan-500 animate-spin" />
+                  <span className="absolute -top-1 -right-1 size-2.5 rounded-full bg-cyan-500 animate-pulse border-2 border-white" />
+                </div>
+                <div>
+                  <p className="text-xs font-bold text-slate-900">Groq 70B is synthesizing your pipeline…</p>
+                  <p className="text-[10px] text-slate-400 font-medium">Building canvas nodes &amp; Mermaid flowchart</p>
+                </div>
+                <div className="flex gap-1 ml-2">
+                  {[0, 1, 2].map((i) => (
+                    <span
+                      key={i}
+                      className="size-1.5 rounded-full bg-cyan-400 animate-bounce"
+                      style={{ animationDelay: `${i * 0.15}s` }}
+                    />
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Skeleton SVG connector lines */}
+            <svg className="absolute inset-0 size-full pointer-events-none">
+              <path
+                d="M 470 155 C 470 220, 470 220, 470 275"
+                fill="none" stroke="#e2e8f0" strokeWidth="2" strokeDasharray="6 6"
+                className="animate-pulse"
+              />
+              <path
+                d="M 470 335 C 470 390, 450 390, 450 420"
+                fill="none" stroke="#e2e8f0" strokeWidth="2" strokeDasharray="4 4"
+                className="animate-pulse"
+              />
+              <path
+                d="M 450 485 C 450 530, 450 530, 450 560"
+                fill="none" stroke="#e2e8f0" strokeWidth="2"
+                className="animate-pulse"
+              />
+              <path
+                d="M 470 305 C 620 305, 680 325, 770 325"
+                fill="none" stroke="#e2e8f0" strokeWidth="2.5" strokeDasharray="6 6"
+                className="animate-pulse"
+              />
+            </svg>
+
+            {/* Skeleton Node cards */}
+            {[
+              { x: 370, y: 80,  w: 200, h: 64 },
+              { x: 370, y: 195, w: 192, h: 56 },
+              { x: 350, y: 330, w: 220, h: 52 },
+              { x: 350, y: 470, w: 200, h: 52 },
+              { x: 660, y: 285, w: 224, h: 68 },
+            ].map((s, i) => (
+              <div
+                key={i}
+                className="absolute rounded-2xl bg-white border border-slate-200 shadow-md overflow-hidden"
+                style={{ left: s.x, top: s.y, width: s.w, height: s.h }}
+              >
+                {/* shimmer sweep */}
+                <div
+                  className="absolute inset-0 -translate-x-full animate-[shimmer_1.6s_infinite]"
+                  style={{
+                    background:
+                      "linear-gradient(90deg,transparent 0%,rgba(148,163,184,0.15) 50%,transparent 100%)",
+                    animationDelay: `${i * 0.18}s`,
+                  }}
+                />
+                <div className="p-3 flex items-center gap-3">
+                  <div className="size-9 rounded-xl bg-slate-100 animate-pulse shrink-0" />
+                  <div className="flex-1 space-y-2">
+                    <div className="h-2.5 rounded-full bg-slate-100 animate-pulse w-4/5" />
+                    <div className="h-2 rounded-full bg-slate-100 animate-pulse w-3/5" />
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
 
         {/* Draggable Dynamic Nodes Layer */}
         {nodes.map((node) => {
@@ -407,46 +560,51 @@ export default function WorkflowCanvas({
                 isDragging ? "shadow-2xl ring-2 ring-cyan-500 scale-105" : "hover:shadow-lg"
               }`}
             >
+              {/* ── TRIGGER NODE ── */}
               {node.type === "trigger" && (
-                <div className="flex items-center gap-2 px-4 py-2.5 rounded-full border-2 border-dashed border-cyan-400 bg-white shadow-sm text-xs font-bold text-slate-700 hover:border-cyan-600">
-                  <div className="size-2 rounded-full bg-cyan-500 animate-ping" />
+                <div className="flex items-center gap-2 px-5 py-3 rounded-full border-2 border-dashed border-cyan-400 bg-white shadow-md text-sm font-bold text-slate-700 hover:border-cyan-500 transition-colors">
+                  <span className="size-2 rounded-full bg-cyan-500 animate-ping shrink-0" />
                   <span>{node.title}</span>
-                  <Move className="size-3 text-slate-400 opacity-50" />
+                  <Plus className="size-3.5 text-slate-400 opacity-60" />
                 </div>
               )}
 
+              {/* ── QUEUE / PROCESSOR NODE ── */}
               {node.type === "queue" && (
-                <div className="w-48 p-4 rounded-2xl bg-white border border-slate-200 shadow-lg text-center hover:border-cyan-400">
-                  <div className="size-10 mx-auto rounded-xl bg-cyan-50 border border-cyan-200 flex items-center justify-center text-cyan-600 mb-2">
+                <div className="w-52 p-4 rounded-2xl bg-white border border-slate-200 shadow-lg text-center hover:border-cyan-300 transition-colors">
+                  <div className="size-11 mx-auto rounded-xl bg-cyan-50 border border-cyan-100 flex items-center justify-center text-cyan-600 mb-2.5">
                     <FileText className="size-5" />
                   </div>
-                  <h4 className="text-xs font-bold text-slate-800">{node.title}</h4>
-                  <span className="text-[10px] text-slate-400 font-medium">Auto-dispatching</span>
+                  <h4 className="text-sm font-bold text-slate-800">{node.title}</h4>
+                  <span className="text-[11px] text-slate-400 font-medium">Auto-dispatching</span>
                 </div>
               )}
 
+              {/* ── REVIEW / WARNING NODE ── */}
               {node.type === "review" && (
-                <div className="px-5 py-2.5 rounded-full bg-amber-500 text-white font-bold text-xs shadow-lg shadow-amber-500/20 flex items-center gap-2 hover:bg-amber-600">
-                  <AlertCircle className="size-4" />
+                <div className="px-5 py-3 rounded-full bg-amber-500 text-white font-bold text-sm shadow-lg shadow-amber-500/25 flex items-center gap-2 hover:bg-amber-600 transition-colors">
+                  <AlertCircle className="size-4 shrink-0" />
                   <span>{node.title}</span>
                 </div>
               )}
 
+              {/* ── SUCCESS / OUTPUT NODE ── */}
               {node.type === "success" && (
-                <div className="px-5 py-2.5 rounded-full bg-emerald-600 text-white font-bold text-xs shadow-lg shadow-emerald-600/20 flex items-center gap-2 hover:bg-emerald-700">
-                  <CheckCircle2 className="size-4" />
+                <div className="px-5 py-3 rounded-full bg-emerald-600 text-white font-bold text-sm shadow-lg shadow-emerald-600/25 flex items-center gap-2 hover:bg-emerald-700 transition-colors">
+                  <CheckCircle2 className="size-4 shrink-0" />
                   <span>{node.title}</span>
                 </div>
               )}
 
+              {/* ── LIVE / STREAMING NODE ── */}
               {node.type === "live" && (
-                <div className="w-56 p-4 rounded-2xl bg-white border-2 border-cyan-500 shadow-xl shadow-cyan-500/10 flex items-center gap-3 hover:border-cyan-600">
-                  <div className="size-10 rounded-xl bg-cyan-50 text-cyan-600 flex items-center justify-center font-bold shrink-0">
+                <div className="w-60 p-4 rounded-2xl bg-white border-2 border-cyan-500 shadow-xl shadow-cyan-500/10 flex items-center gap-3 hover:border-cyan-600 transition-colors">
+                  <div className="size-11 rounded-xl bg-cyan-50 text-cyan-600 flex items-center justify-center shrink-0 border border-cyan-100">
                     <Zap className="size-5" />
                   </div>
                   <div>
-                    <h4 className="text-xs font-bold text-slate-900">{node.title}</h4>
-                    <span className="text-[10px] text-cyan-600 font-bold flex items-center gap-1">
+                    <h4 className="text-sm font-bold text-slate-900">{node.title}</h4>
+                    <span className="text-[11px] text-cyan-600 font-bold flex items-center gap-1">
                       <span className="size-1.5 rounded-full bg-cyan-500 animate-pulse" />
                       Mem0 SSE Active
                     </span>
@@ -455,19 +613,20 @@ export default function WorkflowCanvas({
               )}
 
               {/* Comment sticky note */}
-              {showComments && (
-                <div className="mt-2 p-2 rounded-xl bg-amber-100 text-amber-900 text-[10px] font-medium shadow-md w-44 leading-tight border border-amber-200">
+              {showComments && node.id === nodes[0]?.id && (
+                <div className="mt-2 p-3 rounded-xl bg-amber-100 text-amber-900 text-[10px] font-medium shadow-md w-52 leading-tight border border-amber-200">
                   💬 Note: Verified judge rubric criteria.
                 </div>
               )}
             </div>
           );
         })}
+        </div> {/* end inner scaled surface */}
       </div>
 
       {/* Floating Bottom Toolbar */}
       <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-30 flex items-center gap-4">
-        <div className="flex items-center gap-1 p-1.5 rounded-2xl bg-white border border-slate-200 shadow-2xl text-slate-600 text-xs font-medium">
+        <div className="flex items-center gap-1 p-1.5 rounded-2xl bg-white border border-slate-200 shadow-2xl text-slate-600 text-xs font-medium shrink-0">
           {[
             { name: "Move", icon: MousePointer },
             { name: "Shape", icon: Square },
@@ -482,33 +641,43 @@ export default function WorkflowCanvas({
               <button
                 key={tool.name}
                 onClick={() => handleToolClick(tool.name)}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl transition-all ${
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl transition-all shrink-0 whitespace-nowrap ${
                   isSelected
                     ? "bg-cyan-500 text-white font-bold shadow-md shadow-cyan-500/20"
                     : "hover:bg-slate-100 hover:text-slate-900"
                 }`}
               >
-                <Icon className="size-3.5" />
-                <span>{tool.name}</span>
+                <Icon className="size-3.5 shrink-0" />
+                <span className="whitespace-nowrap">{tool.name}</span>
               </button>
             );
           })}
         </div>
 
         {/* Zoom Controls */}
-        <div className="flex items-center gap-2 px-3 py-1.5 rounded-2xl bg-white border border-slate-200 shadow-2xl text-slate-600 text-xs font-semibold">
+        <div className="flex items-center gap-1 px-3 py-1.5 rounded-2xl bg-white border border-slate-200 shadow-2xl text-slate-600 text-xs font-semibold">
           <button
-            onClick={() => setZoom((z) => Math.max(50, z - 10))}
+            onClick={() => setZoom((z) => Math.max(40, z - 10))}
             className="p-1 hover:bg-slate-100 rounded-lg"
+            title="Zoom out"
           >
             <ZoomOut className="size-3.5" />
           </button>
           <span className="w-10 text-center font-mono">{zoom}%</span>
           <button
-            onClick={() => setZoom((z) => Math.min(150, z + 10))}
+            onClick={() => setZoom((z) => Math.min(200, z + 10))}
             className="p-1 hover:bg-slate-100 rounded-lg"
+            title="Zoom in"
           >
             <ZoomIn className="size-3.5" />
+          </button>
+          <div className="w-px h-4 bg-slate-200 mx-1" />
+          <button
+            onClick={() => setZoom(100)}
+            className="px-2 py-0.5 rounded-lg hover:bg-slate-100 text-[10px] font-bold text-slate-500 hover:text-slate-800 transition-colors whitespace-nowrap"
+            title="Reset to 100%"
+          >
+            Fit
           </button>
         </div>
       </div>
@@ -521,11 +690,11 @@ export default function WorkflowCanvas({
       />
 
       <NodeInspectorModal
-        node={selectedNode}
+        node={selectedNode as any}
         onClose={() => setSelectedNode(null)}
-        onUpdateNode={handleUpdateNode}
+        onUpdateNode={handleUpdateNode as any}
         onDeleteNode={handleDeleteNode}
-        onDuplicateNode={handleDuplicateNode}
+        onDuplicateNode={handleDuplicateNode as any}
       />
 
       <FormSpecModal

@@ -79,51 +79,50 @@ export default function WorkflowSidebar({
 
   if (isCollapsed) {
     return (
-      <aside className="w-16 h-screen bg-white border-r border-slate-200/80 flex flex-col items-center py-4 justify-between shrink-0 select-none text-slate-700 font-sans z-20">
-        <div className="flex flex-col items-center gap-6">
-          {/* AMOLED Dark Logo Icon */}
-          <button
-            onClick={onToggleCollapse}
-            className="size-10 rounded-xl bg-gradient-to-br from-zinc-800 to-zinc-950 border border-zinc-700/50 flex items-center justify-center text-white shadow-md hover:border-cyan-500/50 transition-all"
-            title="Expand Sidebar"
-          >
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="text-white">
-              <path d="M 9 4 L 5 4 L 5 18 L 9 18" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
-              <path d="M 15 6 L 19 6 L 19 20 L 15 20" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
-              <path d="M 5 12 L 19 12" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
-              <path d="M 20 0 C 20 1.5 21.5 3 23 3 C 21.5 3 20 4.5 20 6 C 20 4.5 18.5 3 17 3 C 18.5 3 20 1.5 20 0 Z" fill="currentColor"/>
-            </svg>
-          </button>
-
-          {/* Quick Icons */}
-          <div className="space-y-3">
-            {mainMenu.map((item) => {
-              const Icon = item.icon;
-              const isActive = currentTab === item.name;
-              return (
-                <button
-                  key={item.name}
-                  onClick={() => handleSelect(item.name)}
-                  title={item.name}
-                  className={`p-2.5 rounded-xl transition-all ${
-                    isActive
-                      ? "bg-cyan-500 text-white shadow-md shadow-cyan-500/20"
-                      : "text-slate-500 hover:bg-slate-100 hover:text-slate-900"
-                  }`}
-                >
-                  <Icon className="size-4" />
-                </button>
-              );
-            })}
-          </div>
-        </div>
-
+      <aside className="w-14 h-screen bg-white border-r border-slate-200/80 flex flex-col items-center pt-3 pb-4 shrink-0 select-none font-sans z-20">
+        {/* Logo — click to expand */}
         <button
           onClick={onToggleCollapse}
-          className="p-2.5 rounded-xl text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors"
+          className="size-9 rounded-xl bg-gradient-to-br from-zinc-800 to-zinc-950 border border-zinc-700/50 flex items-center justify-center text-white shadow-md hover:border-cyan-500/60 transition-all mb-4"
           title="Expand Sidebar"
         >
-          <PanelLeftOpen className="size-5 text-cyan-600" />
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M 9 4 L 5 4 L 5 18 L 9 18" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+            <path d="M 15 6 L 19 6 L 19 20 L 15 20" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+            <path d="M 5 12 L 19 12" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+            <path d="M 20 0 C 20 1.5 21.5 3 23 3 C 21.5 3 20 4.5 20 6 C 20 4.5 18.5 3 17 3 C 18.5 3 20 1.5 20 0 Z" fill="currentColor"/>
+          </svg>
+        </button>
+
+        {/* Nav Icons */}
+        <div className="flex flex-col items-center gap-1 flex-1">
+          {mainMenu.map((item) => {
+            const Icon = item.icon;
+            const isActive = currentTab === item.name;
+            return (
+              <button
+                key={item.name}
+                onClick={() => handleSelect(item.name)}
+                title={item.name}
+                className={`p-2.5 rounded-xl transition-all ${
+                  isActive
+                    ? "bg-cyan-500 text-white shadow-sm shadow-cyan-500/25"
+                    : "text-slate-400 hover:bg-slate-100 hover:text-slate-800"
+                }`}
+              >
+                <Icon className="size-[18px]" />
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Expand trigger at bottom */}
+        <button
+          onClick={onToggleCollapse}
+          className="p-2 rounded-xl text-slate-400 hover:text-cyan-600 hover:bg-slate-100 transition-colors mt-2"
+          title="Expand Sidebar"
+        >
+          <PanelLeftOpen className="size-4" />
         </button>
       </aside>
     );

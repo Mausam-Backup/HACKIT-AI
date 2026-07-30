@@ -99,3 +99,9 @@
   animation: laser-spin 4s linear infinite;
   z-index: -1;
 }
+
+/* ── Skeleton shimmer for AI generation state ── */
+@keyframes shimmer {
+  0%   { transform: translateX(-100%); }
+  100% { transform: translateX(200%); }
+}
