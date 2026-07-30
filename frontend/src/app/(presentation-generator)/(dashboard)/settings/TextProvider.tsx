@@ -33,10 +33,10 @@ import {
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { notify } from "@/components/ui/sonner";
 import CodexConfig from "./SettingCodex";
-import VertexAzureManualFields from "@/components/VertexAzureManualFields";
-import BedrockManualFields from "@/components/BedrockManualFields";
+import VertexAzureManualFields from "@/components/config/VertexAzureManualFields";
+import BedrockManualFields from "@/components/config/BedrockManualFields";
 import { MixpanelEvent, trackEvent } from "@/utils/mixpanel";
-import OllamaConfig from "@/components/OllamaConfig";
+import OllamaConfig from "@/components/config/OllamaConfig";
 
 interface OpenAIConfigProps {
   onInputChange: (value: string | boolean, field: string) => void;

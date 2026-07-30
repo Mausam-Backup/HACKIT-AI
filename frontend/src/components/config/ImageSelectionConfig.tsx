@@ -1,13 +1,13 @@
 import React from 'react'
-import { Popover, PopoverContent, PopoverTrigger } from './ui/popover';
-import { Button } from './ui/button';
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Button } from "@/components/ui/button";
 import { Check, ChevronsUpDown } from 'lucide-react';
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from './ui/command';
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
 import { LLMConfig } from '@/types/llm_config';
-import OpenAICompatibleImageFields from '@/components/OpenAICompatibleImageFields';
+import OpenAICompatibleImageFields from "@/components/config/OpenAICompatibleImageFields";
 import { IMAGE_PROVIDERS } from '@/utils/providerConstants';
 import { cn } from '@/lib/utils';
-import { Select, SelectItem, SelectContent, SelectTrigger, SelectValue } from './ui/select';
+import { Select, SelectItem, SelectContent, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 const DALLE_3_QUALITY_OPTIONS = [
     {

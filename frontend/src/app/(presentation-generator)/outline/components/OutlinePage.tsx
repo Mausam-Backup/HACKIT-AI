@@ -5,7 +5,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { RootState } from "@/store/store";
 import { useDispatch, useSelector } from "react-redux";
 import { OverlayLoader } from "@/components/ui/overlay-loader";
-import Wrapper from "@/components/Wrapper";
+import Wrapper from "@/components/common/Wrapper";
 import OutlineContent from "./OutlineContent";
 import EmptyStateView from "./EmptyStateView";
 import GenerateButton from "./GenerateButton";

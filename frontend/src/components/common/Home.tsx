@@ -3,10 +3,10 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
-import OnBoardingSlidebar from "./OnBoarding/OnBoardingSlidebar";
-import OnBoardingHeader from "./OnBoarding/OnBoardingHeader";
-import PitchAIMode from "./OnBoarding/PitchAIMode";
-import FinalStep from "./OnBoarding/FinalStep";
+import OnBoardingSlidebar from "@/components/OnBoarding/OnBoardingSlidebar";
+import OnBoardingHeader from "@/components/OnBoarding/OnBoardingHeader";
+import PitchAIMode from "@/components/OnBoarding/PitchAIMode";
+import FinalStep from "@/components/OnBoarding/FinalStep";
 
 export default function Home() {
   const router = useRouter();

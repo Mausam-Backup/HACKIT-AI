@@ -19,7 +19,7 @@ import { Search, ChevronRight, Info } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
-import ToolTip from "@/components/ToolTip";
+import ToolTip from "@/components/common/ToolTip";
 import { cn } from "@/lib/utils";
 import type { RootState } from "@/store/store";
 import { setPresentationData } from "@/store/slices/presentationGeneration";

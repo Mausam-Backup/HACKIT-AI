@@ -1,11 +1,11 @@
-import ToolTip from '@/components/ToolTip'
+import ToolTip from "@/components/common/ToolTip"
 import { Button } from '@/components/ui/button'
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { Select, SelectItem, SelectContent, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Switch } from '@/components/ui/switch'
 import { LLMConfig } from '@/types/llm_config'
-import OpenAICompatibleImageFields from '@/components/OpenAICompatibleImageFields'
+import OpenAICompatibleImageFields from "@/components/config/OpenAICompatibleImageFields"
 import { DALLE_3_QUALITY_OPTIONS, GPT_IMAGE_1_5_QUALITY_OPTIONS, IMAGE_PROVIDERS } from '@/utils/providerConstants'
 import { Check, ChevronUp, Eye, EyeOff } from 'lucide-react'
 import React, { useEffect, useState } from 'react'

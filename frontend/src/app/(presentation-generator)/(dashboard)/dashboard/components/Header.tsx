@@ -1,6 +1,6 @@
 "use client";
 
-import Wrapper from "@/components/Wrapper";
+import Wrapper from "@/components/common/Wrapper";
 import React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";

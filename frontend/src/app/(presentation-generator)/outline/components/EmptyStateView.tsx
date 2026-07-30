@@ -1,7 +1,7 @@
 import React from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import Wrapper from "@/components/Wrapper";
+import Wrapper from "@/components/common/Wrapper";
 import { FileText, Plus, ArrowRight } from "lucide-react";
 
 const EmptyStateView: React.FC = () => {

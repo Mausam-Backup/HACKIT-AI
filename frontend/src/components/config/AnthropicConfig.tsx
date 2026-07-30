@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { Check, ChevronsUpDown, Loader2 } from "lucide-react";
-import { Button } from "./ui/button";
+import { Button } from "@/components/ui/button";
 import {
   Command,
   CommandEmpty,
@@ -9,62 +9,58 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
-} from "./ui/command";
-import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
+} from "@/components/ui/command";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 import { notify } from "@/components/ui/sonner";
-import { Switch } from "./ui/switch";
-import { LLMConfig } from "@/types/llm_config";
+import { Switch } from "@/components/ui/switch";
 import { getApiErrorMessage, getApiUrl } from "@/utils/api";
 
-interface OpenAIConfigProps {
-  openaiApiKey: string;
-  openaiModel: string;
+interface AnthropicConfigProps {
+  anthropicApiKey: string;
+  anthropicModel: string;
+  extendedReasoning: boolean;
   webGrounding?: boolean;
   onInputChange: (value: string | boolean, field: string) => void;
-  llmConfig: LLMConfig;
 }
 
-export default function OpenAIConfig({
-  openaiApiKey,
-  openaiModel,
+
+export default function AnthropicConfig({
+  anthropicApiKey,
+  anthropicModel,
+  extendedReasoning,
   webGrounding,
   onInputChange,
-  llmConfig
-}: OpenAIConfigProps) {
+}: AnthropicConfigProps) {
   const [openModelSelect, setOpenModelSelect] = useState(false);
   const [availableModels, setAvailableModels] = useState<string[]>([]);
-const [modelsLoading, setModelsLoading] = useState(false);
-const [modelsChecked, setModelsChecked] = useState(false);
-const [apiKey, setApiKey] = useState(openaiApiKey);
-const isImageGenerationDisabled = llmConfig?.DISABLE_IMAGE_GENERATION ?? false;
-
-  const openaiUrl = "https://api.openai.com/v1";
+  const [modelsLoading, setModelsLoading] = useState(false);
+  const [modelsChecked, setModelsChecked] = useState(false);
+  const [apiKey, setApiKey] = useState(anthropicApiKey);
 
   useEffect(() => {
     setAvailableModels([]);
     setModelsChecked(false);
-    onInputChange("", "openai_model");
+    onInputChange("", "anthropic_model");
   }, [apiKey]);
 
   const onApiKeyChange = (value: string) => {
     setApiKey(value);
-    onInputChange(value, "openai_api_key");
+    onInputChange(value, "anthropic_api_key");
   };
 
   const fetchAvailableModels = async () => {
-    if (!openaiApiKey) return;
+    if (!anthropicApiKey) return;
 
     setModelsLoading(true);
     try {
-      const response = await fetch(getApiUrl("/api/v1/ppt/openai/models/available"), {
+      const response = await fetch(getApiUrl("/api/v1/ppt/anthropic/models/available"), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          url: openaiUrl,
-          api_key: openaiApiKey
+          api_key: anthropicApiKey
         }),
       });
 
@@ -72,7 +68,7 @@ const isImageGenerationDisabled = llmConfig?.DISABLE_IMAGE_GENERATION ?? false;
         const data = await response.json();
         setAvailableModels(data);
         setModelsChecked(true);
-        onInputChange("gpt-4.1", "openai_model");
+        onInputChange("claude-sonnet-4-20250514", "anthropic_model");
       } else {
         const message = await getApiErrorMessage(
           response,
@@ -98,38 +94,32 @@ const isImageGenerationDisabled = llmConfig?.DISABLE_IMAGE_GENERATION ?? false;
       {/* API Key Input */}
       <div className="mb-4 flex items-center justify-between bg-white p-10">
         <div className="">
-
-          <h3 className="text-xl font-normal text-[#191919]">OpenAI API key</h3>
+          <h3 className="text-xl font-normal text-[#191919]">Anthropic API key</h3>
           <p className="mt-2 text-sm max-w-[205px] text-gray-500">
             Your API key will be stored locally and never shared
           </p>
         </div>
         <div className="flex items-center gap-4">
-
-
           <div className="relative  w-[275px] ">
             <div className="flex flex-col justify-start gap-2">
-
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                OpenAI API Key
+                Anthropic API Key
               </label>
               <input
                 type="text"
-                value={openaiApiKey}
+                value={anthropicApiKey}
                 onChange={(e) => onApiKeyChange(e.target.value)}
                 className="w-full px-2 py-3 outline-none border  border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-colors"
-                placeholder="Enter your API key"
+                placeholder="Enter your Anthropic API key"
               />
             </div>
 
             {/* Check for available models button - show when no models checked or no models found */}
-
             {(!modelsChecked || (modelsChecked && availableModels.length === 0)) && (
-
               <button
                 onClick={fetchAvailableModels}
-                disabled={modelsLoading || !openaiApiKey}
-                className={` mt-7 py-2.5 bg-[#F7F6F9] px-3.5 rounded-[48px] text-xs font-semibold text-[#101323] transition-all duration-200 border ${modelsLoading || !openaiApiKey
+                disabled={modelsLoading || !anthropicApiKey}
+                className={` mt-7 py-2.5 bg-[#F7F6F9] px-3.5 rounded-[48px] text-xs font-semibold text-[#101323] transition-all duration-200 border ${modelsLoading || !anthropicApiKey
                   ? " border-gray-300 cursor-not-allowed text-gray-500"
                   : " border-[#EDEEEF] text-blue-600 hover:bg-[#E8F0FF]/90 focus:ring-2 focus:ring-blue-500/20"
                   }`}
@@ -143,7 +133,6 @@ const isImageGenerationDisabled = llmConfig?.DISABLE_IMAGE_GENERATION ?? false;
                   "Check for available models"
                 )}
               </button>
-
             )}
           </div>
           <div className="w-[295px]">
@@ -151,7 +140,7 @@ const isImageGenerationDisabled = llmConfig?.DISABLE_IMAGE_GENERATION ?? false;
             {modelsChecked && availableModels.length === 0 && (
               <div className="mb-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
                 <p className="text-sm text-yellow-800">
-                  No models found. Please make sure your API key is valid and has access to OpenAI models.
+                  No models found. Please make sure your API key is valid and has access to Anthropic models.
                 </p>
               </div>
             )}
@@ -160,7 +149,7 @@ const isImageGenerationDisabled = llmConfig?.DISABLE_IMAGE_GENERATION ?? false;
             {modelsChecked && availableModels.length > 0 ? (
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-3">
-                  Select OpenAI Model
+                  Select Anthropic Model
                 </label>
                 <div className="w-full">
                   <Popover
@@ -176,8 +165,8 @@ const isImageGenerationDisabled = llmConfig?.DISABLE_IMAGE_GENERATION ?? false;
                       >
                         <div className="flex gap-3 items-center">
                           <span className="text-sm font-medium text-gray-900">
-                            {openaiModel
-                              ? availableModels.find(model => model === openaiModel) || openaiModel
+                            {anthropicModel
+                              ? availableModels.find(model => model === anthropicModel) || anthropicModel
                               : "Select a model"}
                           </span>
                         </div>
@@ -199,14 +188,14 @@ const isImageGenerationDisabled = llmConfig?.DISABLE_IMAGE_GENERATION ?? false;
                                 key={index}
                                 value={model}
                                 onSelect={(value) => {
-                                  onInputChange(value, "openai_model");
+                                  onInputChange(value, "anthropic_model");
                                   setOpenModelSelect(false);
                                 }}
                               >
                                 <Check
                                   className={cn(
                                     "mr-2 h-4 w-4",
-                                    openaiModel === model
+                                    anthropicModel === model
                                       ? "opacity-100"
                                       : "opacity-0"
                                   )}
@@ -234,22 +223,15 @@ const isImageGenerationDisabled = llmConfig?.DISABLE_IMAGE_GENERATION ?? false;
         </div>
       </div>
 
-
-
-
-
-
       {/* Web Grounding Toggle - show at the end, below models dropdown */}
       <div className="bg-white flex justify-between items-center p-10 rounded-[12px]">
         <div>
           <h4 className="text-xl font-normal text-[#191919]">Model Controls</h4>
           <p className="mt-2 text-sm max-w-[205px] text-gray-500">
-
-            Configure web access, image generation, and advanced AI features.
+            Configure web access and advanced AI features.
           </p>
         </div>
         <div className="flex items-center gap-4">
-
           <div className="w-[275px]">
             <div className="flex items-center  mb-4 gap-2.5 ">
               <Switch
@@ -260,23 +242,20 @@ const isImageGenerationDisabled = llmConfig?.DISABLE_IMAGE_GENERATION ?? false;
                 Enable Web Grounding
               </label>
             </div>
-            <div className="flex items-center  mb-4 gap-2.5 ">
+            {/* Extended Reasoning Toggle */}
+            {/* <div className="flex items-center  mb-4 gap-2.5 ">
               <Switch
-                checked={!!isImageGenerationDisabled}
-                onCheckedChange={(checked) => onInputChange(checked, "disable_image_generation")}
+                checked={extendedReasoning}
+                onCheckedChange={(checked) => onInputChange(checked, "extended_reasoning")}
               />
               <label className="text-sm font-medium text-gray-700">
-                Disable Image Generation
+                Extended Reasoning
               </label>
-            </div>
-
+            </div> */}
           </div>
           <div className="w-[295px]"></div>
         </div>
-
       </div>
-
-
     </div>
   );
 }

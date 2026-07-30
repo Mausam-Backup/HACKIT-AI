@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/dialog";
 import { Loader2, Save, Info } from "lucide-react";
 import { useRouter } from "next/navigation";
-import ToolTip from "@/components/ToolTip";
+import ToolTip from "@/components/common/ToolTip";
 
 interface SaveLayoutModalProps {
   isOpen: boolean;

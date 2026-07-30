@@ -25,7 +25,7 @@ import { Button } from "@/components/ui/button";
 import { notify } from "@/components/ui/sonner";
 import { getIconFromFile } from "../../utils/others";
 import { ChevronRight, PanelRightOpen, X } from "lucide-react";
-import ToolTip from "@/components/ToolTip";
+import ToolTip from "@/components/common/ToolTip";
 import Header from "@/app/(presentation-generator)/(dashboard)/dashboard/components/Header";
 import { trackEvent, MixpanelEvent } from "@/utils/mixpanel";
 import { parseLimitedSlideCount } from "@/utils/presentationLimits";

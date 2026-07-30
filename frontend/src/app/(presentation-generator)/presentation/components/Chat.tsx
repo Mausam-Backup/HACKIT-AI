@@ -29,7 +29,7 @@ import React, {
 import Image from "next/image";
 import { notify } from "@/components/ui/sonner";
 import { useDispatch, useSelector } from "react-redux";
-import MarkdownRenderer from "@/components/MarkDownRender";
+import MarkdownRenderer from "@/components/common/MarkDownRender";
 import { ImagesApi } from "../../services/api/images";
 import { PresentationGenerationApi } from "../../services/api/presentation-generation";
 import { PresentationChatApi } from "../../services/api/chat";
@@ -45,7 +45,7 @@ import type {
   ChatStreamHandlers,
   ChatStreamTrace,
 } from "../../services/api/chat";
-import ToolTip from "@/components/ToolTip";
+import ToolTip from "@/components/common/ToolTip";
 import { cn } from "@/lib/utils";
 import type { TemplateV2SurfaceSelectedDetail } from "@/components/slide-editor/events/events";
 import type { TemplateV2Layout } from "@/components/slide-editor/importing/template-v2-import";

@@ -7,7 +7,7 @@ import {
   deleteSlideOutline,
   setOutlines,
 } from "@/store/slices/presentationGeneration";
-import ToolTip from "@/components/ToolTip";
+import ToolTip from "@/components/common/ToolTip";
 import { Textarea } from "@/components/ui/textarea";
 import {
   useCallback,

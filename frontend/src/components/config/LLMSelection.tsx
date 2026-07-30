@@ -1,17 +1,17 @@
 "use client";
 import { useState, useEffect } from "react";
-import OpenAIConfig from "./OpenAIConfig";
-import GoogleConfig from "./GoogleConfig";
-import AnthropicConfig from "./AnthropicConfig";
-import OllamaConfig from "./OllamaConfig";
-import CustomConfig from "./CustomConfig";
-import CodexConfig from "./CodexConfig";
+import OpenAIConfig from "@/components/config/OpenAIConfig";
+import GoogleConfig from "@/components/config/GoogleConfig";
+import AnthropicConfig from "@/components/config/AnthropicConfig";
+import OllamaConfig from "@/components/config/OllamaConfig";
+import CustomConfig from "@/components/config/CustomConfig";
+import CodexConfig from "@/components/config/CodexConfig";
 import {
   updateLLMConfig,
   changeProvider as changeProviderUtil,
 } from "@/utils/providerUtils";
 import { LLMConfig } from "@/types/llm_config";
-import ImageSelectionConfig from "./ImageSelectionConfig";
+import ImageSelectionConfig from "@/components/config/ImageSelectionConfig";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 
 

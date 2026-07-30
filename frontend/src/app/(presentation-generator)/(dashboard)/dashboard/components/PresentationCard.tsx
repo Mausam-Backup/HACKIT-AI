@@ -18,7 +18,7 @@ import {
   shouldRenderTemplateV2HtmlPreview,
   TemplateV2HtmlSlidePreview,
 } from "@/app/(presentation-generator)/components/TemplateV2HtmlSlidePreview";
-import MarkdownRenderer from "@/components/MarkDownRender";
+import MarkdownRenderer from "@/components/common/MarkDownRender";
 import { trackEvent, MixpanelEvent } from "@/utils/mixpanel";
 
 export const PresentationCard = ({

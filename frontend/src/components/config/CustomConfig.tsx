@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import { Check, ChevronsUpDown, Loader2 } from "lucide-react";
-import { Button } from "./ui/button";
+import { Button } from "@/components/ui/button";
 import {
   Command,
   CommandEmpty,
@@ -9,12 +9,12 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
-} from "./ui/command";
-import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
+} from "@/components/ui/command";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 import { notify } from "@/components/ui/sonner";
 import { getApiErrorMessage, getApiUrl } from "@/utils/api";
-import { Switch } from "./ui/switch";
+import { Switch } from "@/components/ui/switch";
 
 interface CustomConfigProps {
   customLlmUrl: string;

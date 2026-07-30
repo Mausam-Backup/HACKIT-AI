@@ -21,7 +21,7 @@ import {
 import Timer from "../Timer";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 
-import ToolTip from "@/components/ToolTip";
+import ToolTip from "@/components/common/ToolTip";
 import SlideErrorBoundary from "@/app/(presentation-generator)/components/SlideErrorBoundary";
 // import { CodeEditor } from "./CodeEditor";
 // import SlideSelectionEditor from "./SlideSelectionEditor";

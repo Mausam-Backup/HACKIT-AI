@@ -2,7 +2,7 @@
 import React, { useState } from 'react'
 import { AlertTriangle, Check, Copy, Trash } from 'lucide-react'
 import { Theme } from '@/app/(presentation-generator)/services/api/types'
-import ToolTip from '@/components/ToolTip'
+import ToolTip from "@/components/common/ToolTip"
 
 interface ThemeCardProps {
   theme: Theme

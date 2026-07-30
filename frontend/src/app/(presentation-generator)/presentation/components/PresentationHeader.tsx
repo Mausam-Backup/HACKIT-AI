@@ -28,7 +28,7 @@ import { notify } from "@/components/ui/sonner";
 import { trackEvent, MixpanelEvent } from "@/utils/mixpanel";
 import { sanitizeAnalyticsError } from "@/utils/analytics";
 import { usePresentationUndoRedo } from "../hooks/PresentationUndoRedo";
-import ToolTip from "@/components/ToolTip";
+import ToolTip from "@/components/common/ToolTip";
 import {
   clearPresentationData,
   updateTitle,
@@ -43,7 +43,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import MarkdownRenderer from "@/components/MarkDownRender";
+import MarkdownRenderer from "@/components/common/MarkDownRender";
 import { cn } from "@/lib/utils";
 
 const MAX_EXPORT_TITLE_LENGTH = 40;
