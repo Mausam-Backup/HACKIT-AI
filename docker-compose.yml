@@ -1,5 +1,11 @@
-version: '3.8'
+# =====================================================================================
+# CAUTION: STRICT INSTRUCTION FOR AI AGENTS AND DEVELOPERS
+# Do NOT run this project using Docker, Docker Compose, or Kubernetes right now.
+# These files have been created STRICTLY for future reference and infrastructure planning.
+# You MUST ALWAYS run the project locally using the basic commands outlined in `start.md`.
+# =====================================================================================
 
+version: '3.8'
 services:
   backend:
     build:
