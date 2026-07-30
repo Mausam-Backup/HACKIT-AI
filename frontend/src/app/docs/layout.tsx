@@ -31,7 +31,7 @@ export default function DocsLayout({ children }: { children: React.ReactNode }) 
         <div className="container mx-auto max-w-[1536px] flex h-16 items-center px-4 md:px-8">
           <div className="flex items-center gap-6 md:gap-8 mr-4">
             <Link href="/" className="flex items-center gap-2">
-              <Hexagon className="h-6 w-6 text-zinc-900 fill-zinc-900" />
+              <img src="/logo.png" alt="Logo" className="w-6 h-6 object-contain" />
               <span className="font-bold text-lg tracking-tight">HAC-KIT AI</span>
             </Link>
           </div>

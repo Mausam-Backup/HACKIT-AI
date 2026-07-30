@@ -1,49 +1,58 @@
-import React from 'react';
+'use client';
+
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+
+type SidebarItem = {
+  label: string;
+  href: string;
+  badge?: string;
+  badgeStyle?: string;
+};
+
+type SidebarSection = {
+  title: string;
+  items: SidebarItem[];
+};
 
 export default function DocsSidebar() {
-  type SidebarItem = {
-    label: string;
-    href: string;
-    active: boolean;
-    badge?: string;
-    badgeStyle?: string;
-  };
+  const [activeHref, setActiveHref] = useState<string>('/docs');
+  const pathname = usePathname();
 
-  type SidebarSection = {
-    title: string;
-    items: SidebarItem[];
-  };
+  useEffect(() => {
+    // Basic sync with initial hash on mount
+    if (typeof window !== 'undefined' && window.location.hash) {
+      setActiveHref(window.location.hash);
+    } else {
+      setActiveHref(pathname || '/docs');
+    }
+  }, [pathname]);
 
   const sections: SidebarSection[] = [
     {
-      title: 'Sections',
-      items: [
-        { label: 'Get Started', href: '#', active: false },
-        { label: 'Components', href: '#', active: false },
-        { label: 'Changelog', href: '#', active: false, badge: 'new' },
-      ],
-    },
-    {
       title: 'Getting Started',
       items: [
-        { label: 'Installation', href: '/docs', active: true },
-        { label: 'llms.txt', href: '#', active: false },
+        { label: 'Overview', href: '/docs' },
+        { label: 'Installation', href: '#installation' },
+        { label: 'Quickstart', href: '#interactive-chat-tui' },
       ],
     },
     {
-      title: 'Installation Guide',
+      title: 'Core Features',
       items: [
-        { label: 'CLI', href: '#', active: false, badge: '3.0', badgeStyle: 'bg-zinc-900 text-white rounded-md px-1.5 py-0.5' },
-        { label: 'Manual', href: '#', active: false },
-        { label: 'Tailwind Setup', href: '#', active: false },
-        { label: 'Dark Mode', href: '#', active: false },
+        { label: 'Coach Agent', href: '#coach-agent', badge: 'New', badgeStyle: 'bg-emerald-500/10 text-emerald-600 rounded-full px-2 py-0.5' },
+        { label: 'Builder Agents', href: '#builder-agents' },
+        { label: 'Auto-repair', href: '#auto-repair' },
+        { label: 'Pitch & Eval', href: '#pitch-eval' },
       ],
     },
     {
-      title: 'Blocks',
+      title: 'Interfaces',
       items: [
-        { label: 'Bento', href: '#', active: false, badge: 'New', badgeStyle: 'bg-emerald-500/10 text-emerald-600 rounded-full px-2 py-0.5' },
+        { label: 'Interactive TUI', href: '#interactive-chat-tui', badge: 'CLI', badgeStyle: 'bg-zinc-900 text-white rounded-md px-1.5 py-0.5' },
+        { label: 'Direct Build', href: '#direct-prompt-build' },
+        { label: 'Web Dashboard', href: '#web-gui-dashboard' },
       ],
     },
   ];
@@ -56,29 +65,34 @@ export default function DocsSidebar() {
             {section.title}
           </h4>
           <div className="flex flex-col gap-1 mt-1 border-l border-zinc-100 ml-1 pl-3">
-            {section.items.map((item, itemIdx) => (
-              <Link
-                key={itemIdx}
-                href={item.href}
-                className={`flex items-center justify-between py-1.5 text-zinc-600 hover:text-zinc-900 transition-colors ${
-                  item.active ? 'text-zinc-900 font-medium' : ''
-                }`}
-              >
-                {item.active ? (
-                  <div className="flex items-center w-full bg-zinc-900 text-white px-3 py-1.5 rounded-md shadow-sm">
-                    {item.label}
-                  </div>
-                ) : (
-                  <span className="px-3 py-1">{item.label}</span>
-                )}
-                
-                {item.badge && !item.active && (
-                  <span className={`text-[10px] font-semibold leading-none ${item.badgeStyle || 'bg-zinc-100 text-zinc-500 rounded-full px-2 py-0.5'}`}>
-                    {item.badge}
-                  </span>
-                )}
-              </Link>
-            ))}
+            {section.items.map((item, itemIdx) => {
+              const isActive = activeHref === item.href;
+              
+              return (
+                <Link
+                  key={itemIdx}
+                  href={item.href}
+                  onClick={() => setActiveHref(item.href)}
+                  className={`flex items-center justify-between py-1.5 transition-colors ${
+                    isActive ? 'text-zinc-900 font-medium' : 'text-zinc-600 hover:text-zinc-900'
+                  }`}
+                >
+                  {isActive ? (
+                    <div className="flex items-center w-full bg-zinc-900 text-white px-3 py-1.5 rounded-md shadow-sm">
+                      {item.label}
+                    </div>
+                  ) : (
+                    <span className="px-3 py-1">{item.label}</span>
+                  )}
+                  
+                  {item.badge && !isActive && (
+                    <span className={`text-[10px] font-semibold leading-none ${item.badgeStyle || 'bg-zinc-100 text-zinc-500 rounded-full px-2 py-0.5'}`}>
+                      {item.badge}
+                    </span>
+                  )}
+                </Link>
+              );
+            })}
           </div>
         </div>
       ))}

@@ -2,18 +2,14 @@ import React from 'react';
 
 export default function TableOfContents() {
   const links = [
-    { id: 'cli-quickstart', label: 'CLI Quickstart', active: true },
-    { id: 'initialize-cli', label: 'Initialize CLI', active: false },
-    { id: 'options-for-init', label: 'Options for init', active: false },
-    { id: 'add-components', label: 'Add Components', active: false },
-    { id: 'options-for-add', label: 'Options for add', active: false },
-    { id: 'use-in-monorepo', label: 'Use in Monorepo', active: false },
-    { id: 'installation-through-cli', label: 'Installation through CLI', active: false },
-    { id: 'shadcn-cli', label: 'Shadcn CLI 3.0', active: false, strong: true },
-    { id: 'github-registry', label: 'GitHub Registry Installation', active: false, strong: true },
-    { id: 'search-discovery', label: 'Search and Discovery', active: false },
-    { id: 'view', label: 'View', active: false },
-    { id: 'search', label: 'Search', active: false },
+    { id: 'coach-agent', label: 'Coach Agent', active: false },
+    { id: 'builder-agents', label: 'Builder Agents', active: false },
+    { id: 'auto-repair', label: 'Auto-repair', active: false },
+    { id: 'pitch-eval', label: 'Pitch & Eval', active: false },
+    { id: 'installation', label: 'Installation', active: false, strong: true },
+    { id: 'interactive-chat-tui', label: 'Interactive Chat TUI', active: false, strong: true },
+    { id: 'direct-prompt-build', label: 'Direct Prompt Build', active: false, strong: true },
+    { id: 'web-gui-dashboard', label: 'Web GUI Dashboard', active: false, strong: true },
   ];
 
   return (
