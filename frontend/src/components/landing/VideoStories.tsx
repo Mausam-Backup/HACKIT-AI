@@ -54,7 +54,7 @@ export default function VideoStories() {
       <div className="video-stories__rail" ref={railRef} aria-label="HAC-KIT AI success stories">
         <article className="story-card">
           <video className="story-card__media" autoPlay muted loop playsInline>
-            <source src="https://plugin-assets.open-design.ai/plugins/aerocore/hf_20260324_032431_5e054107-51c0-4162-9f0f-3a40054761ef-424242.mp4" type="video/mp4" />
+            <source src="/resources and hacakthons.mp4" type="video/mp4" />
           </video>
           <div className="story-card__content">
             <p>Problem to Prototype</p>
@@ -65,7 +65,7 @@ export default function VideoStories() {
 
         <article className="story-card">
           <video className="story-card__media" autoPlay muted loop playsInline>
-            <source src="https://plugin-assets.open-design.ai/plugins/aerocore/hf_20260324_032535_4ccc152e-0cc8-4ee5-a698-e1a98cea8a1e-866873.mp4" type="video/mp4" />
+            <source src="/ai-interview-demo.mp4" type="video/mp4" />
           </video>
           <div className="story-card__content">
             <p>Pitch Coaching</p>
@@ -87,7 +87,7 @@ export default function VideoStories() {
 
         <article className="story-card">
           <video className="story-card__media" autoPlay muted loop playsInline>
-            <source src="https://plugin-assets.open-design.ai/plugins/aerocore/hf_20260324_032431_5e054107-51c0-4162-9f0f-3a40054761ef-424242.mp4" type="video/mp4" />
+            <source src="/hack-coach-demo.mp4" type="video/mp4" />
           </video>
           <div className="story-card__content">
             <p>Strategy First</p>
@@ -98,7 +98,7 @@ export default function VideoStories() {
 
         <article className="story-card">
           <video className="story-card__media" autoPlay muted loop playsInline>
-            <source src="https://plugin-assets.open-design.ai/plugins/aerocore/hf_20260324_032535_4ccc152e-0cc8-4ee5-a698-e1a98cea8a1e-866873.mp4" type="video/mp4" />
+            <source src="/ppt-demo.mp4" type="video/mp4" />
           </video>
           <div className="story-card__content">
             <p>From Zero to Podium</p>
