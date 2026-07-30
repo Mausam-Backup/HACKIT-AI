@@ -1,0 +1,160 @@
+/* Horizontal Scroll Layout Styles */
+
+.mwg_effect073 {
+  position: relative;
+  width: 100vw;
+  background: #000;
+}
+
+.pin-height {
+  height: 100vh;
+  overflow: hidden;
+  position: relative;
+}
+
+.hs-container {
+  display: flex;
+  height: 100%;
+  width: max-content;
+}
+
+.hs-section {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: row;
+  position: relative;
+  overflow: hidden;
+  align-items: center;
+  justify-content: center;
+}
+
+/* For panels that are split into left/right content (optional) */
+.hs-section .hs-left, 
+.hs-section .hs-right {
+  flex: 1;
+  height: 100%;
+  padding: 40px;
+  position: relative;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+/* Background Number/Watermark Effect */
+.hs-title {
+  position: absolute;
+  font-size: 25vw; /* Extremely large */
+  font-weight: 800;
+  line-height: 0.75;
+  z-index: 0;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0.1;
+  letter-spacing: -0.05em;
+  bottom: 0;
+  left: 5%;
+}
+
+/* Adjustments for specific positions, matching the image */
+.hs-title.bottom-left {
+  bottom: 0;
+  left: 2%;
+}
+
+/* Specific Section Colors matching the image requirements */
+.bg-light-blue { background-color: #A9E7FE; color: #111; }
+.bg-red { background-color: #FF3C30; color: #111; }
+.bg-black { background-color: #0d0e15; color: #eee; }
+.bg-purple { background-color: #5B21B6; color: #eee; }
+.bg-pink { background-color: #DB2777; color: #eee; }
+
+/* Customizations for text colors based on backgrounds */
+.bg-light-blue .hs-title { color: #111; opacity: 0.2; }
+.bg-red .hs-title { color: #111; opacity: 0.2; }
+.bg-black .hs-title { color: #A9E7FE; opacity: 0.2; }
+.bg-purple .hs-title { color: #A9E7FE; opacity: 0.2; }
+
+.hs-content-wrapper {
+  position: relative;
+  z-index: 10;
+  max-width: 1200px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.hs-label {
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+  font-family: monospace;
+}
+
+.hs-content {
+  font-size: 1.8vw; /* responsive size */
+  line-height: 1.2;
+  font-weight: 500;
+  max-width: 500px;
+}
+
+@media (max-width: 768px) {
+  .hs-content {
+    font-size: 1.25rem;
+  }
+}
+
+.hs-section .hs-left, 
+.hs-section .hs-right {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  padding: 5vw;
+  padding-top: 10vw; /* Push down from the top slightly */
+}
+
+/* Make sure left and right can be empty but take space */
+.hs-left:empty, .hs-right:empty {
+  display: block;
+}
+
+/* The middle horizontal line */
+.hs-divider {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background-color: rgba(0, 0, 0, 0.1);
+  z-index: 5;
+}
+
+/* The small square dot on the divider */
+.hs-divider::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 6px;
+  height: 6px;
+  background-color: #111;
+  transform: translate(-50%, -50%);
+}
+
+.bg-black .hs-divider { background-color: rgba(255, 255, 255, 0.15); }
+.bg-black .hs-divider::after { background-color: #eee; }
+.bg-purple .hs-divider { background-color: rgba(255, 255, 255, 0.15); }
+.bg-purple .hs-divider::after { background-color: #eee; }
+.bg-pink .hs-divider { background-color: rgba(255, 255, 255, 0.15); }
+.bg-pink .hs-divider::after { background-color: #eee; }
+
+.hs-main-title {
+  font-size: 3.5vw;
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  max-width: 500px;
+}

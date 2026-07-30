@@ -1,0 +1,101 @@
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  display: block;
+  width: 5px;
+  height: 5px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.35);
+}
+
+/* Hide scrollbars globally */
+::-webkit-scrollbar {
+  display: none;
+}
+
+* {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+@property --laser-angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+
+@keyframes laser-spin {
+  to { --laser-angle: 360deg; }
+}
+
+.laser-border {
+  position: relative;
+  isolation: isolate;
+}
+
+.laser-border::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  background: conic-gradient(
+    from var(--laser-angle),
+    transparent 0%,
+    transparent 60%,
+    rgba(79, 70, 229, 0.05) 68%,
+    rgba(79, 70, 229, 0.6) 75%,
+    rgba(79, 70, 229, 0.9) 78%,
+    rgba(79, 70, 229, 0.6) 81%,
+    rgba(79, 70, 229, 0.05) 88%,
+    transparent 95%
+  );
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  padding: 1px;
+  animation: laser-spin 4s linear infinite;
+  z-index: -1;
+  border: 0;
+}
+
+.laser-border::after {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  background: conic-gradient(
+    from calc(var(--laser-angle) + 180deg),
+    transparent 0%,
+    transparent 60%,
+    rgba(79, 70, 229, 0.03) 68%,
+    rgba(79, 70, 229, 0.3) 75%,
+    rgba(79, 70, 229, 0.5) 78%,
+    rgba(79, 70, 229, 0.3) 81%,
+    rgba(79, 70, 229, 0.03) 88%,
+    transparent 95%
+  );
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  padding: 1px;
+  animation: laser-spin 4s linear infinite;
+  z-index: -1;
+}

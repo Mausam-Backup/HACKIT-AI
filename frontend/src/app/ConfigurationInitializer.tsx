@@ -1,0 +1,199 @@
+'use client';
+
+import { useEffect, useState } from 'react';
+import { setCanChangeKeys, setLLMConfig } from '@/store/slices/userConfig';
+import { hasValidLLMConfig, normalizeLLMConfig } from '@/utils/storeHelpers';
+import { usePathname, useRouter } from 'next/navigation';
+import { useDispatch } from 'react-redux';
+import { isOllamaModelAvailable } from '@/utils/providerUtils';
+import { LLMConfig } from '@/types/llm_config';
+import { getApiUrl } from '@/utils/api';
+import { notify } from '@/components/ui/sonner';
+import {
+  PRESENTON_SPLASH_MIN_DURATION_MS,
+  PitchAISplashLoader,
+} from '@/components/ui/pitchai-splash-loader';
+
+export function ConfigurationInitializer({ children }: { children: React.ReactNode }) {
+  const dispatch = useDispatch();
+
+  const route = usePathname();
+  const shouldShowStartupSplash = !route?.startsWith("/pdf-maker");
+  const isSettingsRoute =
+    route === "/settings" || route?.startsWith("/settings/");
+  const [isLoading, setIsLoading] = useState(
+    () => shouldShowStartupSplash
+  );
+  const [hasMetSplashDuration, setHasMetSplashDuration] = useState(
+    () => !shouldShowStartupSplash
+  );
+  const router = useRouter();
+
+  // Fetch user config state
+  useEffect(() => {
+    fetchUserConfigState();
+  }, []);
+
+  useEffect(() => {
+    if (!shouldShowStartupSplash) {
+      setHasMetSplashDuration(true);
+      return;
+    }
+
+    const timeout = window.setTimeout(() => {
+      setHasMetSplashDuration(true);
+    }, PRESENTON_SPLASH_MIN_DURATION_MS);
+
+    return () => window.clearTimeout(timeout);
+  }, [shouldShowStartupSplash]);
+
+  const setLoadingToFalseAfterNavigatingTo = (pathname: string) => {
+    if (window.location.pathname === pathname) {
+      setIsLoading(false);
+      return;
+    }
+
+    const interval = setInterval(() => {
+      if (window.location.pathname === pathname) {
+        clearInterval(interval);
+        setIsLoading(false);
+      }
+    }, 500);
+  }
+
+  const fetchUserConfigState = async () => {
+    if (route.startsWith("/pdf-maker")) {
+      setIsLoading(false);
+      return;
+    }
+
+    setIsLoading(true);
+
+    let canChangeKeys = false;
+    try {
+      const res = await fetch('/api/can-change-keys');
+      if (!res.ok) throw new Error(`can-change-keys returned ${res.status}`);
+      const data = await res.json();
+      canChangeKeys = data.canChange ?? false;
+    } catch (e) {
+      console.error('Failed to fetch can-change-keys:', e);
+      canChangeKeys = false;
+    }
+    dispatch(setCanChangeKeys(canChangeKeys));
+
+    if (canChangeKeys) {
+      let llmConfig: LLMConfig = {};
+      try {
+        const res = await fetch('/api/user-config');
+        if (!res.ok) throw new Error(`user-config returned ${res.status}`);
+        llmConfig = await res.json();
+      } catch (e) {
+        console.error('Failed to fetch user config:', e);
+        llmConfig = {};
+      }
+      if (!llmConfig.LLM) {
+        llmConfig.LLM = 'openai';
+      }
+      llmConfig = normalizeLLMConfig(llmConfig);
+
+      dispatch(setLLMConfig(llmConfig));
+
+      const isValid = hasValidLLMConfig(llmConfig);
+      if (route.startsWith('/pdf-maker')) {
+        setIsLoading(false);
+        return;
+      }
+      if (isValid) {
+        // Check if the selected Ollama model is pulled
+        if (llmConfig.LLM === 'ollama' && llmConfig.OLLAMA_MODEL) {
+          let isAvailable = false;
+          try {
+            isAvailable = await isOllamaModelAvailable(
+              llmConfig.OLLAMA_MODEL,
+              llmConfig.OLLAMA_URL
+            );
+          } catch (error) {
+            notify.error(
+              "Could not connect to Ollama",
+              error instanceof Error ? error.message : "Check the Ollama URL and try again."
+            );
+          }
+          if (!isAvailable) {
+            router.push('/settings');
+            setLoadingToFalseAfterNavigatingTo('/settings');
+            return;
+          }
+        }
+        if (llmConfig.LLM === 'custom') {
+          const isAvailable = await checkIfSelectedCustomModelIsAvailable(llmConfig);
+          if (!isAvailable) {
+            router.push('/settings');
+            setLoadingToFalseAfterNavigatingTo('/settings');
+            return;
+          }
+        }
+        if (llmConfig.LLM === 'deepseek') {
+          const isAvailable = await checkIfSelectedDeepSeekModelIsAvailable(llmConfig);
+          if (!isAvailable) {
+            router.push('/settings');
+            setLoadingToFalseAfterNavigatingTo('/settings');
+            return;
+          }
+        }
+        setIsLoading(false);
+      } else {
+        setIsLoading(false);
+      }
+    } else {
+      setIsLoading(false);
+    }
+  }
+
+
+  const checkIfSelectedCustomModelIsAvailable = async (llmConfig: LLMConfig) => {
+    try {
+      const response = await fetch(getApiUrl('/api/v1/ppt/openai/models/available'), {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          url: llmConfig.CUSTOM_LLM_URL,
+          api_key: llmConfig.CUSTOM_LLM_API_KEY,
+        }),
+      });
+      const data = await response.json();
+      return data.includes(llmConfig.CUSTOM_MODEL);
+    } catch (error) {
+      console.error('Error fetching custom models:', error);
+      return false;
+    }
+  }
+
+  const checkIfSelectedDeepSeekModelIsAvailable = async (llmConfig: LLMConfig) => {
+    try {
+      const response = await fetch(getApiUrl('/api/v1/ppt/openai/models/available'), {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          url: llmConfig.DEEPSEEK_BASE_URL || "https://api.deepseek.com/v1",
+          api_key: llmConfig.DEEPSEEK_API_KEY,
+        }),
+      });
+      const data = await response.json();
+      return data.includes(llmConfig.DEEPSEEK_MODEL);
+    } catch (error) {
+      console.error('Error fetching DeepSeek models:', error);
+      return false;
+    }
+  }
+
+
+  if (isLoading) {
+    return null; // Return null instead of a splash screen to avoid flash of old branding
+  }
+
+  return children;
+}
