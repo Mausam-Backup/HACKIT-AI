@@ -14,52 +14,52 @@ if (typeof window !== "undefined") {
 const pitchDeckSteps = [
   {
     num: "01",
-    title: "The Hook & Problem",
-    desc: "What is broken in the real world, and why does it matter right now?",
+    title: "The Hook & Problem Statement",
+    desc: "Identify target user bottlenecks, quantify the friction coefficient, and parse problem constraints.",
     items: [
-      { title: "Identify a painful, relatable problem" },
-      { title: "Share a quick personal story or statistic" },
-      { title: "Explain the urgency (Why now?)" }
+      { title: "Identify core user pain points and system bottlenecks" },
+      { title: "LiteParse document parsing for automated problem extraction" },
+      { title: "Mem0 vector embeddings to classify domain constraints & urgency" }
     ]
   },
   {
     num: "02",
-    title: "The Solution",
-    desc: "Your project's core value proposition explained in one crisp sentence.",
+    title: "System Architecture & Solution",
+    desc: "Your value proposition backed by a robust, scalable system design pattern.",
     items: [
-      { title: "Introduce your product name clearly" },
-      { title: "State your one-sentence value proposition" },
-      { title: "Highlight the primary target audience" }
+      { title: "State your core product value proposition and system scope" },
+      { title: "Expose FastMCP (Model Context Protocol) tool-calling endpoints" },
+      { title: "Define high-concurrency async task handling & state routing" }
     ]
   },
   {
     num: "03",
-    title: "Live Demo & Architecture",
-    desc: "Show, don't just tell. Focus on live functional UI & AI data flow.",
+    title: "Live Demo & SSE Streaming",
+    desc: "Show, don't just tell. Demonstrate real-time UI state transitions and data flows.",
     items: [
-      { title: "Walk through the main user flow" },
-      { title: "Showcase the core 'magic' feature live" },
-      { title: "Display a simplified architecture diagram" }
+      { title: "Live walk-through with Server-Sent Events (SSE) streaming" },
+      { title: "Real-time AI Pitch Interview simulator with audio/video feedback" },
+      { title: "Display FastAPI & Next.js proxy communication live" }
     ]
   },
   {
     num: "04",
-    title: "Tech Stack & Feasibility",
-    desc: "How it scales, models/APIs integrated, and security/database design.",
+    title: "Tech Stack & Security Layer",
+    desc: "Backend services, database migrations, security isolation, and API architecture.",
     items: [
-      { title: "List key APIs and frameworks used" },
-      { title: "Address potential technical challenges" },
-      { title: "Explain your data and privacy strategy" }
+      { title: "FastAPI, Next.js, SQLite/SQLAlchemy, and FastEmbed embeddings" },
+      { title: "Express.js 2FA authentication microservice & session tokens" },
+      { title: "Environment isolation for zero-knowledge API key security" }
     ]
   },
   {
     num: "05",
-    title: "Business & Future Roadmap",
-    desc: "What your team would build next if given 30 more days.",
+    title: "Multi-Format Export & Roadmap",
+    desc: "Automated presentation exports and post-hackathon scalability path.",
     items: [
-      { title: "Outline a clear path to monetization" },
-      { title: "Identify immediate next steps for development" },
-      { title: "Provide a strong, memorable closing statement" }
+      { title: "Multi-format export engine (PPTX, PDF, HTML, Markdown)" },
+      { title: "Mem0 vector memory persistence for session continuity" },
+      { title: "Extensible agent tool-call registry for future feature deployment" }
     ]
   },
 ]
@@ -97,13 +97,13 @@ export default function PitchBlueprint() {
         <div className="flex flex-col gap-4 mb-12">
           <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-zinc-900 border border-zinc-800 text-white text-sm font-semibold w-fit">
             <Presentation className="size-4" />
-            <span>Hackathon Pitching</span>
+            <span>Hackathon Technical Pitching</span>
           </div>
           <h2 className="text-4xl md:text-5xl font-serif text-zinc-900 tracking-tight leading-none">
-            Pitching, Presentations & Pitch Decks
+            Pitching, Presentations & Technical Decks
           </h2>
           <p className="text-lg text-zinc-800 max-w-2xl font-medium">
-            Judges scoring criteria, 2-minute demo video guides, and presentation blueprints
+            Judges scoring criteria, FastMCP context specs, SSE streaming demos, and presentation blueprints
           </p>
         </div>
       </div>
@@ -112,10 +112,10 @@ export default function PitchBlueprint() {
       <div className="mt-8 w-full">
         <div className="container mx-auto px-4 max-w-7xl mb-12 flex flex-col gap-4">
           <h3 className="text-4xl md:text-5xl font-medium text-zinc-950 leading-tight">
-            The 5-Slide Pitch Blueprint
+            The 5-Slide Technical Pitch Blueprint
           </h3>
           <p className="text-zinc-800 text-lg md:text-xl font-medium tracking-widest max-w-2xl text-pretty">
-            The step-by-step presentation structure recommended by hackathon judges. Behind the scene, beyond the screen.
+            The step-by-step presentation structure recommended by hackathon judges, backed by FastMCP and Mem0 vector memory.
           </p>
         </div>
 

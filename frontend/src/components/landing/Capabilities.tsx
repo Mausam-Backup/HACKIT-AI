@@ -3,10 +3,9 @@ export default function Capabilities() {
     <section className="capabilities" id="solutions" aria-labelledby="capabilities-title">
       <div className="capabilities__header">
         <div className="capabilities__intro">
-          <h2 id="capabilities-title">Hackathon teams need a platform that moves from idea to working demo — fast.</h2>
+          <h2 id="capabilities-title">Built for hackathon teams to move from blank repositories to complete working submissions.</h2>
           <p>
-            HAC-KIT AI combines multi-agent code generation, strategy automation, pitch coaching, and
-            real-time collaboration for teams that cannot afford to waste a single hour.
+            Powered by FastMCP context servers, Mem0 vector memory, real-time AI pitch interviewers, and automated multi-format presentation export.
           </p>
         </div>
 

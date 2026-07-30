@@ -20,43 +20,43 @@ const DATASETS: Record<
   }
 > = {
   problems: {
-    title: "Problem Domains",
-    summary: "HAC-KIT AI analyzes problem statements across categories — from social impact to fintech to hardware — extracting constraints and opportunities.",
+    title: "Core Modules Precision",
+    summary: "HAC-KIT AI's suite of specialized autonomous agents delivers end-to-end execution — from initial problem decomposition to investor-ready pitch decks.",
     bars: [
-      { label: "Social impact & education", value: 84, target: 90, rangeStart: 62, rangeEnd: 93, unit: "%", note: "coverage accuracy", trace: [42, 56, 68, 74, 79, 84] },
-      { label: "Fintech & blockchain", value: 76, target: 82, rangeStart: 48, rangeEnd: 87, unit: "%", note: "domain parsing", trace: [28, 40, 53, 62, 70, 76] },
-      { label: "Health & biotech", value: 68, target: 76, rangeStart: 38, rangeEnd: 80, unit: "%", note: "successful matches", trace: [16, 30, 42, 52, 62, 68] },
-      { label: "AI & ML challenges", value: 92, target: 96, rangeStart: 72, rangeEnd: 98, unit: "%", note: "coverage accuracy", trace: [58, 68, 76, 82, 88, 92] },
+      { label: "AI Hack Coach (Decomposition)", value: 96, target: 98, rangeStart: 72, rangeEnd: 99, unit: "%", note: "task breakdown precision", trace: [58, 70, 80, 86, 92, 96] },
+      { label: "Generative Pitch Synthesizer", value: 94, target: 97, rangeStart: 68, rangeEnd: 98, unit: "%", note: "deck completion rate", trace: [50, 64, 76, 84, 90, 94] },
+      { label: "Predictive Pitch Engine (Interviews)", value: 91, target: 95, rangeStart: 60, rangeEnd: 96, unit: "%", note: "real-time feedback score", trace: [42, 56, 70, 80, 86, 91] },
+      { label: "Enterprise Local CLI", value: 98, target: 99, rangeStart: 80, rangeEnd: 100, unit: "%", note: "zero-latency execution", trace: [68, 78, 86, 92, 96, 98] },
     ],
   },
   tech: {
-    title: "Tech Stack Readiness",
-    summary: "Our agents adapt to the most popular hackathon tech stacks, generating idiomatic code across languages and frameworks.",
+    title: "Tech Stack Integration",
+    summary: "Our local 8B parameter fine-tuned model natively supports all core hackathon stacks with zero third-party dependency.",
     bars: [
-      { label: "Python / FastAPI", value: 94, target: 97, rangeStart: 78, rangeEnd: 99, unit: "%", note: "code generation", trace: [62, 72, 82, 87, 91, 94] },
-      { label: "React / Next.js", value: 88, target: 92, rangeStart: 64, rangeEnd: 95, unit: "%", note: "component generation", trace: [40, 54, 68, 76, 84, 88] },
-      { label: "TypeScript / Node", value: 82, target: 88, rangeStart: 56, rangeEnd: 92, unit: "%", note: "type-safe output", trace: [33, 46, 58, 69, 77, 82] },
-      { label: "Mobile (Flutter / RN)", value: 74, target: 81, rangeStart: 48, rangeEnd: 86, unit: "%", note: "cross-platform", trace: [25, 38, 50, 60, 68, 74] },
+      { label: "Next.js & React Frontend", value: 96, target: 98, rangeStart: 75, rangeEnd: 99, unit: "%", note: "full-stack UI generation", trace: [60, 72, 82, 88, 93, 96] },
+      { label: "Python & FastAPI Backend", value: 94, target: 97, rangeStart: 70, rangeEnd: 98, unit: "%", note: "API & ML pipeline", trace: [52, 66, 78, 85, 90, 94] },
+      { label: "Tailwind CSS Design Tokens", value: 92, target: 95, rangeStart: 65, rangeEnd: 96, unit: "%", note: "instant responsive styling", trace: [45, 60, 72, 80, 87, 92] },
+      { label: "REST & WebSocket Protocols", value: 95, target: 98, rangeStart: 72, rangeEnd: 99, unit: "%", note: "real-time architecture", trace: [55, 68, 79, 86, 91, 95] },
     ],
   },
   teams: {
-    title: "Team Dynamics",
-    summary: "Team composition, role distribution, and communication patterns directly predict hackathon outcomes. HAC-KIT AI optimizes all three.",
+    title: "AI Coach & Team Dynamics",
+    summary: "Dynamic task decomposition and automated strategic orchestration double development velocity while reducing friction.",
     bars: [
-      { label: "Role clarity", value: 86, target: 91, rangeStart: 60, rangeEnd: 94, unit: "%", note: "task ownership", trace: [46, 58, 68, 74, 81, 86] },
-      { label: "Code velocity", value: 78, target: 84, rangeStart: 52, rangeEnd: 88, unit: "%", note: "vs unassisted", trace: [30, 42, 56, 66, 73, 78] },
-      { label: "Conflict resolution", value: 72, target: 79, rangeStart: 44, rangeEnd: 84, unit: "%", note: "agent mediation", trace: [22, 34, 46, 58, 66, 72] },
-      { label: "Pitch readiness", value: 91, target: 95, rangeStart: 68, rangeEnd: 98, unit: "%", note: "coaching lift", trace: [54, 66, 76, 82, 88, 91] },
+      { label: "Development Velocity", value: 94, target: 97, rangeStart: 70, rangeEnd: 98, unit: "%", note: "vs unassisted teams", trace: [48, 62, 74, 83, 89, 94] },
+      { label: "Problem Statement Alignment", value: 92, target: 96, rangeStart: 65, rangeEnd: 97, unit: "%", note: "judge rubric match", trace: [44, 58, 70, 80, 87, 92] },
+      { label: "Pitch Narrative Clarity", value: 96, target: 99, rangeStart: 75, rangeEnd: 100, unit: "%", note: "adversarial prep score", trace: [60, 72, 82, 89, 93, 96] },
+      { label: "On-Time MVP Completion", value: 98, target: 100, rangeStart: 82, rangeEnd: 100, unit: "%", note: "submitting before deadline", trace: [70, 80, 88, 93, 96, 98] },
     ],
   },
   success: {
-    title: "Success Rate",
-    summary: "Teams using HAC-KIT AI consistently outperform unassisted teams across submission rates, technical depth, and podium finishes.",
+    title: "Hackathon Podium Metrics",
+    summary: "Teams and solo builders leveraging HAC-KIT AI achieve significantly higher submission rates and podium finishes globally.",
     bars: [
-      { label: "Submission completion", value: 93, target: 96, rangeStart: 72, rangeEnd: 99, unit: "%", note: "vs 68% baseline", trace: [58, 70, 78, 84, 90, 93] },
-      { label: "Top-3 finish rate", value: 67, target: 74, rangeStart: 38, rangeEnd: 80, unit: "%", note: "podium presence", trace: [22, 34, 46, 54, 62, 67] },
-      { label: "Judge score impact", value: 82, target: 88, rangeStart: 56, rangeEnd: 93, unit: "%", note: "avg improvement", trace: [40, 52, 62, 72, 78, 82] },
-      { label: "Returning team rate", value: 76, target: 82, rangeStart: 48, rangeEnd: 88, unit: "%", note: "retention", trace: [30, 42, 56, 64, 71, 76] },
+      { label: "Project Submission Rate", value: 98, target: 100, rangeStart: 80, rangeEnd: 100, unit: "%", note: "100% completed on time", trace: [72, 82, 89, 94, 97, 98] },
+      { label: "Podium / Top-3 Finish Rate", value: 89, target: 94, rangeStart: 60, rangeEnd: 95, unit: "%", note: "judge favorite selection", trace: [38, 52, 66, 76, 83, 89] },
+      { label: "Technical Depth Rating", value: 93, target: 97, rangeStart: 68, rangeEnd: 98, unit: "%", note: "architecture score lift", trace: [50, 64, 76, 84, 89, 93] },
+      { label: "Pitch Score Improvement", value: 95, target: 98, rangeStart: 72, rangeEnd: 99, unit: "%", note: "vs baseline presentation", trace: [56, 70, 80, 87, 92, 95] },
     ],
   },
 };
@@ -80,7 +80,7 @@ export default function StatsSection() {
     <section className="stats" id="our-edge" aria-labelledby="stats-title">
       <div className="stats__header">
         <div className="stats__title-wrap">
-          <h2 id="stats-title">Data-driven hackathon intelligence across every phase.</h2>
+          <h2 id="stats-title">Data-driven hackathon intelligence powering every stage of your build.</h2>
         </div>
         <p
           className={`stats__summary ${isReady ? "is-visible" : ""}`}

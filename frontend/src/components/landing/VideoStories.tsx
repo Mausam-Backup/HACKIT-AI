@@ -56,9 +56,9 @@ export default function VideoStories() {
             <source src="/resources and hacakthons.mp4" type="video/mp4" />
           </video>
           <div className="story-card__content">
-            <p>Global Hackathon Neural Network</p>
-            <h3>Access an enterprise-grade curated pipeline of tier-1 hackathons, integrated directly into your workflow with zero-friction onboarding.</h3>
-            <span>Discovery · Always Updated</span>
+            <p>Hackathons & Resource Hub</p>
+            <h3>Discover global hackathons and access curated developer toolkits, starter templates, and API documentation in one centralized portal.</h3>
+            <span>Discovery · Curated Toolkits</span>
           </div>
         </article>
 
@@ -67,8 +67,8 @@ export default function VideoStories() {
             <source src="/ai-interview-demo.mp4" type="video/mp4" />
           </video>
           <div className="story-card__content">
-            <p>Predictive Pitch Engine</p>
-            <h3>Real-time NLP analysis and adversarial interview simulations powered by our proprietary conversational AI to perfect your narrative.</h3>
+            <p>AI Pitch Interview Simulator</p>
+            <h3>Practice your hackathon pitch with interactive AI interviewers. Receive real-time audio/video feedback to refine your narrative before presentation.</h3>
             <span>Pitch Prep · Real-time Feedback</span>
           </div>
         </article>
@@ -78,9 +78,9 @@ export default function VideoStories() {
             <source src="/IDE.mp4" type="video/mp4" />
           </video>
           <div className="story-card__content">
-            <p>Enterprise-Grade AI CLI</p>
-            <h3>Powered by our custom fine-tuned 8-billion parameter foundation model running completely locally on-device. Zero-latency context switching entirely independent of third-party APIs.</h3>
-            <span>Development · Local LLM</span>
+            <p>FastMCP Integration & Context Server</p>
+            <h3>Seamlessly connect AI coding assistants directly to your backend workspace using our native Model Context Protocol (FastMCP) server.</h3>
+            <span>Development · FastMCP Server</span>
           </div>
         </article>
 
@@ -89,8 +89,8 @@ export default function VideoStories() {
             <source src="/hack-coach-demo.mp4" type="video/mp4" />
           </video>
           <div className="story-card__content">
-            <p>Autonomous Strategic Orchestrator</p>
-            <h3>Leverage our fine-tuned reasoning models for dynamic task decomposition, deterministic problem analysis, and 24/7 strategic guidance.</h3>
+            <p>AI Strategic Hack Coach</p>
+            <h3>Get 24/7 strategic guidance, task decomposition, and problem statement analysis tailored to hackathon judge rubrics.</h3>
             <span>Strategy · 24/7 Guidance</span>
           </div>
         </article>
@@ -100,9 +100,9 @@ export default function VideoStories() {
             <source src="/ppt-demo.mp4" type="video/mp4" />
           </video>
           <div className="story-card__content">
-            <p>Generative Pitch Deck Synthesizer</p>
-            <h3>Instantly compile multi-modal code representations into stunning, investor-ready presentations with our advanced automated design engine.</h3>
-            <span>Pitch Deck · Automated</span>
+            <p>AI Presentation Engine & Mem0 Memory</p>
+            <h3>Instantly convert project outlines into exported PPTX, PDF, and web slides powered by real-time SSE streaming and Mem0 vector memory.</h3>
+            <span>Presentation · SSE Streaming & Mem0</span>
           </div>
         </article>
       </div>
