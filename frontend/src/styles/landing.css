@@ -525,7 +525,7 @@
 .showcase {
   position: relative;
   z-index: 50;
-  height: 600vh;
+  height: 400vh;
 }
 
 .showcase__sticky {
@@ -603,7 +603,7 @@
   display: flex;
   flex-direction: column;
   align-items: flex-end;
-  gap: clamp(10px, 0.9vw, 20px);
+  gap: clamp(16px, 1.5vw, 32px);
   padding-left: clamp(36px, 5vw, 120px);
   pointer-events: auto;
 }
@@ -611,9 +611,9 @@
 .showcase__tab {
   display: flex;
   align-items: center;
-  gap: clamp(8px, 0.7vw, 14px);
-  color: rgb(255 255 255 / 0.28);
-  font-size: clamp(12px, 0.82vw, 15px);
+  gap: clamp(10px, 1vw, 18px);
+  color: rgb(255 255 255 / 0.4);
+  font-size: clamp(16px, 1.2vw, 22px);
   font-weight: 500;
   line-height: 1;
   white-space: nowrap;
@@ -639,8 +639,8 @@
 
 .showcase__tab-num {
   font-weight: 600;
-  font-size: clamp(11px, 0.72vw, 13px);
-  color: rgb(255 255 255 / 0.38);
+  font-size: clamp(14px, 1vw, 18px);
+  color: rgb(255 255 255 / 0.5);
   transition: color 320ms ease;
 }
 
