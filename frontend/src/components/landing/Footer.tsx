@@ -21,20 +21,29 @@ export default function Footer({ bgClass = "bg-black" }: { bgClass?: string }) {
           </div>
 
           {/* Links Section 1 */}
-          <div className="flex flex-col gap-3 lg:col-span-3 lg:pl-8">
-            <h3 className="text-xs font-semibold uppercase tracking-wider text-zinc-500 mb-1">Platform</h3>
-            <Link href="/upcoming-hackathons" className="text-zinc-400 hover:text-white transition-colors text-sm font-normal">Hackathons</Link>
-            <Link href="/resources" className="text-zinc-400 hover:text-white transition-colors text-sm font-normal">Resources</Link>
-            <Link href="/coach" className="text-zinc-400 hover:text-white transition-colors text-sm font-normal">AI Coach</Link>
-            <Link href="/interviews" className="text-zinc-400 hover:text-white transition-colors text-sm font-normal">AI Interviews</Link>
+          <div className="flex flex-col gap-3 lg:col-span-2 lg:pl-8">
+            <h3 className="text-sm font-semibold uppercase tracking-wider text-zinc-500 mb-1">Platform</h3>
+            <Link href="/" className="text-zinc-400 hover:text-white transition-colors text-base font-normal">Home</Link>
+            <Link href="/upcoming-hackathons" className="text-zinc-400 hover:text-white transition-colors text-base font-normal">Hackathons</Link>
+            <Link href="/resources" className="text-zinc-400 hover:text-white transition-colors text-base font-normal">Resources</Link>
+            <Link href="/dashboard" className="text-zinc-400 hover:text-white transition-colors text-base font-normal">Presentations</Link>
           </div>
 
           {/* Links Section 2 */}
-          <div className="flex flex-col gap-3 lg:col-span-3">
-            <h3 className="text-xs font-semibold uppercase tracking-wider text-zinc-500 mb-1">Community</h3>
-            <a href="https://github.com" target="_blank" rel="noreferrer" className="text-zinc-400 hover:text-white transition-colors text-sm font-normal">GitHub</a>
-            <a href="https://x.com" target="_blank" rel="noreferrer" className="text-zinc-400 hover:text-white transition-colors text-sm font-normal">Twitter / X</a>
-            <a href="https://linkedin.com" target="_blank" rel="noreferrer" className="text-zinc-400 hover:text-white transition-colors text-sm font-normal">LinkedIn</a>
+          <div className="flex flex-col gap-3 lg:col-span-2">
+            <h3 className="text-sm font-semibold uppercase tracking-wider text-zinc-500 mb-1">AI Tools</h3>
+            <Link href="/interviews" className="text-zinc-400 hover:text-white transition-colors text-base font-normal">AI Interviews</Link>
+            <Link href="/coach" className="text-zinc-400 hover:text-white transition-colors text-base font-normal">AI Coach</Link>
+            <Link href="/workflow" className="text-zinc-400 hover:text-white transition-colors text-base font-normal">AI Workflow</Link>
+            <Link href="/docs" className="text-zinc-400 hover:text-white transition-colors text-base font-normal">App Builder</Link>
+          </div>
+
+          {/* Links Section 3 */}
+          <div className="flex flex-col gap-3 lg:col-span-2">
+            <h3 className="text-sm font-semibold uppercase tracking-wider text-zinc-500 mb-1">Community</h3>
+            <a href="https://github.com" target="_blank" rel="noreferrer" className="text-zinc-400 hover:text-white transition-colors text-base font-normal">GitHub</a>
+            <a href="https://x.com" target="_blank" rel="noreferrer" className="text-zinc-400 hover:text-white transition-colors text-base font-normal">Twitter / X</a>
+            <a href="https://linkedin.com" target="_blank" rel="noreferrer" className="text-zinc-400 hover:text-white transition-colors text-base font-normal">LinkedIn</a>
           </div>
         </div>
 

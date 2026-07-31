@@ -122,6 +122,9 @@ export default function FloatingNav() {
             </Link>
           ) : (
             <Link href="/login" className="bg-black text-white px-4 py-1.5 sm:px-5 sm:py-2 rounded-full font-bold text-xs tracking-wide shadow-md transition-transform duration-300 hover:scale-105 cursor-pointer flex items-center gap-2 whitespace-nowrap group">
+              <div className="size-5 rounded-md bg-white flex items-center justify-center overflow-hidden shrink-0">
+                <img src="/logo.png" alt="Logo" className="w-full h-full object-contain p-0.5" />
+              </div>
               <span className="text-white hover:text-white flex items-center gap-1.5">
                 Log in <i className="ph ph-arrow-right font-bold text-sm group-hover:translate-x-0.5 transition-transform"></i>
               </span>
