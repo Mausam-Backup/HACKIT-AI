@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Play, Trash2, Sparkles, ArrowRight, ChevronDown, X
@@ -64,6 +65,7 @@ const saveInterviews = (interviews: Interview[]) => {
 };
 
 export default function InterviewsPage() {
+  const router = useRouter();
   const [interviews, setInterviews] = useState<Interview[]>([]);
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [newTitle, setNewTitle] = useState('');
@@ -113,6 +115,7 @@ export default function InterviewsPage() {
     toast.success('Interview workspace initialized');
     setIsCreateOpen(false);
     setNewTitle('');
+    router.push(`/interviews/${newId}`);
   };
 
   const handleDelete = (id: number, title: string) => {
