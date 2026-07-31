@@ -107,3 +107,295 @@
 | [📡 API Reference](#-api-reference) | All REST endpoints |
 | [🚀 Deployment](#-deployment) | Docker, Kubernetes, Vercel, Electron |
 | [🛠️ Development Setup](#-development-setup) | Local dev quickstart |
+---
+
+## 🧠 Multi-Agent Orchestration Engine
+
+> **HACKIT** ships with a complete autonomous multi-agent system (`app_builder/`) — a React/Ink TUI that orchestrates **6 specialized AI agents** to take a hackathon idea from concept to a fully-built, scored, and pitch-ready full-stack project.
+
+```mermaid
+flowchart TD
+    User(["User Prompt: Build me a fintech app for hackathon"])
+
+    subgraph ORCHESTRATOR["Orchestrator Engine - orchestrator.py"]
+        Router{{"Agent Router and Task Decomposer"}}
+    end
+
+    subgraph COACH_PHASE["Phase 1 - Coach Agent"]
+        Coach["Coach Agent - coach.md spec"]
+        Plan["PLAN.md - MVP Scope and Architecture"]
+        Arch["ARCHITECTURE.md - DB Schema and Component Map"]
+        Tasks["TASKS.md - Checkbox Task Tracking"]
+    end
+
+    subgraph BUILD_PHASE["Phase 2 - Parallel Builder Agents"]
+        FE_Agent["Frontend Agent - frontend.md spec\nVite + React 18 + Lucide Icons"]
+        BE_Agent["Backend Agent - backend.md spec\nNode.js + Express + SQLite"]
+    end
+
+    subgraph VALIDATE_PHASE["Phase 3 - Validation and Self-Repair"]
+        Build["npm run build + Lint + Tests"]
+        Repair{{"Build Failed?"}}
+        Fix["Auto-Repair Agent - up to 2 iterations"]
+        Pass["Build Passed"]
+    end
+
+    subgraph PITCH_PHASE["Phase 4 - Pitch Generator"]
+        Pitch["HACKATHON.md - 3-minute Demo Script"]
+        Score["JUDGE_SCORE.md - Rubric Evaluation"]
+    end
+
+    subgraph MCP_LAYER["FastMCP Context Server - Port 8001"]
+        MCP["FastMCP - OpenAPI to Tool Definitions"]
+        Mem0["Mem0 OSS - Vector Memory Store"]
+    end
+
+    subgraph HACKIT_CLIENT["HackIt Client - hackit_client.py"]
+        Client["REST API Client to FastAPI Backend Port 8000"]
+    end
+
+    User --> ORCHESTRATOR
+    Router --> COACH_PHASE
+    Router --> MCP_LAYER
+    Coach --> Plan & Arch & Tasks
+    Plan --> BUILD_PHASE
+    FE_Agent & BE_Agent --> VALIDATE_PHASE
+    Build --> Repair
+    Repair -->|Yes| Fix --> Build
+    Repair -->|No| Pass --> PITCH_PHASE
+    ORCHESTRATOR --> HACKIT_CLIENT
+    MCP_LAYER --> Mem0
+```
+
+### Agent Specifications
+
+| Agent | Spec File | Role | Output |
+|-------|-----------|------|--------|
+| **Coach Agent** | `agents/coach.md` | Planning, scope definition, architecture design | PLAN.md, ARCHITECTURE.md, TASKS.md |
+| **Frontend Builder** | `agents/frontend.md` | Generates complete React frontend | Vite + React 18 + Lucide + dark-mode UI |
+| **Backend Builder** | `agents/backend.md` | Generates complete Node.js backend | Express + SQLite + REST API |
+| **Validation Agent** | `orchestrator.py` | Build verification + log analysis | Error reports, repair instructions |
+| **Auto-Repair Agent** | `orchestrator.py` | Self-healing code fix loop | Patched source files (up to 2 passes) |
+| **Pitch Agent** | `orchestrator.py` | Hackathon demo and judge scoring | HACKATHON.md + JUDGE_SCORE.md |
+
+### Generated Project Artifacts
+
+| File | Purpose |
+|------|---------|
+| `frontend/` | React 18 + Vite 5 complete frontend app |
+| `backend/` | Node.js + Express REST API server |
+| `PLAN.md` | Executive summary, MVP scope, stretch goals |
+| `ARCHITECTURE.md` | Technical design, component map, DB schema |
+| `TASKS.md` | Checkbox task tracking list |
+| `WALKTHROUGH.md` | Codebase map and verification steps |
+| `NEXT-STEPS.md` | Prompts for incremental feature expansion |
+| `HACKATHON.md` | 3-minute pitch outline and live demo script |
+| `JUDGE_SCORE.md` | AI judge scoring against hackathon rubrics |
+
+### Quick Launch
+
+```bash
+# Run instantly with no install
+npx hackit-ai
+
+# Install globally
+npm install -g hackit-ai
+hackit "create an AI-powered expense tracker"
+
+# Launch from source
+cd app_builder
+pip install -r requirements-runtime.txt
+python tui.py
+```
+
+### TUI Keyboard Controls
+
+| Key | Action |
+|-----|--------|
+| `Tab` | Cycle Tech Stack: Vite+React, Next.js, Vanilla, Vue 3, Custom |
+| `Up` / `Down` | Scroll live pipeline build logs |
+| `/new` | Reset workspace and start fresh project |
+| `Ctrl+C` | Safely exit and restore terminal |
+
+---
+
+## ✨ 6 AI Workflows
+
+> Every workflow uses SSE streaming, parallel LLM calls, and long-term Mem0 memory injection.
+
+---
+
+### Workflow 1 — AI Presentation Generation
+
+The flagship multi-step pipeline converting a prompt or document into a professional slide deck.
+
+```mermaid
+flowchart TD
+    A(["User submits prompt + files"]) --> B["Upload documents - /api/v1/ppt/files/*"]
+    B --> C["Parse documents - pdfplumber / python-pptx"]
+    C --> D["LLM Call 1: Generate Outline"]
+    D --> E["SSE: outline_chunk events to Frontend"]
+    E --> F{{"User reviews outline"}}
+    F -->|Revise| G["Send revision prompt"] --> D
+    F -->|Approve| H
+
+    subgraph PARALLEL["Parallelized Slide Generation"]
+        H["LLM Calls 2 to N - one per slide, concurrent"]
+        I["Parse and validate slide JSON"]
+        J["Insert slides into database"]
+    end
+
+    J --> K["SSE: slide_complete events"]
+    K --> L["Apply template layout - v2 schema renderer"]
+    L --> M["Render HTML preview"]
+    M --> N[["Slide editor ready"]]
+    N --> O{{"Export?"}}
+    O -->|PPTX| P["python-pptx generation with fonts + images + layouts"]
+    O -->|PDF| Q["HTML to PDF pipeline"]
+    P --> R(["Download file"])
+    Q --> R
+```
+
+---
+
+### Workflow 2 — AI Hackathon Coach
+
+Context-aware strategic advisor powered by OpenRouter OSS 120B.
+
+```mermaid
+sequenceDiagram
+    participant U as User
+    participant FE as Next.js Frontend
+    participant BFF as BFF /api/coach
+    participant LLM as OpenRouter OSS 120B
+
+    U->>FE: Enter problem statement or upload PDF
+    FE->>BFF: POST /api/coach with message, criteria, attachments
+    BFF->>BFF: Process attachments via PDF text extraction
+    BFF->>LLM: Stream with tournament criteria system prompt
+    Note over LLM: Analyzes: level, format, timeframe, judgingFocus, teamSize
+    LLM-->>BFF: Streaming markdown response
+    BFF-->>FE: SSE token stream
+    FE->>U: Render ProblemAnalysis cards, ComparisonMatrix, hour-by-hour plan
+```
+
+**Outputs:** Problem ranking with win-probability scores, tech stack matrix, hour-by-hour execution plan, judge rubric alignment.
+
+---
+
+### Workflow 3 — AI Interview Preparation
+
+Voice-enabled mock interview system via Vapi AI Web SDK.
+
+```mermaid
+flowchart LR
+    A(["User starts interview session"])
+    B["VAPI AI Web SDK - Voice session initialized"]
+    C["AI Interviewer Agent - Role-specific questions"]
+    D["Real-time Answer Analysis - Claude / GPT-4o"]
+    E["Feedback Report - Strengths, gaps, suggestions"]
+    F["Follow-up Questions - Context-aware probing"]
+
+    A --> B --> C --> D --> F
+    D --> E
+    F --> C
+```
+
+---
+
+### Workflow 4 — AI Workflow Builder (Visual Automation Designer)
+
+Drag-and-drop canvas for designing multi-agent AI pipelines, powered by Groq fast inference.
+
+```mermaid
+flowchart TD
+    A(["Natural language prompt\nDesign a RAG pipeline"])
+
+    subgraph GROQ_ENGINE["Groq Fast Inference Engine"]
+        B["groqGenerator.ts - generateWorkflowFromGroq()"]
+        C["Returns: mermaidCode + canvasNodes array"]
+    end
+
+    subgraph CANVAS["WorkflowCanvas - React"]
+        D["Drag-and-drop nodes and edges"]
+        E["Node Inspector Modal - Configure each agent"]
+        F["Tools Library Drawer - Pre-built agent blocks"]
+    end
+
+    subgraph MERMAID["MermaidPanel - AI Studio"]
+        G["Live Mermaid diagram - AI-editable code view"]
+        H["Bidirectional sync: Canvas and Mermaid"]
+    end
+
+    A --> GROQ_ENGINE --> CANVAS
+    GROQ_ENGINE --> MERMAID
+```
+
+---
+
+### Workflow 5 — Chat with Presentation (Context-Aware RAG)
+
+Full slide context + Mem0 long-term memory injected into every LLM message.
+
+```mermaid
+sequenceDiagram
+    participant U as User
+    participant FE as Frontend
+    participant BE as FastAPI
+    participant MEM as Mem0 Memory
+    participant DB as Database
+    participant LLM as LLM Provider
+
+    U->>FE: Make slide 3 more concise
+    FE->>BE: POST /api/v1/ppt/chat/message/stream
+    BE->>DB: Load conversation history
+    BE->>DB: Load current slide JSON content
+    BE->>MEM: Retrieve long-term user memory context
+    BE->>BE: Build system prompt: slide_context + history + memory
+    BE->>LLM: Stream with full context
+    LLM-->>BE: Token stream
+    BE-->>FE: SSE token events
+    FE->>U: Render streaming markdown response
+    BE->>DB: Save message pair to chat_history_messages
+    BE->>MEM: Update memory store
+```
+
+---
+
+### Workflow 6 — Async Export and Webhook Pipeline
+
+Long-running PPTX/PDF export jobs run asynchronously with signed webhook delivery on completion.
+
+```mermaid
+flowchart TD
+    A(["POST /api/v1/ppt/presentation/id/export"])
+    B["Create async_task record - status: pending"]
+    C["Return task ID immediately to frontend"]
+
+    subgraph ASYNC_WORKER["Background Export Worker"]
+        D["Template renderer - v2 schema to slide objects"]
+        E{{"PPTX or PDF?"}}
+        F["python-pptx - fonts + images + layouts"]
+        G["HTML to PDF pipeline"]
+        H["Store export file path in database"]
+    end
+
+    subgraph WEBHOOK["Webhook Delivery"]
+        I["webhook_service.py"]
+        J["HTTP POST to subscriber URLs with HMAC signature"]
+    end
+
+    A --> B --> C
+    B --> ASYNC_WORKER
+    D --> E
+    E -->|PPTX| F --> H
+    E -->|PDF| G --> H
+    H --> WEBHOOK
+    I --> J
+
+    C --> K["Frontend polls /api/v1/async-tasks/id"]
+    K --> L{{"Status: done?"}}
+    L -->|No| K
+    L -->|Yes| M(["GET download URL - File delivered"])
+```
+
