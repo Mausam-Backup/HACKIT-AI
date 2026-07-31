@@ -25,15 +25,15 @@ class TestConfig:
             server_port=5000,
             strict_models=True,
             max_repair_attempts=2,
-            coach_model="opencode/gpt-5-nano",
-            builder_model="opencode/gpt-5-nano",
+            coach_model="hackit/gpt-5-nano",
+            builder_model="hackit/gpt-5-nano",
         )
         assert c.http_timeout == 600
         assert c.server_port == 5000
         assert c.strict_models is True
         assert c.max_repair_attempts == 2
-        assert c.coach_model == "opencode/gpt-5-nano"
-        assert c.builder_model == "opencode/gpt-5-nano"
+        assert c.coach_model == "hackit/gpt-5-nano"
+        assert c.builder_model == "hackit/gpt-5-nano"
 
     def test_from_yaml_nonexistent(self):
         c = Config.from_yaml("C:\\nonexistent_path_xyz.yaml")

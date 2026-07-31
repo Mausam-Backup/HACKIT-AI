@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { render, Box, Text, useInput } from 'ink';
+import { render, Box, Text, useInput, useFocusManager } from 'ink';
 import TextInput from 'ink-text-input';
 import { spawn, execSync } from 'child_process';
 import path from 'path';
@@ -134,6 +134,29 @@ const StatusBar = ({ status, stages }) => {
   );
 };
 
+const FocusableTextInput = ({ value, onChange, onSubmit, placeholder, focus = true }) => {
+  const { enableFocus, focusNext } = useFocusManager();
+
+  useEffect(() => {
+    if (focus) {
+      if (typeof enableFocus === 'function') enableFocus();
+      const t = setTimeout(() => {
+        try { if (typeof focusNext === 'function') focusNext(); } catch (e) {}
+      }, 50);
+      return () => clearTimeout(t);
+    }
+  }, [focus]);
+
+  return (
+    <Box flexDirection="row" flexGrow={1}>
+      <TextInput value={value} onChange={onChange} onSubmit={onSubmit} focus={focus} />
+      {value.length === 0 && placeholder && (
+        <Text color="#6e7681"> {placeholder}</Text>
+      )}
+    </Box>
+  );
+};
+
 const App = () => {
   const [input, setInput] = useState('');
   const handleInputChange = (val) => {
@@ -172,11 +195,16 @@ const App = () => {
     "Vite + React + Express",
     "Next.js + Tailwind + Supabase",
     "Vanilla HTML + JS + CSS",
-    "Vue 3 + Next + Node"
+    "Vue 3 + Next + Node",
+    "Custom (insert in prompt)"
   ];
   const [stackIndex, setStackIndex] = useState(0);
 
   const [scrollOffset, setScrollOffset] = useState(0);
+
+  const containerWidth = size.columns 
+    ? Math.min(size.columns - 2, Math.max(50, Math.floor(size.columns * 0.75)))
+    : 75;
 
   const maxVisibleLogs = Math.max(4, Math.min(10, (size.rows || 24) - 15));
   const maxScroll = Math.max(0, logs.length - maxVisibleLogs);
@@ -303,6 +331,12 @@ const App = () => {
     child.on('close', (code) => {
       childRef.current = null;
       setIsRunning(false);
+      if (process.stdin.isTTY && typeof process.stdin.setRawMode === 'function') {
+        try {
+          process.stdin.setRawMode(true);
+          process.stdin.resume();
+        } catch (e) {}
+      }
       if (code === 0) {
         setSuccess(true);
       } else {
@@ -406,26 +440,29 @@ const App = () => {
             )}
 
             {/* Welcome input (Claude Code style 2-line prompt) */}
-            <Box width={size.columns ? Math.floor(size.columns * 0.75) : 75} flexDirection="column" marginY={1}>
+            <Box width={containerWidth} flexDirection="column" marginY={1}>
               {/* Top Line */}
               <Box flexDirection="row" alignItems="center">
                 <Text color="#3b82f6">── </Text>
                 <Text color="cyan" bold>Tell me your next crazzzzyyy idea!</Text>
-                <Text color="#3b82f6"> {"─".repeat(Math.max(5, (size.columns ? Math.floor(size.columns * 0.75) : 75) - 39))}</Text>
+                <Text color="#3b82f6"> {"─".repeat(Math.max(2, containerWidth - 39))}</Text>
               </Box>
 
               {/* Input Row */}
               <Box flexDirection="row" marginY={1} paddingLeft={2}>
                 <Text color="cyan" bold>❯ </Text>
-                <TextInput value={input} onChange={handleInputChange} onSubmit={handleSubmit} />
-                {input.length === 0 && (
-                  <Text color="#6e7681"> Ask anything... "Create a retro snake game"</Text>
-                )}
+                <FocusableTextInput
+                  value={input}
+                  onChange={handleInputChange}
+                  onSubmit={handleSubmit}
+                  placeholder='Ask anything... "Create a retro snake game"'
+                  focus={!hasStarted}
+                />
               </Box>
 
               {/* Tech Stack Indicator */}
-              <Box paddingLeft={2} marginBottom={1}>
-                <Text color="#2f81f7">TECH Stack </Text>
+              <Box paddingLeft={2} marginBottom={1} flexDirection="row" flexWrap="wrap">
+                <Text color="#2f81f7">Tech Stack </Text>
                 <Text color="#8b949e">· </Text>
                 <Text color="#e3b341" bold>{stacks[stackIndex]}</Text>
                 <Text color="#8b949e"> ·</Text>
@@ -433,11 +470,11 @@ const App = () => {
 
               {/* Bottom Line */}
               <Box flexDirection="row" alignItems="center">
-                <Text color="#3b82f6">{"─".repeat(size.columns ? Math.floor(size.columns * 0.75) : 75)}</Text>
+                <Text color="#3b82f6">{"─".repeat(Math.max(2, containerWidth))}</Text>
               </Box>
             </Box>
             
-            <Box width={size.columns ? Math.floor(size.columns * 0.75) : 75} marginTop={1} paddingLeft={2}>
+            <Box width={containerWidth} marginTop={1} paddingLeft={2}>
               <Text color="#8b949e">
                 <Text bold color="#c9d1d9">enter</Text> run pipeline   <Text bold color="#c9d1d9">tab</Text> cycle stack   <Text bold color="#c9d1d9">/new</Text> fresh window
               </Text>
@@ -514,26 +551,29 @@ const App = () => {
 
               {/* Post-pipeline input (Claude Code style 2-line prompt) */}
               {!isRunning && hasStarted && (
-                <Box flexDirection="column" marginTop={1} marginBottom={2}>
+                <Box flexDirection="column" marginTop={1} marginBottom={2} width={containerWidth}>
                   {/* Top Line */}
                   <Box flexDirection="row" alignItems="center">
                     <Text color="#3b82f6">── </Text>
                     <Text color="cyan" bold>What's Next!</Text>
-                    <Text color="#3b82f6"> {"─".repeat(Math.max(5, (size.columns || 80) - 18))}</Text>
+                    <Text color="#3b82f6"> {"─".repeat(Math.max(2, containerWidth - 18))}</Text>
                   </Box>
 
                   {/* Input Row */}
                   <Box flexDirection="row" marginY={1} paddingLeft={2}>
                     <Text color="cyan" bold>❯ </Text>
-                    <TextInput value={input} onChange={handleInputChange} onSubmit={handleSubmit} />
-                    {input.length === 0 && (
-                      <Text color="#6e7681"> Type prompt or /new to reset workspace</Text>
-                    )}
+                    <FocusableTextInput
+                      value={input}
+                      onChange={handleInputChange}
+                      onSubmit={handleSubmit}
+                      placeholder="Type prompt or /new to reset workspace"
+                      focus={!isRunning && hasStarted}
+                    />
                   </Box>
 
                   {/* Bottom Line */}
                   <Box flexDirection="row" alignItems="center">
-                    <Text color="#3b82f6">{"─".repeat(size.columns || 80)}</Text>
+                    <Text color="#3b82f6">{"─".repeat(Math.max(2, containerWidth))}</Text>
                   </Box>
                 </Box>
               )}

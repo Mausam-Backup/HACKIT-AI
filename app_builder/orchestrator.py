@@ -11,11 +11,14 @@ import httpx
 
 from config import Config
 from dev_server import DevServer
-from opencode_client import OpencodeClient, OpencodeStuck
+from hackit_client import HackitClient, HackitStuck
 from scaffold import scaffold_project, copy_agents, git_commit, load_prompt, run_lint_and_test
 from stack_manager import load_project_stack
 from structured_log import log_event, get_logger
 from terminal_safe import SafeTerminalContext
+from rich.console import Console
+
+console = Console()
 
 APP_BUILDER_DIR = os.path.dirname(os.path.abspath(__file__))
 
@@ -25,7 +28,18 @@ def _safe(text: str) -> str:
 
 def log(msg: str, event: str | None = None, **kwargs):
     if not os.environ.get("RUNNING_IN_TUI"):
-        print(f"  {_safe(msg)}", flush=True)
+        color = "white"
+        if "[OK]" in msg or "PASSED" in msg:
+            color = "green"
+        elif "[FAIL]" in msg or "FAILED" in msg:
+            color = "red bold"
+        elif "Starting" in msg or "Shutting down" in msg or "[HACKIT-SERVER]" in msg:
+            color = "cyan"
+        elif msg.startswith("="):
+            color = "blue bold"
+        elif "PHASE" in msg:
+            color = "magenta bold"
+        console.print(f"  {_safe(msg)}", style=color)
     log_event(event or "log_message", message=msg, **kwargs)
 
 
@@ -220,7 +234,7 @@ def _update_state_after_build(project_dir: str):
     log(f"State updated: {done}/{total} tasks ({state['progress_pct']}%)")
 
 
-async def _run_agent(client: OpencodeClient, project_dir: str, phase: str,
+async def _run_agent(client: HackitClient, project_dir: str, phase: str,
                      agent: str, message: str, min_bytes: int = 50,
                      patterns: list[str] | None = None) -> str:
     cached = _check_cached(project_dir, phase, agent, message=message,
@@ -233,7 +247,7 @@ async def _run_agent(client: OpencodeClient, project_dir: str, phase: str,
     return resp
 
 
-async def _verify_models(client: OpencodeClient, models: dict[str, str]):
+async def _verify_models(client: HackitClient, models: dict[str, str]):
     for agent, model in models.items():
         try:
             await client.verify_healthy()
@@ -344,7 +358,7 @@ async def run_validation(project_dir: str) -> dict:
     return validation_result
 
 
-async def phase_coach(client: OpencodeClient, project_dir: str, task: str, coach_timeout: int = 300) -> bool:
+async def phase_coach(client: HackitClient, project_dir: str, task: str, coach_timeout: int = 300) -> bool:
     """Phase 1: Coach analyzes the idea and generates plans + task files in 2 fast targeted passes."""
     log_event("coach_start", task=task)
     log("=" * 60)
@@ -445,7 +459,7 @@ async def phase_coach(client: OpencodeClient, project_dir: str, task: str, coach
     return coach_ok
 
 
-async def phase_builder(client: OpencodeClient, project_dir: str, repair: bool | dict = False) -> bool:
+async def phase_builder(client: HackitClient, project_dir: str, repair: bool | dict = False) -> bool:
     """Phase 2: Builder generates the project (FE + BE in parallel)."""
     is_repair = bool(repair)
     tag = "repair" if is_repair else "build"
@@ -567,7 +581,7 @@ async def phase_validation(project_dir: str) -> dict:
     return result
 
 
-async def phase_pitch_update(client: OpencodeClient, project_dir: str) -> bool:
+async def phase_pitch_update(client: HackitClient, project_dir: str) -> bool:
     """Regenerate HACKATHON.md with actual build results."""
     log_event("pitch_update_start")
     log("=" * 60)
@@ -594,7 +608,7 @@ async def phase_pitch_update(client: OpencodeClient, project_dir: str) -> bool:
         return False
 
 
-async def phase_judge_score(client: OpencodeClient, project_dir: str) -> bool:
+async def phase_judge_score(client: HackitClient, project_dir: str) -> bool:
     """Generate JUDGE_SCORE.md evaluating the project against hackathon criteria."""
     log_event("judge_start")
     log("=" * 60)
@@ -630,7 +644,7 @@ def _print_summary(project_dir: str, slug: str, start_time: float, phases: dict)
     file_count = 0
     for root, dirs, files in os.walk(project_dir):
         dirs[:] = [d for d in dirs if d not in ("node_modules", "__pycache__", ".git")]
-        if ".opencode" not in root:
+        if ".hackit" not in root:
             file_count += len(files)
 
     print(f"\n{'='*60}", flush=True)
@@ -688,7 +702,7 @@ async def run_pipeline(task: str, config: Config, mode: str = "full",
     except Exception:
         pass
 
-    client = OpencodeClient(
+    client = HackitClient(
         port=config.server_port,
         project_dir=project_dir,
         timeout=config.http_timeout,
@@ -696,9 +710,9 @@ async def run_pipeline(task: str, config: Config, mode: str = "full",
         ws_broadcast=_ws_broadcast,
     )
 
-    log("Starting opencode server...")
+    log("[HACKIT-SERVER] Starting HACKIT server...")
     await client.start()
-    log("Server ready")
+    log("[HACKIT-SERVER] Server ready")
 
     models = {
         "coach": config.coach_model,
@@ -825,7 +839,7 @@ async def run_pipeline(task: str, config: Config, mode: str = "full",
         _print_summary(project_dir, slug, start_time, phases)
         success = False
     finally:
-        log("Shutting down opencode server...")
+        log("[HACKIT-SERVER] Shutting down HACKIT server...")
         await client.stop()
 
     return {"phases": phases, "validation_result": validation_result, "success": success, "slug": slug, "project_dir": project_dir}

@@ -3,20 +3,20 @@ import sys
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
-from opencode_client import OpencodeClient, OpencodeStuck
+from hackit_client import HackitClient, HackitStuck
 
 
-class TestOpencodeStuck:
+class TestHackitStuck:
     def test_exception_can_be_raised(self):
         try:
-            raise OpencodeStuck("test error")
-        except OpencodeStuck as e:
+            raise HackitStuck("test error")
+        except HackitStuck as e:
             assert "test error" in str(e)
 
 
-class TestOpencodeClientConfig:
+class TestHackitClientConfig:
     def test_init_defaults(self):
-        client = OpencodeClient(port=4096, project_dir="/tmp/test")
+        client = HackitClient(port=4096, project_dir="/tmp/test")
         assert client.port == 4096
         assert client.project_dir == "/tmp/test"
         assert client.timeout == 1800
@@ -24,25 +24,25 @@ class TestOpencodeClientConfig:
         assert client.base_url == "http://127.0.0.1:4096"
 
     def test_init_custom_timeout(self):
-        client = OpencodeClient(port=5000, project_dir="/tmp/test", timeout=600, strict_models=True)
+        client = HackitClient(port=5000, project_dir="/tmp/test", timeout=600, strict_models=True)
         assert client.timeout == 600
         assert client.strict_models is True
 
     def test_base_url_format(self):
-        client = OpencodeClient(port=8080, project_dir="/tmp/test")
+        client = HackitClient(port=8080, project_dir="/tmp/test")
         assert client.base_url == "http://127.0.0.1:8080"
 
     def test_default_strict_models(self):
-        client = OpencodeClient(port=4096, project_dir="/tmp/test")
+        client = HackitClient(port=4096, project_dir="/tmp/test")
         assert client.strict_models is False
 
     def test_default_timeout(self):
-        client = OpencodeClient(port=4096, project_dir="/tmp/test")
+        client = HackitClient(port=4096, project_dir="/tmp/test")
         assert client.timeout == 1800
 
 import pytest
 from unittest.mock import AsyncMock, patch, MagicMock
-from opencode_client import TimeoutTracker
+from hackit_client import TimeoutTracker
 
 class TestTimeoutTracker:
     def test_timeout_tracker_logic(self):
@@ -68,10 +68,10 @@ class TestTimeoutTracker:
         assert 8.0 <= delay_3 <= 9.0
 
 @pytest.mark.asyncio
-class TestOpencodeClientAdvanced:
-    @patch("opencode_client.httpx.AsyncClient")
+class TestHackitClientAdvanced:
+    @patch("hackit_client.httpx.AsyncClient")
     async def test_ensure_session_reuses_session(self, mock_client_class):
-        client = OpencodeClient(port=4096, project_dir="/tmp/test")
+        client = HackitClient(port=4096, project_dir="/tmp/test")
         mock_client = AsyncMock()
         client.client = mock_client
         mock_resp = MagicMock()
@@ -85,9 +85,9 @@ class TestOpencodeClientAdvanced:
         assert sid2 == "session-123"
         assert mock_client.post.call_count == 1
         
-    @patch("opencode_client.httpx.AsyncClient")
+    @patch("hackit_client.httpx.AsyncClient")
     async def test_run_one_success_regular_json(self, mock_client_class):
-        client = OpencodeClient(port=4096, project_dir="/tmp/test")
+        client = HackitClient(port=4096, project_dir="/tmp/test")
         client.client = MagicMock()
         client.client.post = AsyncMock()
         
@@ -108,9 +108,9 @@ class TestOpencodeClientAdvanced:
         result = await client.run_agent("coach", "say hello")
         assert result == "hello"
 
-    @patch("opencode_client.httpx.AsyncClient")
+    @patch("hackit_client.httpx.AsyncClient")
     async def test_run_one_sse_streaming(self, mock_client_class):
-        client = OpencodeClient(port=4096, project_dir="/tmp/test")
+        client = HackitClient(port=4096, project_dir="/tmp/test")
         client.client = MagicMock()
         client.client.post = AsyncMock()
         client._ensure_session = AsyncMock(return_value="sess-1")
@@ -133,10 +133,10 @@ class TestOpencodeClientAdvanced:
         result = await client.run_agent("coach", "say hello")
         assert result == "hello"
 
-    @patch("opencode_client.httpx.AsyncClient")
+    @patch("hackit_client.httpx.AsyncClient")
     @patch("asyncio.sleep", new_callable=AsyncMock)
     async def test_run_one_429_retry(self, mock_sleep, mock_client_class):
-        client = OpencodeClient(port=4096, project_dir="/tmp/test")
+        client = HackitClient(port=4096, project_dir="/tmp/test")
         client.client = MagicMock()
         client.client.post = AsyncMock()
         client._ensure_session = AsyncMock(return_value="sess-1")
@@ -167,7 +167,7 @@ class TestOpencodeClientAdvanced:
 
 class TestExtractText:
     def test_extract_text_variations(self):
-        from opencode_client import _extract_text
+        from hackit_client import _extract_text
         assert _extract_text("hello") == "hello"
         assert _extract_text({"text": "world"}) == "world"
         assert _extract_text({"content": "foo"}) == "foo"

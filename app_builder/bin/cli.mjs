@@ -2,7 +2,7 @@
 
 // bin/cli.jsx
 import React, { useState, useEffect, useRef } from "react";
-import { render, Box, Text, useInput } from "ink";
+import { render, Box, Text, useInput, useFocusManager } from "ink";
 import TextInput from "ink-text-input";
 import { spawn, execSync } from "child_process";
 import path from "path";
@@ -114,6 +114,22 @@ var StatusBar = ({ status, stages }) => {
   }
   return /* @__PURE__ */ React.createElement(Box, { height: 1, backgroundColor: "#111111", paddingLeft: 1, paddingRight: 1 }, /* @__PURE__ */ React.createElement(Box, { flexGrow: 1 }, /* @__PURE__ */ React.createElement(SixSquarePulse, { isRunning: running }), /* @__PURE__ */ React.createElement(Text, { color: "white" }, " "), /* @__PURE__ */ React.createElement(Text, { bold: true, color: "cyan" }, "HACKIT"), /* @__PURE__ */ React.createElement(Text, { color: "gray" }, "  "), /* @__PURE__ */ React.createElement(Text, { color: statusColor }, statusText), running && /* @__PURE__ */ React.createElement(Text, { color: "gray" }, "  [", doneCount, "/", total, "]")));
 };
+var FocusableTextInput = ({ value, onChange, onSubmit, placeholder, focus = true }) => {
+  const { enableFocus, focusNext } = useFocusManager();
+  useEffect(() => {
+    if (focus) {
+      if (typeof enableFocus === "function") enableFocus();
+      const t = setTimeout(() => {
+        try {
+          if (typeof focusNext === "function") focusNext();
+        } catch (e) {
+        }
+      }, 50);
+      return () => clearTimeout(t);
+    }
+  }, [focus]);
+  return /* @__PURE__ */ React.createElement(Box, { flexDirection: "row", flexGrow: 1 }, /* @__PURE__ */ React.createElement(TextInput, { value, onChange, onSubmit, focus }), value.length === 0 && placeholder && /* @__PURE__ */ React.createElement(Text, { color: "#6e7681" }, " ", placeholder));
+};
 var App = () => {
   const [input, setInput] = useState("");
   const handleInputChange = (val) => {
@@ -150,10 +166,12 @@ var App = () => {
     "Vite + React + Express",
     "Next.js + Tailwind + Supabase",
     "Vanilla HTML + JS + CSS",
-    "Vue 3 + Next + Node"
+    "Vue 3 + Next + Node",
+    "Custom (insert in prompt)"
   ];
   const [stackIndex, setStackIndex] = useState(0);
   const [scrollOffset, setScrollOffset] = useState(0);
+  const containerWidth = size.columns ? Math.min(size.columns - 2, Math.max(50, Math.floor(size.columns * 0.75))) : 75;
   const maxVisibleLogs = Math.max(4, Math.min(10, (size.rows || 24) - 15));
   const maxScroll = Math.max(0, logs.length - maxVisibleLogs);
   const effectiveScroll = Math.min(scrollOffset, maxScroll);
@@ -263,6 +281,13 @@ var App = () => {
     child.on("close", (code) => {
       childRef.current = null;
       setIsRunning(false);
+      if (process.stdin.isTTY && typeof process.stdin.setRawMode === "function") {
+        try {
+          process.stdin.setRawMode(true);
+          process.stdin.resume();
+        } catch (e) {
+        }
+      }
       if (code === 0) {
         setSuccess(true);
       } else {
@@ -328,13 +353,31 @@ var App = () => {
 \u2588\u2588\u2551  \u2588\u2588\u2551\u2588\u2588\u2551  \u2588\u2588\u2551\u255A\u2588\u2588\u2588\u2588\u2588\u2588\u2557\u2588\u2588\u2551  \u2588\u2588\u2557\u2588\u2588\u2551   \u2588\u2588\u2551   
 \u255A\u2550\u255D  \u255A\u2550\u255D\u255A\u2550\u255D  \u255A\u2550\u255D \u255A\u2550\u2550\u2550\u2550\u2550\u255D\u255A\u2550\u255D  \u255A\u2550\u255D\u255A\u2550\u255D   \u255A\u2550\u255D`), /* @__PURE__ */ React.createElement(Text, { italic: true, color: "gray" }, "Autonomous AI Hackathon Coach & App Builder")),
     error && !isRunning && /* @__PURE__ */ React.createElement(Box, { flexDirection: "column", marginBottom: 1, borderColor: "red", borderStyle: "round", padding: 1 }, /* @__PURE__ */ React.createElement(Text, { color: "red", bold: true }, "\u274C Fatal Error: ", error), errorDetails?.log_file && /* @__PURE__ */ React.createElement(Text, { color: "yellow" }, "\u{1F4C4} Log file: ", errorDetails.log_file), errorDetails?.traceback && /* @__PURE__ */ React.createElement(Box, { marginTop: 1, flexDirection: "column" }, /* @__PURE__ */ React.createElement(Text, { color: "gray", bold: true }, "Traceback:"), /* @__PURE__ */ React.createElement(Text, { color: "red" }, errorDetails.traceback.split("\n").slice(-8).join("\n")))),
-    /* @__PURE__ */ React.createElement(Box, { width: size.columns ? Math.floor(size.columns * 0.75) : 75, flexDirection: "column", marginY: 1 }, /* @__PURE__ */ React.createElement(Box, { flexDirection: "row", alignItems: "center" }, /* @__PURE__ */ React.createElement(Text, { color: "#3b82f6" }, "\u2500\u2500 "), /* @__PURE__ */ React.createElement(Text, { color: "cyan", bold: true }, "Tell me your next crazzzzyyy idea!"), /* @__PURE__ */ React.createElement(Text, { color: "#3b82f6" }, " ", "\u2500".repeat(Math.max(5, (size.columns ? Math.floor(size.columns * 0.75) : 75) - 39)))), /* @__PURE__ */ React.createElement(Box, { flexDirection: "row", marginY: 1, paddingLeft: 2 }, /* @__PURE__ */ React.createElement(Text, { color: "cyan", bold: true }, "\u276F "), /* @__PURE__ */ React.createElement(TextInput, { value: input, onChange: handleInputChange, onSubmit: handleSubmit }), input.length === 0 && /* @__PURE__ */ React.createElement(Text, { color: "#6e7681" }, ' Ask anything... "Create a retro snake game"')), /* @__PURE__ */ React.createElement(Box, { paddingLeft: 2, marginBottom: 1 }, /* @__PURE__ */ React.createElement(Text, { color: "#2f81f7" }, "TECH Stack "), /* @__PURE__ */ React.createElement(Text, { color: "#8b949e" }, "\xB7 "), /* @__PURE__ */ React.createElement(Text, { color: "#e3b341", bold: true }, stacks[stackIndex]), /* @__PURE__ */ React.createElement(Text, { color: "#8b949e" }, " \xB7")), /* @__PURE__ */ React.createElement(Box, { flexDirection: "row", alignItems: "center" }, /* @__PURE__ */ React.createElement(Text, { color: "#3b82f6" }, "\u2500".repeat(size.columns ? Math.floor(size.columns * 0.75) : 75)))),
-    /* @__PURE__ */ React.createElement(Box, { width: size.columns ? Math.floor(size.columns * 0.75) : 75, marginTop: 1, paddingLeft: 2 }, /* @__PURE__ */ React.createElement(Text, { color: "#8b949e" }, /* @__PURE__ */ React.createElement(Text, { bold: true, color: "#c9d1d9" }, "enter"), " run pipeline   ", /* @__PURE__ */ React.createElement(Text, { bold: true, color: "#c9d1d9" }, "tab"), " cycle stack   ", /* @__PURE__ */ React.createElement(Text, { bold: true, color: "#c9d1d9" }, "/new"), " fresh window"))
+    /* @__PURE__ */ React.createElement(Box, { width: containerWidth, flexDirection: "column", marginY: 1 }, /* @__PURE__ */ React.createElement(Box, { flexDirection: "row", alignItems: "center" }, /* @__PURE__ */ React.createElement(Text, { color: "#3b82f6" }, "\u2500\u2500 "), /* @__PURE__ */ React.createElement(Text, { color: "cyan", bold: true }, "Tell me your next crazzzzyyy idea!"), /* @__PURE__ */ React.createElement(Text, { color: "#3b82f6" }, " ", "\u2500".repeat(Math.max(2, containerWidth - 39)))), /* @__PURE__ */ React.createElement(Box, { flexDirection: "row", marginY: 1, paddingLeft: 2 }, /* @__PURE__ */ React.createElement(Text, { color: "cyan", bold: true }, "\u276F "), /* @__PURE__ */ React.createElement(
+      FocusableTextInput,
+      {
+        value: input,
+        onChange: handleInputChange,
+        onSubmit: handleSubmit,
+        placeholder: 'Ask anything... "Create a retro snake game"',
+        focus: !hasStarted
+      }
+    )), /* @__PURE__ */ React.createElement(Box, { paddingLeft: 2, marginBottom: 1, flexDirection: "row", flexWrap: "wrap" }, /* @__PURE__ */ React.createElement(Text, { color: "#2f81f7" }, "Tech Stack "), /* @__PURE__ */ React.createElement(Text, { color: "#8b949e" }, "\xB7 "), /* @__PURE__ */ React.createElement(Text, { color: "#e3b341", bold: true }, stacks[stackIndex]), /* @__PURE__ */ React.createElement(Text, { color: "#8b949e" }, " \xB7")), /* @__PURE__ */ React.createElement(Box, { flexDirection: "row", alignItems: "center" }, /* @__PURE__ */ React.createElement(Text, { color: "#3b82f6" }, "\u2500".repeat(Math.max(2, containerWidth))))),
+    /* @__PURE__ */ React.createElement(Box, { width: containerWidth, marginTop: 1, paddingLeft: 2 }, /* @__PURE__ */ React.createElement(Text, { color: "#8b949e" }, /* @__PURE__ */ React.createElement(Text, { bold: true, color: "#c9d1d9" }, "enter"), " run pipeline   ", /* @__PURE__ */ React.createElement(Text, { bold: true, color: "#c9d1d9" }, "tab"), " cycle stack   ", /* @__PURE__ */ React.createElement(Text, { bold: true, color: "#c9d1d9" }, "/new"), " fresh window"))
   ) : /* @__PURE__ */ React.createElement(Box, { height: Math.max(0, size.rows - 1), overflow: "hidden", flexDirection: "column" }, /* @__PURE__ */ React.createElement(Box, { flexDirection: "column" }, /* @__PURE__ */ React.createElement(Box, { flexDirection: "column", marginBottom: 1 }, /* @__PURE__ */ React.createElement(Text, { bold: true, color: "white" }, `\u2588\u2588\u2557  \u2588\u2588\u2557 \u2588\u2588\u2588\u2588\u2588\u2557  \u2588\u2588\u2588\u2588\u2588\u2588\u2557\u2588\u2588\u2557  \u2588\u2588\u2557\u2588\u2588\u2557\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2557
 \u2588\u2588\u2551  \u2588\u2588\u2551\u2588\u2588\u2554\u2550\u2550\u2588\u2588\u2557\u2588\u2588\u2554\u2550\u2550\u2550\u2550\u255D\u2588\u2588\u2551 \u2588\u2588\u2554\u255D\u2588\u2588\u2551\u255A\u2550\u2550\u2588\u2588\u2554\u2550\u2550\u255D
 \u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2551\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2551\u2588\u2588\u2551     \u2588\u2588\u2588\u2588\u2588\u2554\u255D \u2588\u2588\u2551   \u2588\u2588\u2551   
 \u2588\u2588\u2554\u2550\u2550\u2588\u2588\u2551\u2588\u2588\u2554\u2550\u2550\u2588\u2588\u2551\u2588\u2588\u2551     \u2588\u2588\u2554\u2550\u2588\u2588\u2557 \u2588\u2588\u2551   \u2588\u2588\u2551   
 \u2588\u2588\u2551  \u2588\u2588\u2551\u2588\u2588\u2551  \u2588\u2588\u2551\u255A\u2588\u2588\u2588\u2588\u2588\u2588\u2557\u2588\u2588\u2551  \u2588\u2588\u2557\u2588\u2588\u2551   \u2588\u2588\u2551   
-\u255A\u2550\u255D  \u255A\u2550\u255D\u255A\u2550\u255D  \u255A\u2550\u255D \u255A\u2550\u2550\u2550\u2550\u2550\u255D\u255A\u2550\u255D  \u255A\u2550\u255D\u255A\u2550\u255D   \u255A\u2550\u255D`), /* @__PURE__ */ React.createElement(Text, { italic: true, color: "gray" }, "Autonomous AI Hackathon Coach & App Builder")), error && !isRunning && /* @__PURE__ */ React.createElement(Box, { flexDirection: "column", marginBottom: 1, borderColor: "red", borderStyle: "round", padding: 1 }, /* @__PURE__ */ React.createElement(Text, { color: "red", bold: true }, "\u274C Fatal Error: ", error), errorDetails?.log_file && /* @__PURE__ */ React.createElement(Text, { color: "yellow" }, "\u{1F4C4} Log file: ", errorDetails.log_file), errorDetails?.traceback && /* @__PURE__ */ React.createElement(Box, { marginTop: 1, flexDirection: "column" }, /* @__PURE__ */ React.createElement(Text, { color: "gray", bold: true }, "Traceback:"), /* @__PURE__ */ React.createElement(Text, { color: "red" }, errorDetails.traceback.split("\n").slice(-12).join("\n")))), success && /* @__PURE__ */ React.createElement(Box, { marginBottom: 1, borderColor: "green", borderStyle: "round", padding: 0 }, /* @__PURE__ */ React.createElement(Text, { color: "green", bold: true }, "\u{1F389} SUCCESS! Project is ready.")), isRunning && /* @__PURE__ */ React.createElement(Box, { flexDirection: "column", marginBottom: 1 }, /* @__PURE__ */ React.createElement(Box, { borderStyle: "round", borderColor: "yellow", padding: 0, flexDirection: "column" }, /* @__PURE__ */ React.createElement(Text, { bold: true, color: "yellow" }, "\u26A1 HACKIT Agent Pipeline Progress", "  ", /* @__PURE__ */ React.createElement(Text, { color: "white" }, "\u23F1 ", String(Math.floor(elapsed / 60)).padStart(2, "0"), ":", String(elapsed % 60).padStart(2, "0"))), /* @__PURE__ */ React.createElement(Box, { flexDirection: "column" }, renderStage("coach", "1. Coach Planning (PLAN, ARCHITECTURE, TASKS, PROMPTS)", stages.coach), renderStage("builder", "2. Code Generation (Vite+React Frontend & Express Backend)", stages.builder), renderStage("validation", "3. Validation & Repair (Build, Lint, Tests & Auto-repair)", stages.validation), renderStage("pitch", "4. Pitch & Evaluation (HACKATHON update & JUDGE score)", stages.pitch)))), logs.length > 0 && /* @__PURE__ */ React.createElement(Box, { flexDirection: "column", borderStyle: "round", borderColor: "#333", padding: 1, marginBottom: 1 }, /* @__PURE__ */ React.createElement(Box, { justifyContent: "space-between", marginBottom: 1 }, /* @__PURE__ */ React.createElement(Text, { color: "cyan", bold: true }, "\u{1F4CB} Pipeline Logs"), /* @__PURE__ */ React.createElement(Text, { color: "#6e7681" }, `[Total ${logs.length} logs | \u2191/\u2193 scroll (${startLogIdx + 1}-${startLogIdx + visibleLogs.length})]`)), visibleLogs.map((logLine, idx) => /* @__PURE__ */ React.createElement(Text, { key: idx, color: "gray", wrap: "truncate-end" }, logLine))), !isRunning && hasStarted && /* @__PURE__ */ React.createElement(Box, { flexDirection: "column", marginTop: 1, marginBottom: 2 }, /* @__PURE__ */ React.createElement(Box, { flexDirection: "row", alignItems: "center" }, /* @__PURE__ */ React.createElement(Text, { color: "#3b82f6" }, "\u2500\u2500 "), /* @__PURE__ */ React.createElement(Text, { color: "cyan", bold: true }, "What's Next!"), /* @__PURE__ */ React.createElement(Text, { color: "#3b82f6" }, " ", "\u2500".repeat(Math.max(5, (size.columns || 80) - 18)))), /* @__PURE__ */ React.createElement(Box, { flexDirection: "row", marginY: 1, paddingLeft: 2 }, /* @__PURE__ */ React.createElement(Text, { color: "cyan", bold: true }, "\u276F "), /* @__PURE__ */ React.createElement(TextInput, { value: input, onChange: handleInputChange, onSubmit: handleSubmit }), input.length === 0 && /* @__PURE__ */ React.createElement(Text, { color: "#6e7681" }, " Type prompt or /new to reset workspace")), /* @__PURE__ */ React.createElement(Box, { flexDirection: "row", alignItems: "center" }, /* @__PURE__ */ React.createElement(Text, { color: "#3b82f6" }, "\u2500".repeat(size.columns || 80))))))), /* @__PURE__ */ React.createElement(StatusBar, { status, stages }));
+\u255A\u2550\u255D  \u255A\u2550\u255D\u255A\u2550\u255D  \u255A\u2550\u255D \u255A\u2550\u2550\u2550\u2550\u2550\u255D\u255A\u2550\u255D  \u255A\u2550\u255D\u255A\u2550\u255D   \u255A\u2550\u255D`), /* @__PURE__ */ React.createElement(Text, { italic: true, color: "gray" }, "Autonomous AI Hackathon Coach & App Builder")), error && !isRunning && /* @__PURE__ */ React.createElement(Box, { flexDirection: "column", marginBottom: 1, borderColor: "red", borderStyle: "round", padding: 1 }, /* @__PURE__ */ React.createElement(Text, { color: "red", bold: true }, "\u274C Fatal Error: ", error), errorDetails?.log_file && /* @__PURE__ */ React.createElement(Text, { color: "yellow" }, "\u{1F4C4} Log file: ", errorDetails.log_file), errorDetails?.traceback && /* @__PURE__ */ React.createElement(Box, { marginTop: 1, flexDirection: "column" }, /* @__PURE__ */ React.createElement(Text, { color: "gray", bold: true }, "Traceback:"), /* @__PURE__ */ React.createElement(Text, { color: "red" }, errorDetails.traceback.split("\n").slice(-12).join("\n")))), success && /* @__PURE__ */ React.createElement(Box, { marginBottom: 1, borderColor: "green", borderStyle: "round", padding: 0 }, /* @__PURE__ */ React.createElement(Text, { color: "green", bold: true }, "\u{1F389} SUCCESS! Project is ready.")), isRunning && /* @__PURE__ */ React.createElement(Box, { flexDirection: "column", marginBottom: 1 }, /* @__PURE__ */ React.createElement(Box, { borderStyle: "round", borderColor: "yellow", padding: 0, flexDirection: "column" }, /* @__PURE__ */ React.createElement(Text, { bold: true, color: "yellow" }, "\u26A1 HACKIT Agent Pipeline Progress", "  ", /* @__PURE__ */ React.createElement(Text, { color: "white" }, "\u23F1 ", String(Math.floor(elapsed / 60)).padStart(2, "0"), ":", String(elapsed % 60).padStart(2, "0"))), /* @__PURE__ */ React.createElement(Box, { flexDirection: "column" }, renderStage("coach", "1. Coach Planning (PLAN, ARCHITECTURE, TASKS, PROMPTS)", stages.coach), renderStage("builder", "2. Code Generation (Vite+React Frontend & Express Backend)", stages.builder), renderStage("validation", "3. Validation & Repair (Build, Lint, Tests & Auto-repair)", stages.validation), renderStage("pitch", "4. Pitch & Evaluation (HACKATHON update & JUDGE score)", stages.pitch)))), logs.length > 0 && /* @__PURE__ */ React.createElement(Box, { flexDirection: "column", borderStyle: "round", borderColor: "#333", padding: 1, marginBottom: 1 }, /* @__PURE__ */ React.createElement(Box, { justifyContent: "space-between", marginBottom: 1 }, /* @__PURE__ */ React.createElement(Text, { color: "cyan", bold: true }, "\u{1F4CB} Pipeline Logs"), /* @__PURE__ */ React.createElement(Text, { color: "#6e7681" }, `[Total ${logs.length} logs | \u2191/\u2193 scroll (${startLogIdx + 1}-${startLogIdx + visibleLogs.length})]`)), visibleLogs.map((logLine, idx) => /* @__PURE__ */ React.createElement(Text, { key: idx, color: "gray", wrap: "truncate-end" }, logLine))), !isRunning && hasStarted && /* @__PURE__ */ React.createElement(Box, { flexDirection: "column", marginTop: 1, marginBottom: 2, width: containerWidth }, /* @__PURE__ */ React.createElement(Box, { flexDirection: "row", alignItems: "center" }, /* @__PURE__ */ React.createElement(Text, { color: "#3b82f6" }, "\u2500\u2500 "), /* @__PURE__ */ React.createElement(Text, { color: "cyan", bold: true }, "What's Next!"), /* @__PURE__ */ React.createElement(Text, { color: "#3b82f6" }, " ", "\u2500".repeat(Math.max(2, containerWidth - 18)))), /* @__PURE__ */ React.createElement(Box, { flexDirection: "row", marginY: 1, paddingLeft: 2 }, /* @__PURE__ */ React.createElement(Text, { color: "cyan", bold: true }, "\u276F "), /* @__PURE__ */ React.createElement(
+    FocusableTextInput,
+    {
+      value: input,
+      onChange: handleInputChange,
+      onSubmit: handleSubmit,
+      placeholder: "Type prompt or /new to reset workspace",
+      focus: !isRunning && hasStarted
+    }
+  )), /* @__PURE__ */ React.createElement(Box, { flexDirection: "row", alignItems: "center" }, /* @__PURE__ */ React.createElement(Text, { color: "#3b82f6" }, "\u2500".repeat(Math.max(2, containerWidth)))))))), /* @__PURE__ */ React.createElement(StatusBar, { status, stages }));
 };
 render(/* @__PURE__ */ React.createElement(App, null));

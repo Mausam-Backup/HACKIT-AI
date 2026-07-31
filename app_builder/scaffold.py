@@ -89,8 +89,8 @@ def scaffold_project(task: str, force: bool = False, parent_dir: str = None, slu
     save_project_stack(project_dir, stack_config)
 
     for agent_dir in [
-        os.path.join(project_dir, ".opencode", "agent"),
-        os.path.join(project_dir, ".opencode", "agents"),
+        os.path.join(project_dir, ".hackit", "agent"),
+        os.path.join(project_dir, ".hackit", "agents"),
         os.path.join(project_dir, "agents"),
     ]:
         os.makedirs(agent_dir, exist_ok=True)
@@ -104,8 +104,8 @@ def scaffold_project(task: str, force: bool = False, parent_dir: str = None, slu
     for d in ["tasks", "reviews", "audits", "runs"]:
         os.makedirs(os.path.join(project_dir, d), exist_ok=True)
 
-    opencode_json = {
-        "$schema": "https://opencode.ai/config.json",
+    hackit_json = {
+        "$schema": "https://hackit.ai/config.json",
         "permission": {
             "edit": "allow",
             "bash": "allow",
@@ -118,8 +118,8 @@ def scaffold_project(task: str, force: bool = False, parent_dir: str = None, slu
             "list": "allow",
         },
     }
-    with open(os.path.join(project_dir, "opencode.json"), "w") as f:
-        json.dump(opencode_json, f, indent=2)
+    with open(os.path.join(project_dir, "hackit.json"), "w") as f:
+        json.dump(hackit_json, f, indent=2)
 
     subprocess.run(
         ["git", "init"],
@@ -130,7 +130,7 @@ def scaffold_project(task: str, force: bool = False, parent_dir: str = None, slu
     gitignore = os.path.join(project_dir, ".gitignore")
     if not os.path.exists(gitignore):
         with open(gitignore, "w") as f:
-            f.write("node_modules/\n.opencode/_prompt_*\ndist/\n.env\n.env.*\n*.tsbuildinfo\ndata/*.db\n")
+            f.write("node_modules/\n.hackit/_prompt_*\ndist/\n.env\n.env.*\n*.tsbuildinfo\ndata/*.db\n")
 
     base_tmpl = stack_config.get("base_template_dir")
     if base_tmpl and os.path.isdir(base_tmpl):
@@ -414,8 +414,8 @@ app.listen(PORT, () => {{
 
 def copy_agents(project_dir: str):
     for agent_dir in [
-        os.path.join(project_dir, ".opencode", "agent"),
-        os.path.join(project_dir, ".opencode", "agents"),
+        os.path.join(project_dir, ".hackit", "agent"),
+        os.path.join(project_dir, ".hackit", "agents"),
         os.path.join(project_dir, "agents"),
     ]:
         os.makedirs(agent_dir, exist_ok=True)

@@ -108,7 +108,7 @@ class TestDevServerAdvanced:
         mock_hash.return_value = "fake-hash"
         
         with tempfile.TemporaryDirectory() as td:
-            hash_file = os.path.join(td, ".opencode_install_hash")
+            hash_file = os.path.join(td, ".hackit_install_hash")
             with open(hash_file, "w") as f:
                 f.write("fake-hash")
             
@@ -125,7 +125,7 @@ class TestDevServerAdvanced:
         mock_hash.return_value = "new-hash"
         
         with tempfile.TemporaryDirectory() as td:
-            hash_file = os.path.join(td, ".opencode_install_hash")
+            hash_file = os.path.join(td, ".hackit_install_hash")
             with open(hash_file, "w") as f:
                 f.write("old-hash")
             

@@ -21,7 +21,12 @@ What problem does this solve? Who is it for?
 Brief description of the application.
 
 #### MVP (Minimum Viable Product)
-The absolute minimum set of features needed for a working demo. Be ruthless — cut everything that isn't essential.
+The MVP MUST be feature-rich and demo-ready out-of-the-box. Every planned MVP must include at least 5 core interactive functional modules:
+1. **Full CRUD Domain Management**: Create, view, update, and delete core entities with category tags.
+2. **Search, Filtering & Sorting**: Instant client-side & server-side query filtering (`?q=`, `?category=`, `?sort=`).
+3. **Interactive Summary Analytics**: Visual breakdown cards, statistics (totals, counts, status distributions).
+4. **Interactive Modal Forms & Workflows**: Modal dialogs for creation/editing, confirmation prompts, and CSV/JSON export or import.
+5. **Pre-populated Mock Seed Data**: Pre-loaded realistic sample data (5-10 items) so the application looks alive on first boot.
 
 #### Stretch Goals
 Features to add if there's time after the MVP is working.

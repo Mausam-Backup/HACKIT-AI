@@ -138,12 +138,12 @@ class TestScaffoldProject:
             try:
                 assert os.path.isdir(project_dir)
                 assert slug in project_dir
-                assert os.path.isfile(os.path.join(project_dir, "opencode.json"))
+                assert os.path.isfile(os.path.join(project_dir, "hackit.json"))
                 assert os.path.isdir(os.path.join(project_dir, "tasks"))
                 assert os.path.isdir(os.path.join(project_dir, "reviews"))
                 assert os.path.isdir(os.path.join(project_dir, "audits"))
                 assert os.path.isdir(os.path.join(project_dir, "runs"))
-                assert os.path.isdir(os.path.join(project_dir, ".opencode", "agents"))
+                assert os.path.isdir(os.path.join(project_dir, ".hackit", "agents"))
             finally:
                 sc.AGENTS_SOURCE = os.path.join(orig, "agents")
                 sc.PROMPTS_SOURCE = os.path.join(orig, "prompts")
@@ -191,7 +191,7 @@ class TestCopyAgents:
             import scaffold as sc
             orig_agents = sc.AGENTS_SOURCE
             sc.AGENTS_SOURCE = agents_src
-            dest = os.path.join(td, "project", ".opencode", "agents")
+            dest = os.path.join(td, "project", ".hackit", "agents")
             try:
                 copy_agents(os.path.join(td, "project"))
                 assert os.path.isfile(os.path.join(dest, "coach.md"))

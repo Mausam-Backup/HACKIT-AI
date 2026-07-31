@@ -18,9 +18,10 @@ Read the task file and implement everything. Build inside `./backend/`.
 **Guidelines:**
 - Create `./backend/` — all files go inside it
 - Create `package.json` and run `npm install` (inside `./backend/`)
-- Use Node.js/Express with better-sqlite3 for database
-- Make a real, working API — no stubs or placeholders
-- Proper error handling, input validation, CORS configuration
+- Use Node.js/Express with SQLite for database persistence
+- Pre-populate database with 5-10 realistic seed items on initial boot if tables are empty
+- Make a real, working API with search/filter query support (`?q=`, `?category=`, `?sort=`) and summary/stats routes (`/api/summary`)
+- Proper error handling with standardized `{ error: string }` response bodies and status codes
 - Listen on PORT_BACKEND env var (default 3001)
 - Run `npm run build` at the end (use `"build": "node --check server.js"`)
 - Add a test script: `"test": "echo 'no tests yet' && exit 0"`

@@ -218,7 +218,7 @@ class DevServer:
 
     async def _install(self):
         # Speed optimization: check if package.json files have changed since last install
-        hash_file = os.path.join(self.project_dir, ".opencode_install_hash")
+        hash_file = os.path.join(self.project_dir, ".hackit_install_hash")
         node_modules_exist = (
             os.path.isdir(os.path.join(self.project_dir, "node_modules")) or
             os.path.isdir(os.path.join(self.project_dir, "frontend", "node_modules")) or

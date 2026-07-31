@@ -12,6 +12,13 @@ Target Tech Stack Specification:
 - Build Tool: {{FRONTEND_BUILD_TOOL|default('Vite 5.x')}}
 - UI / Icon Library: {{FRONTEND_ICONS|default('lucide-react 0.469.x')}}
 
+UI & Design Aesthetics Guidelines (CRITICAL FOR QUALITY):
+1. **Modern Dark Theme UI**: Use a polished dark color palette (`#0f172a` / `#1e293b`), smooth gradient headers, glassmorphism cards, rounded borders (`rounded-xl`), and crisp accent colors.
+2. **Lucide Icons Everywhere**: Use `lucide-react` icons for every action button, navigation tab, status badge, and input label.
+3. **Multi-View Layout**: Include a top Header/Navbar with branding, tab navigation (e.g. Dashboard, Management, Analytics), Search & Filter bar, and quick-action "+ Add New" modal trigger button.
+4. **Rich State Handling**: Always render loading skeletons/spinners during API calls, user-friendly empty states with action triggers, toast notifications for actions, and modal forms for adding/editing items.
+5. **Instant Demo Seed Fallback**: If the API backend returns an empty list, populate the UI with 5+ realistic sample seed items so the app looks alive and fully functional on first load.
+
 Configure API proxy so `/api` requests forward to http://localhost:3001.
 
 {{CUSTOM_INSTRUCTIONS|default('')}}

@@ -189,7 +189,7 @@ class TestOrchestratorAdvanced:
     @patch("orchestrator.phase_pitch_update", new_callable=AsyncMock)
     @patch("orchestrator.phase_judge_score", new_callable=AsyncMock)
     @patch("orchestrator.scaffold_project")
-    @patch("orchestrator.OpencodeClient")
+    @patch("orchestrator.HackitClient")
     async def test_run_pipeline_full(self, mock_client_class, mock_scaffold, mock_judge, mock_pitch, mock_validation, mock_builder, mock_coach):
         mock_scaffold.return_value = ("/tmp/project", "test-slug")
         

@@ -1,16 +1,16 @@
 {
-  "name": "hackit-cli",
-  "version": "0.3.0",
-  "description": "HACKIT — Autonomous AI App Builder & Hackathon Coach CLI & Web GUI",
+  "name": "hackit-ai",
+  "version": "0.3.2",
+  "description": "HACKIT — Autonomous AI App Builder & Hackathon Coach CLI",
   "main": "bin/cli.mjs",
   "bin": {
     "hackit": "./bin/cli.mjs",
+    "hackit-ai": "./bin/cli.mjs",
     "app-builder-lite": "./bin/cli.mjs",
     "hackathon-coach": "./bin/cli.mjs"
   },
   "files": [
     "bin/",
-    "static/",
     "agents/",
     "prompts/",
     "*.py",
@@ -35,7 +35,7 @@
   },
   "keywords": [
     "hackit",
-    "opencode",
+    "hackit",
     "hackathon",
     "coach",
     "cli",

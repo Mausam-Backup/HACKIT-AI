@@ -9,7 +9,7 @@ import httpx
 from terminal_safe import graceful_terminate
 
 
-class OpencodeStuck(Exception):
+class HackitStuck(Exception):
     pass
 
 
@@ -92,7 +92,7 @@ class TimeoutTracker:
         return t
 
 
-class OpencodeClient:
+class HackitClient:
     API_SEMAPHORE = asyncio.Semaphore(2)
 
     def __init__(self, port: int, project_dir: str, timeout: int = 1800,
@@ -116,17 +116,20 @@ class OpencodeClient:
         if stream is None:
             return
         try:
-            while True:
-                line = await stream.readline()
-                if not line:
-                    break
+            with open(os.path.join(self.project_dir, f"opencode_server_{name}.log"), "a", encoding="utf-8") as f:
+                while True:
+                    line = await stream.readline()
+                    if not line:
+                        break
+                    f.write(line.decode("utf-8", errors="replace"))
+                    f.flush()
         except Exception:
             pass
 
     async def start(self, wait_timeout: int = 60):
         self.client = httpx.AsyncClient(base_url=self.base_url, timeout=httpx.Timeout(1800.0, connect=60.0))
 
-        # Check if an opencode server is already running on this port
+        # Check if an hackit server is already running on this port
         try:
             resp = await self.client.get("/global/health")
             if resp.json().get("healthy"):
@@ -157,7 +160,7 @@ class OpencodeClient:
                 pass
             await asyncio.sleep(1)
 
-        raise TimeoutError("opencode server did not start within 60s")
+        raise TimeoutError("HACKIT server did not start within 60s")
 
     async def verify_healthy(self):
         if self.client is None:
@@ -178,11 +181,11 @@ class OpencodeClient:
             available = set(stdout.decode(errors="replace").strip().splitlines())
             for agent, slug in models.items():
                 if slug not in available:
-                    msg = f"model '{slug}' for agent '{agent}' not found (run `opencode models` to list)"
+                    msg = f"model '{slug}' for agent '{agent}' not found (run `hackit models` to list)"
                     if self.strict_models:
                         raise RuntimeError(msg)
                     print(f"  WARNING: {msg}", flush=True)
-                    print("  Pipeline will continue — if agent fails, verify with `opencode models`", flush=True)
+                    print("  Pipeline will continue — if agent fails, verify with `hackit models`", flush=True)
                 else:
                     print(f"  [model] {agent} -> {slug} OK", flush=True)
         except RuntimeError:
@@ -203,9 +206,12 @@ class OpencodeClient:
         if agent is not None and self._current_session_id is not None and self._current_agent == agent:
             return self._current_session_id
         session_id = str(uuid.uuid4())
+        payload = {"title": f"app-builder-{session_id[:8]}"}
+        if agent:
+            payload["agent"] = agent
         resp = await self.client.post(
             "/session",
-            json={"title": f"app-builder-{session_id[:8]}"},
+            json=payload,
             timeout=60,
         )
         resp.raise_for_status()
@@ -247,7 +253,6 @@ class OpencodeClient:
                         "POST",
                         f"/session/{session_id}/message",
                         json={
-                            "agent": agent,
                             "parts": [{"type": "text", "text": message}],
                             "stream": True,
                         },
@@ -258,16 +263,16 @@ class OpencodeClient:
                             err_msg = f"[LIMIT REACHED] [{agent}] PAYMENT/QUOTA REQUIRED (402) — server or model provider requires credits/billing refilled."
                             print(f"  {err_msg}", flush=True)
                             if self.ws_broadcast:
-                                await self.ws_broadcast({"type": "opencode_limit_reached", "agent": agent, "status": 402, "message": err_msg})
-                            raise OpencodeStuck(f"{agent} failed: payment/quota required (402)")
+                                await self.ws_broadcast({"type": "hackit_limit_reached", "agent": agent, "status": 402, "message": err_msg})
+                            raise HackitStuck(f"{agent} failed: payment/quota required (402)")
                         if resp.status_code == 403:
                             await resp.aread()
                             body = resp.text[:300]
                             err_msg = f"[LIMIT REACHED] [{agent}] FORBIDDEN (403) — API access or model limit restricted: {body}"
                             print(f"  {err_msg}", flush=True)
                             if self.ws_broadcast:
-                                await self.ws_broadcast({"type": "opencode_limit_reached", "agent": agent, "status": 403, "message": err_msg})
-                            raise OpencodeStuck(f"{agent} failed: forbidden (403)")
+                                await self.ws_broadcast({"type": "hackit_limit_reached", "agent": agent, "status": 403, "message": err_msg})
+                            raise HackitStuck(f"{agent} failed: forbidden (403)")
                         if resp.status_code in (413, 400):
                             await resp.aread()
                             body = resp.text[:300]
@@ -275,14 +280,14 @@ class OpencodeClient:
                                 err_msg = f"[LIMIT REACHED] [{agent}] CONTEXT/TOKEN LIMIT EXCEEDED ({resp.status_code}) — {body}"
                                 print(f"  {err_msg}", flush=True)
                                 if self.ws_broadcast:
-                                    await self.ws_broadcast({"type": "opencode_limit_reached", "agent": agent, "status": resp.status_code, "message": err_msg})
-                                raise OpencodeStuck(f"{agent} failed: token/context limit ({resp.status_code})")
+                                    await self.ws_broadcast({"type": "hackit_limit_reached", "agent": agent, "status": resp.status_code, "message": err_msg})
+                                raise HackitStuck(f"{agent} failed: token/context limit ({resp.status_code})")
                         if resp.status_code == 429:
                             retry_after = int(resp.headers.get("Retry-After", "10"))
                             delay_msg = f"[LIMIT REACHED] [{agent}] RATE LIMIT EXCEEDED (429) — waiting {retry_after}s for quota reset"
                             print(f"  {delay_msg}", flush=True)
                             if self.ws_broadcast:
-                                await self.ws_broadcast({"type": "opencode_limit_reached", "agent": agent, "status": 429, "reason": delay_msg, "delay": retry_after})
+                                await self.ws_broadcast({"type": "hackit_limit_reached", "agent": agent, "status": 429, "reason": delay_msg, "delay": retry_after})
                                 await self.ws_broadcast({"type": "agent_retry", "agent": agent, "reason": delay_msg, "delay": retry_after})
                             await asyncio.sleep(retry_after)
                             continue
@@ -360,12 +365,12 @@ class OpencodeClient:
                             err = info.get("error")
                             if err:
                                 print(f"  [{agent}] agent returned error: {err}", flush=True)
-                                raise OpencodeStuck(f"{agent} error: {err}")
+                                raise HackitStuck(f"{agent} error: {err}")
                             print(f"  [{agent}] EMPTY RESPONSE — raw keys: {list(data.keys()) if isinstance(data, dict) else type(data)}", flush=True)
                             first_part = (data.get("parts") or [None])[0] if isinstance(data, dict) else None
                             if first_part:
                                 print(f"  [{agent}] first part: {json.dumps(first_part, indent=2)[:500]}", flush=True)
-                            raise OpencodeStuck(f"{agent} returned empty response")
+                            raise HackitStuck(f"{agent} returned empty response")
 
                     elapsed = time.time() - t0
                     self.timeout_tracker.record(agent, elapsed)
@@ -397,7 +402,7 @@ class OpencodeClient:
                     if self.ws_broadcast:
                         await self.ws_broadcast({"type": "agent_retry", "agent": agent, "reason": http_msg, "delay": retry_delay})
                     await asyncio.sleep(retry_delay)
-            except OpencodeStuck:
+            except HackitStuck:
                 if self.ws_broadcast:
                     await self.ws_broadcast({"type": "agent_failed", "agent": agent, "reason": str(last_err or "stuck")})
                 raise
@@ -413,7 +418,7 @@ class OpencodeClient:
         err_msg = f"{agent} failed after {max_retries} attempts. Last error: {last_err}"
         if self.ws_broadcast:
             await self.ws_broadcast({"type": "agent_failed", "agent": agent, "reason": str(last_err or "exhausted retries")})
-        raise OpencodeStuck(err_msg)
+        raise HackitStuck(err_msg)
 
     async def run_agent(self, agent: str, message: str, line_timeout: int | None = None, skip_fast_check: bool = True) -> str:
         return await self._run_one(agent, message, line_timeout, skip_fast_check=skip_fast_check)
