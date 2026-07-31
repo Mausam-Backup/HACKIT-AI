@@ -57,7 +57,7 @@ def get_disable_auth_env():
 def is_disable_auth_enabled():
     val = get_disable_auth_env()
     if val is None or val.strip() == "":
-        return True
+        return False
     return _is_truthy(val)
 
 

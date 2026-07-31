@@ -18,7 +18,7 @@ export function getDisableAuthValue(): string | undefined {
 export function isAuthDisabled(): boolean {
   const val = getDisableAuthValue();
   if (val === undefined || val === null || val === "") {
-    return true;
+    return false;
   }
   return isTruthyAuthValue(val);
 }

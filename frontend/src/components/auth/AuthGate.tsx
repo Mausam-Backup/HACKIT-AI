@@ -5,10 +5,7 @@ import Image from "next/image";
 import { getApiUrl } from "@/utils/api";
 import { isAuthDisabled } from "@/utils/auth";
 import { formatFastApiDetail, UNAUTHORIZED_DETAIL } from "@/utils/authErrors";
-import {
-  PRESENTON_SPLASH_MIN_DURATION_MS,
-  PitchAISplashLoader,
-} from "@/components/ui/pitchai-splash-loader";
+import { Loader2 } from "lucide-react";
 import { notify } from "@/components/ui/sonner";
 import { sanitizeAnalyticsError } from "@/utils/analytics";
 import { MixpanelEvent, trackEvent } from "@/utils/mixpanel";
@@ -30,19 +27,14 @@ export default function AuthGate() {
   const [isLoading, setIsLoading] = useState(true);
   const [isRedirecting, setIsRedirecting] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [hasMetSplashDuration, setHasMetSplashDuration] = useState(false);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [is2faMode, setIs2faMode] = useState(false);
+  const [twoFaCode, setTwoFaCode] = useState("");
   const isSetupMode = useMemo(() => !status.configured, [status.configured]);
 
-  useEffect(() => {
-    const timeout = window.setTimeout(() => {
-      setHasMetSplashDuration(true);
-    }, PRESENTON_SPLASH_MIN_DURATION_MS);
 
-    return () => window.clearTimeout(timeout);
-  }, []);
 
   useEffect(() => {
     if (isAuthDisabled()) {
@@ -74,7 +66,7 @@ export default function AuthGate() {
     }
 
     setIsRedirecting(true);
-    window.location.replace("/");
+    window.location.replace("/account");
   }, [isLoading, isRedirecting, status.authenticated]);
 
   useEffect(() => {
@@ -166,6 +158,11 @@ export default function AuthGate() {
       return;
     }
 
+    if (is2faMode && twoFaCode.length < 6) {
+      notify.warning("Code too short", "Authenticator code must be 6 digits.");
+      return;
+    }
+
     setIsSubmitting(true);
     trackEvent(
       isSetupMode
@@ -188,6 +185,7 @@ export default function AuthGate() {
           body: JSON.stringify({
             username: cleanedUsername,
             password,
+            code: is2faMode ? twoFaCode : null,
           }),
         }
       );
@@ -220,6 +218,12 @@ export default function AuthGate() {
             detail || "Something went wrong. Please try again."
           );
         }
+        return;
+      }
+
+      if (payload["2fa_required"]) {
+        setIs2faMode(true);
+        notify.info("2FA Required", "Please enter your authenticator code.");
         return;
       }
 
@@ -277,116 +281,155 @@ export default function AuthGate() {
     }
   };
 
-  if (
-    isLoading ||
-    isRedirecting ||
-    status.authenticated ||
-    !hasMetSplashDuration
-  ) {
-    return <PitchAISplashLoader message="Preparing your workspace..." />;
+  if (isLoading || isRedirecting || status.authenticated) {
+    return (
+      <div className="w-full h-screen flex flex-col items-center justify-center bg-[#f4f6f8] dark:bg-[#24252f]">
+        <Loader2 className="h-8 w-8 animate-spin text-[#7e57c2]" />
+        <p className="mt-4 text-sm font-medium text-gray-500 dark:text-gray-400">Loading...</p>
+      </div>
+    );
   }
 
   return (
-    <main className="relative flex min-h-screen items-center justify-center overflow-hidden bg-white p-6">
-      <section className="relative z-10 w-full max-w-xl rounded-2xl border border-[#E1E1E5] bg-white p-7 shadow-xl sm:p-10">
-        <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-          <div className="flex items-center gap-4">
-            <div className="relative size-12 rounded-xl bg-gradient-to-br from-zinc-800 to-zinc-950 border border-zinc-700/50 flex items-center justify-center overflow-hidden group-hover:border-amber-500/50 group-hover:shadow-[0_0_20px_rgba(245,158,11,0.2)] transition-all duration-300 shadow-md">
-              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="text-white group-hover:text-amber-400 group-hover:-rotate-6 transition-all duration-300">
-                  <path d="M 9 4 L 5 4 L 5 18 L 9 18" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
-                  <path d="M 15 6 L 19 6 L 19 20 L 15 20" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
-                  <path d="M 5 12 L 19 12" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
-                  <path d="M 20 0 C 20 1.5 21.5 3 23 3 C 21.5 3 20 4.5 20 6 C 20 4.5 18.5 3 17 3 C 18.5 3 20 1.5 20 0 Z" fill="currentColor"/>
-              </svg>
-            </div>
-            <div>
-              <p className="font-syne text-[10px] font-semibold uppercase tracking-[0.14em] text-[#7A5AF8]">
-                Secure instance
-              </p>
-              <h1 className="mt-1 font-syne text-2xl font-semibold leading-tight text-black sm:text-[26px]">
-                {isSetupMode ? "Create your admin login" : "Sign in to continue"}
-              </h1>
-            </div>
+    <div className="w-full h-screen overflow-hidden flex flex-col md:flex-row bg-[#f4f6f8] dark:bg-[#24252f] transition-colors duration-300">
+      {/* Left Panel - Image */}
+      <div className="hidden md:flex md:w-1/2 lg:w-5/12 h-[calc(100vh-2rem)] relative p-8 flex-col justify-between overflow-hidden m-4 rounded-3xl shrink-0">
+        <div className="absolute inset-0 bg-[url('/auth-bg.png')] bg-cover bg-center" />
+        <div className="absolute inset-0 bg-black/30" />
+        
+        {/* Logo/Top Bar */}
+        <div className="relative z-10 flex justify-between items-center w-full">
+          <div className="flex items-center gap-2 text-white">
+            <img src="/logo.png" alt="Logo" className="h-8 w-auto object-contain bg-white rounded-md p-1" />
+            <span className="font-bold text-xl tracking-widest">HAC-KIT AI</span>
           </div>
+          <button onClick={() => window.location.href = "/"} className="text-white/80 hover:text-white text-sm bg-white/10 px-4 py-2 rounded-full backdrop-blur-sm transition-colors cursor-pointer">
+            Back to website &rarr;
+          </button>
         </div>
 
-        <p className="font-syne text-base text-[#000000CC] sm:text-lg">
-          {isSetupMode
-            ? "One-time setup for this deployment. You will use the same username and password on future visits."
-            : "This deployment is protected. Enter your credentials to open the app."}
-        </p>
-
-        <form onSubmit={handleSubmit} className="mt-8 space-y-5">
-          <div className="space-y-2">
-            <label htmlFor="username" className="block font-syne text-sm font-medium text-black">
-              Username
-            </label>
-            <input
-              id="username"
-              autoComplete="username"
-              value={username}
-              onChange={(event) => setUsername(event.target.value)}
-              placeholder="your-admin-user"
-              className="w-full rounded-[11px] border border-[#EDEEEF] bg-white px-4 py-3 font-syne text-sm text-black outline-none transition placeholder:text-[#999999] focus:border-[#a49cfc] focus:ring-2 focus:ring-[#5146E5]/20"
-              disabled={isSubmitting}
-            />
+        {/* Bottom Text */}
+        <div className="relative z-10 w-full pb-8">
+          <h2 className="text-white text-4xl font-medium tracking-tight text-center">
+            Your Ultimate,<br />Hackathon Wingman
+          </h2>
+          <div className="flex justify-center gap-2 mt-8">
+            <div className="w-6 h-1 rounded-full bg-white/30" />
+            <div className="w-6 h-1 rounded-full bg-white/30" />
+            <div className="w-6 h-1 rounded-full bg-white" />
           </div>
+        </div>
+      </div>
 
-          <div className="space-y-2">
-            <label htmlFor="password" className="block font-syne text-sm font-medium text-black">
-              Password
-            </label>
-            <input
-              id="password"
-              type="password"
-              autoComplete={isSetupMode ? "new-password" : "current-password"}
-              value={password}
-              onChange={(event) => setPassword(event.target.value)}
-              placeholder="At least 6 characters"
-              className="w-full rounded-[11px] border border-[#EDEEEF] bg-white px-4 py-3 font-syne text-sm text-black outline-none transition placeholder:text-[#999999] focus:border-[#a49cfc] focus:ring-2 focus:ring-[#5146E5]/20"
-              disabled={isSubmitting}
-            />
-          </div>
+      {/* Right Panel - Form */}
+      <div className="w-full md:w-1/2 lg:w-7/12 h-full flex items-center justify-center p-6 md:p-12 overflow-y-auto">
+        <div className="w-full max-w-[450px]">
+          <div className="w-full p-5 rounded-md text-gray-900 dark:text-white">
 
-          {isSetupMode ? (
-            <div className="space-y-2">
-              <label htmlFor="confirmPassword" className="block font-syne text-sm font-medium text-black">
-                Confirm password
-              </label>
-              <input
-                id="confirmPassword"
-                type="password"
-                autoComplete="new-password"
-                value={confirmPassword}
-                onChange={(event) => setConfirmPassword(event.target.value)}
-                placeholder="Re-enter your password"
-                className="w-full rounded-[11px] border border-[#EDEEEF] bg-white px-4 py-3 font-syne text-sm text-black outline-none transition placeholder:text-[#999999] focus:border-[#a49cfc] focus:ring-2 focus:ring-[#5146E5]/20"
-                disabled={isSubmitting}
-              />
-            </div>
-          ) : null}
-
-          {!isSetupMode && status.configured ? (
-            <p className="font-syne text-sm text-[#494A4D]">
-              Setup is complete for this instance. Use the username and password you configured.
+            <h1 className="text-3xl tracking-tight text-gray-900 dark:text-white font-bold mb-2 text-center sm:text-left">
+              {isSetupMode ? "Create your admin login" : "Log in to continue"}
+            </h1>
+            <p className="mb-8 text-center sm:text-left text-sm text-gray-500 dark:text-white/60 font-normal">
+              {isSetupMode
+                ? "One-time setup for this deployment."
+                : "This deployment is protected."}
             </p>
-          ) : null}
 
-          <button
-            type="submit"
-            disabled={isSubmitting}
-            className="w-full rounded-[58px] border border-[#EDEEEF] bg-[#7C51F8] px-5 py-3 font-syne text-xs font-semibold text-white transition hover:bg-[#6d46e6] disabled:cursor-not-allowed disabled:opacity-60"
-          >
-            {isSubmitting
-              ? isSetupMode
-                ? "Saving credentials…"
-                : "Signing in…"
-              : isSetupMode
-                ? "Create account"
-                : "Sign in"}
-          </button>
-        </form>
-      </section>
-    </main>
+            <form onSubmit={handleSubmit} className="space-y-5">
+              {is2faMode ? (
+                <div className="mb-4 space-y-2">
+                  <label htmlFor="twoFaCode" className="block text-sm font-medium text-gray-900 dark:text-white">
+                    Authenticator Code
+                  </label>
+                  <input
+                    id="twoFaCode"
+                    type="text"
+                    autoComplete="one-time-code"
+                    maxLength={6}
+                    value={twoFaCode}
+                    onChange={(event) => setTwoFaCode(event.target.value)}
+                    placeholder="000000"
+                    className="w-full rounded-lg bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 px-4 py-3 h-12 text-center tracking-widest text-gray-900 dark:text-white outline-none transition placeholder:text-gray-400 dark:placeholder:text-white/40 focus-visible:ring-1 focus-visible:ring-[#7e57c2]"
+                    disabled={isSubmitting}
+                    autoFocus
+                  />
+                </div>
+              ) : (
+                <>
+                  <div className="mb-4 space-y-2">
+                    <label htmlFor="username" className="block text-sm font-medium text-gray-900 dark:text-white">
+                      Username
+                    </label>
+                    <input
+                      id="username"
+                      autoComplete="username"
+                      value={username}
+                      onChange={(event) => setUsername(event.target.value)}
+                      placeholder="your-admin-user"
+                      className="w-full rounded-lg bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 px-4 py-3 h-12 text-gray-900 dark:text-white outline-none transition placeholder:text-gray-400 dark:placeholder:text-white/40 focus-visible:ring-1 focus-visible:ring-[#7e57c2]"
+                      disabled={isSubmitting}
+                    />
+                  </div>
+
+                  <div className="mb-4 space-y-2">
+                    <label htmlFor="password" className="block text-sm font-medium text-gray-900 dark:text-white">
+                      Password
+                    </label>
+                    <input
+                      id="password"
+                      type="password"
+                      autoComplete={isSetupMode ? "new-password" : "current-password"}
+                      value={password}
+                      onChange={(event) => setPassword(event.target.value)}
+                      placeholder="At least 6 characters"
+                      className="w-full rounded-lg bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 px-4 py-3 h-12 text-gray-900 dark:text-white outline-none transition placeholder:text-gray-400 dark:placeholder:text-white/40 focus-visible:ring-1 focus-visible:ring-[#7e57c2]"
+                      disabled={isSubmitting}
+                    />
+                  </div>
+
+                  {isSetupMode ? (
+                    <div className="mb-4 space-y-2">
+                      <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-900 dark:text-white">
+                        Confirm password
+                      </label>
+                      <input
+                        id="confirmPassword"
+                        type="password"
+                        autoComplete="new-password"
+                        value={confirmPassword}
+                        onChange={(event) => setConfirmPassword(event.target.value)}
+                        placeholder="Re-enter your password"
+                        className="w-full rounded-lg bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 px-4 py-3 h-12 text-gray-900 dark:text-white outline-none transition placeholder:text-gray-400 dark:placeholder:text-white/40 focus-visible:ring-1 focus-visible:ring-[#7e57c2]"
+                        disabled={isSubmitting}
+                      />
+                    </div>
+                  ) : null}
+                </>
+              )}
+
+              {!isSetupMode && status.configured && !is2faMode ? (
+                <p className="text-xs text-gray-400 dark:text-white/40 font-normal">
+                  Setup is complete for this instance. Use the username and password you configured.
+                </p>
+              ) : null}
+
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className="w-full text-[15px] h-12 mt-6 bg-[#7e57c2] hover:bg-[#6847a3] text-white rounded-lg font-semibold transition-colors flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
+              >
+                {isSubmitting
+                  ? isSetupMode
+                    ? "Saving credentials…"
+                    : is2faMode ? "Verifying…" : "Signing in…"
+                  : isSetupMode
+                    ? "Create account"
+                    : is2faMode ? "Verify Code" : "Log in"}
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }

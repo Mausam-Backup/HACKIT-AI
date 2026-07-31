@@ -12,6 +12,10 @@ from utils.simple_auth import (
     set_session_cookie,
     setup_initial_credentials,
     verify_credentials,
+    is_2fa_configured,
+    generate_2fa_secret,
+    verify_2fa_code,
+    disable_2fa,
 )
 from utils.get_env import is_disable_auth_enabled
 
@@ -21,6 +25,7 @@ API_V1_AUTH_ROUTER = APIRouter(prefix="/api/v1/auth", tags=["Auth"])
 class AuthCredentialsRequest(BaseModel):
     username: str = Field(min_length=3, max_length=128)
     password: str = Field(min_length=6, max_length=256)
+    code: str | None = None
 
 
 @API_V1_AUTH_ROUTER.get("/status")
@@ -85,6 +90,12 @@ async def login(body: AuthCredentialsRequest, request: Request):
     if not verify_credentials(body.username, body.password):
         raise HTTPException(status_code=401, detail="Unauthorized")
 
+    if is_2fa_configured():
+        if not body.code:
+            return JSONResponse({"configured": True, "2fa_required": True, "username": body.username.strip()})
+        if not verify_2fa_code(body.code):
+            raise HTTPException(status_code=401, detail="Invalid 2FA code")
+
     username = body.username.strip()
     token = create_session_token(username)
     response = JSONResponse(
@@ -105,3 +116,40 @@ async def logout(request: Request):
     response = JSONResponse({"success": True})
     clear_session_cookie(response, request)
     return response
+
+
+@API_V1_AUTH_ROUTER.post("/setup-2fa")
+async def setup_2fa(request: Request):
+    token = get_session_token_from_request(request)
+    auth_status = get_auth_status(token)
+    if not auth_status.get("authenticated"):
+        raise HTTPException(status_code=401, detail="Unauthorized")
+    
+    return generate_2fa_secret()
+
+
+class VerifySetup2FARequest(BaseModel):
+    code: str
+
+
+@API_V1_AUTH_ROUTER.post("/verify-setup-2fa")
+async def verify_setup_2fa(body: VerifySetup2FARequest, request: Request):
+    token = get_session_token_from_request(request)
+    auth_status = get_auth_status(token)
+    if not auth_status.get("authenticated"):
+        raise HTTPException(status_code=401, detail="Unauthorized")
+        
+    if verify_2fa_code(body.code):
+        return {"success": True}
+    raise HTTPException(status_code=400, detail="Invalid code")
+
+
+@API_V1_AUTH_ROUTER.post("/disable-2fa")
+async def disable_2fa_route(request: Request):
+    token = get_session_token_from_request(request)
+    auth_status = get_auth_status(token)
+    if not auth_status.get("authenticated"):
+        raise HTTPException(status_code=401, detail="Unauthorized")
+        
+    disable_2fa()
+    return {"success": True}

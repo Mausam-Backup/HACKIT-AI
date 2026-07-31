@@ -52,8 +52,10 @@ Use this if you don't have strict Application Control policies blocking virtual 
 
 ```powershell
 cd backend
-uv sync
-uv run python server.py --port 8000 --reload true
+.\.venv\Scripts\python.exe server.py --port 8000 --reload true
+   # OR
+# uv sync
+# uv run python server.py --port 8000 --reload true
 ```
 
 ### Option B: Restricted Windows Startup

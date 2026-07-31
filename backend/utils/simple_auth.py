@@ -4,7 +4,12 @@ import hmac
 import json
 import secrets
 import time
+import io
 from typing import Optional
+
+import pyotp
+import qrcode
+import qrcode.image.svg
 
 from fastapi import Request
 from starlette.responses import Response
@@ -15,7 +20,7 @@ from utils.user_config_store import read_user_config_file, update_user_config_fi
 SESSION_COOKIE_NAME = "presenton_session"
 PBKDF2_ITERATIONS = 200_000
 SESSION_TTL_SECONDS = 60 * 60 * 24 * 30
-AUTH_CONFIG_FIELDS = ("AUTH_USERNAME", "AUTH_PASSWORD_HASH", "AUTH_SECRET_KEY")
+AUTH_CONFIG_FIELDS = ("AUTH_USERNAME", "AUTH_PASSWORD_HASH", "AUTH_SECRET_KEY", "AUTH_TOTP_SECRET")
 
 
 def _base64url_encode(data: bytes) -> str:
@@ -154,7 +159,7 @@ def clear_stored_credentials() -> None:
     """Remove stored credentials; next boot will request setup again."""
     config = _load_user_config()
     removed = False
-    for key in ("AUTH_USERNAME", "AUTH_PASSWORD_HASH", "AUTH_SECRET_KEY"):
+    for key in ("AUTH_USERNAME", "AUTH_PASSWORD_HASH", "AUTH_SECRET_KEY", "AUTH_TOTP_SECRET"):
         if key in config:
             config.pop(key, None)
             removed = True
@@ -175,6 +180,46 @@ def verify_credentials(username: str, password: str) -> bool:
         return False
 
     return _verify_password_hash(password or "", stored_hash)
+
+
+def is_2fa_configured() -> bool:
+    config = _load_user_config()
+    return bool(config.get("AUTH_TOTP_SECRET"))
+
+
+def generate_2fa_secret() -> dict:
+    config = _load_user_config()
+    secret = pyotp.random_base32()
+    config["AUTH_TOTP_SECRET"] = secret
+    _save_user_config(config)
+    
+    totp = pyotp.TOTP(secret)
+    username = config.get("AUTH_USERNAME", "User")
+    uri = totp.provisioning_uri(name=username, issuer_name="Hack-It AI")
+    
+    factory = qrcode.image.svg.SvgImage
+    img = qrcode.make(uri, image_factory=factory)
+    stream = io.BytesIO()
+    img.save(stream)
+    svg_data = stream.getvalue().decode('utf-8')
+    
+    return {"secret": secret, "qr_code_svg": svg_data}
+
+
+def verify_2fa_code(code: str) -> bool:
+    config = _load_user_config()
+    secret = config.get("AUTH_TOTP_SECRET")
+    if not secret:
+        return True
+    totp = pyotp.TOTP(secret)
+    return totp.verify(code)
+
+
+def disable_2fa() -> None:
+    config = _load_user_config()
+    if "AUTH_TOTP_SECRET" in config:
+        config.pop("AUTH_TOTP_SECRET")
+        _save_user_config(config, removed_keys=("AUTH_TOTP_SECRET",))
 
 
 def _sign_payload(payload_encoded: str, secret: str) -> str:
@@ -300,6 +345,7 @@ def get_auth_status(session_token: Optional[str] = None) -> dict:
         "configured": True,
         "authenticated": bool(username),
         "username": username,
+        "2fa_enabled": is_2fa_configured(),
     }
 
 

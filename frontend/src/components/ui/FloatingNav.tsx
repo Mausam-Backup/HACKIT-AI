@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
+import Link from 'next/link';
 
 export default function FloatingNav() {
   const [isHovered, setIsHovered] = useState(false);
@@ -79,12 +80,12 @@ export default function FloatingNav() {
         
         {/* Right Side: Name */}
         <div className="flex items-center shrink-0 ml-4">
-          <div className="bg-black text-white px-4 py-1.5 sm:px-4 sm:py-1.5 rounded-full font-bold text-xs tracking-wide shadow-md transition-transform duration-300 hover:scale-105 cursor-pointer flex items-center gap-2 whitespace-nowrap">
+          <Link href="/login" className="bg-black text-white px-4 py-1.5 sm:px-4 sm:py-1.5 rounded-full font-bold text-xs tracking-wide shadow-md transition-transform duration-300 hover:scale-105 cursor-pointer flex items-center gap-2 whitespace-nowrap">
             <div className="size-5 rounded-md bg-white flex items-center justify-center overflow-hidden">
               <img src="/logo.png" alt="Logo" className="w-full h-full object-contain p-0.5" />
             </div>
-            <span>HAC-KIT AI</span>
-          </div>
+            <span className="text-white hover:text-white">HAC-KIT AI</span>
+          </Link>
         </div>
       </div>
     </div>
