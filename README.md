@@ -875,3 +875,485 @@ HACKIT-AI/
 └── README.md
 ```
 
+---
+
+## 🗄️ Database Schema
+
+### Entity-Relationship Diagram
+
+```mermaid
+erDiagram
+    presentations ||--o{ slides : contains
+    presentations ||--o{ chat_history_messages : has
+    template_v2 ||--o{ chat_history_messages : referenced_by
+    presentations ||--o{ presentation_layout_codes : has_layout_code
+    template_v2 ||--o{ template_create_infos : created_by
+
+    presentations {
+        uuid id PK
+        enum version "v1-standard or v2-standard"
+        text content
+        int n_slides
+        varchar language
+        varchar title
+        json file_paths
+        json outlines
+        json layout
+        json theme
+        json fonts
+        text instructions
+        enum tone
+        enum verbosity
+        bool web_search
+        datetime created_at
+        datetime updated_at
+    }
+
+    slides {
+        uuid id PK
+        uuid presentation_id FK
+        varchar layout_group
+        varchar layout
+        int index
+        json content
+        text html_content
+        text speaker_note
+        json properties
+        json ui
+    }
+
+    template_v2 {
+        varchar id PK
+        varchar name
+        text description
+        json raw_layouts
+        json components
+        json layouts
+        json assets
+        bool is_default
+        datetime created_at
+        datetime updated_at
+    }
+
+    chat_history_messages {
+        uuid id PK
+        uuid presentation_id FK
+        varchar template_v2_id FK
+        uuid conversation_id
+        int position
+        varchar role "user or assistant or system"
+        text content
+        json tool_calls
+        datetime created_at
+    }
+
+    imageasset {
+        uuid id PK
+        varchar path
+        bool is_uploaded
+        json extras
+        datetime created_at
+    }
+
+    font_uploads {
+        uuid id PK
+        varchar filename
+        varchar path
+        varchar family_name
+        int weight_class
+        varchar format
+        int size_bytes
+        datetime created_at
+    }
+
+    keyvaluesqlmodel {
+        uuid id PK
+        varchar key "indexed"
+        json value
+    }
+
+    webhook_subscriptions {
+        uuid id PK
+        varchar url
+        varchar secret
+        varchar event
+        datetime created_at
+    }
+
+    async_tasks {
+        uuid id PK
+        varchar type
+        varchar status
+        datetime created_at
+    }
+```
+
+### Tables Summary
+
+| Table | Purpose | Key Relationships |
+|-------|---------|-------------------|
+| `presentations` | Root presentation record | → slides, chat_history_messages |
+| `slides` | Individual slide content + HTML | → presentations |
+| `template_v2` | Template definitions + layouts | → chat_history_messages |
+| `chat_history_messages` | Conversation history | → presentations, template_v2 |
+| `imageasset` | Generated/uploaded image registry | Independent |
+| `font_uploads` | Custom uploaded font metadata | Independent |
+| `keyvaluesqlmodel` | Generic key-value config store | Used for user config |
+| `presentation_layout_codes` | Custom Monaco layout code | → presentations |
+| `template_create_infos` | Template creation audit log | → template_v2 |
+| `webhook_subscriptions` | Webhook endpoint registrations | Independent |
+| `async_tasks` | Background job tracking | Independent |
+| `async_presentation_generation_tasks` | Generation job status | Independent |
+| `ollama_pull_status` | Ollama model download progress | Independent |
+
+> **Supported Databases:** SQLite (default), PostgreSQL, MySQL — configured via `DATABASE_URL` env var.
+
+---
+
+## 🤖 LLM Providers
+
+15 providers via unified adapter pattern in `utils/llm_provider.py`:
+
+| Provider | Config Value | Models |
+|----------|-------------|--------|
+| **OpenAI** | `LLM=openai` | GPT-4o, GPT-4, o1, o3 |
+| **Anthropic** | `LLM=anthropic` | Claude 3.5 Sonnet, Claude 4 |
+| **Google Gemini** | `LLM=google` | Gemini 1.5 Pro, Gemini 2.0 Flash |
+| **Groq** | `LLM=groq` | Llama 3, Mixtral, Gemma (fast inference) |
+| **Ollama** | `LLM=ollama` | Any local model (pull API included) |
+| **DeepSeek** | `LLM=deepseek` | DeepSeek V2, DeepSeek V3 |
+| **Azure OpenAI** | `LLM=azure` | Azure-deployed GPT models |
+| **AWS Bedrock** | `LLM=bedrock` | Claude via AWS |
+| **OpenRouter** | `LLM=openrouter` | 200+ models unified API |
+| **Fireworks** | `LLM=fireworks` | Fast open-source inference |
+| **Together AI** | `LLM=together` | Open-source model hosting |
+| **Cerebras** | `LLM=cerebras` | Ultra-low latency inference |
+| **LiteLLM** | `LLM=litellm` | Proxy for 100+ providers |
+| **LMStudio** | `LLM=lmstudio` | Local OpenAI-compatible server |
+| **Custom** | `LLM=custom` | Any OpenAI-compatible endpoint |
+
+### Image Generation Providers
+
+| Provider | Config | Type |
+|----------|--------|------|
+| **OpenAI DALL-E** | `openai` | Cloud API |
+| **ComfyUI** | `comfyui` | Self-hosted |
+| **Pexels** | `pexels` | Stock photo API |
+| **Pixabay** | `pixabay` | Stock photo API |
+| **Open WebUI** | `open-webui` | Self-hosted |
+| **OpenAI Compatible** | `openai-compatible` | Any compatible API |
+
+### Web Search Providers
+
+| Provider | Config |
+|----------|--------|
+| **SearXNG** | `WEB_SEARCH_PROVIDER=searxng` |
+| **Tavily** | `WEB_SEARCH_PROVIDER=tavily` |
+| **Exa** | `WEB_SEARCH_PROVIDER=exa` |
+| **Brave Search** | `WEB_SEARCH_PROVIDER=brave` |
+| **Serper** | `WEB_SEARCH_PROVIDER=serper` |
+
+---
+
+## 🔌 MCP Server
+
+A secondary server (`mcp_server.py`) on **port 8001** using **FastMCP**, exposing FastAPI capabilities as LLM-callable tools.
+
+```mermaid
+graph LR
+    AI["AI Assistant\nClaude / GPT / Cursor"] -->|MCP Protocol| MCP["FastMCP Server\nPort 8001"]
+    MCP -->|HTTP + Auth| API["FastAPI Server\nPort 8000"]
+    API --> DB[("Database")]
+    API --> STORAGE["App Data Storage"]
+```
+
+| Tool Category | Capabilities |
+|---------------|-------------|
+| **Presentations** | Create, generate, list, delete, duplicate |
+| **Slides** | Get, update, add, delete, reorder |
+| **Chat** | Stream messages with full slide context |
+| **Templates** | List, create, update, delete |
+| **Export** | PPTX/PDF async generation |
+| **Auth and Config** | Status, session management |
+
+> Disabled in Electron mode via `PRESENTON_ELECTRON=true`.
+
+---
+
+## 📡 API Reference
+
+### Auth Endpoints
+
+| Method | Path | Description |
+|--------|------|-------------|
+| `GET` | `/api/v1/auth/status` | Auth config + session status |
+| `GET` | `/api/v1/auth/verify` | Verify current session token |
+| `POST` | `/api/v1/auth/setup` | Create initial credentials (first-run) |
+| `POST` | `/api/v1/auth/login` | Login → returns token + sets cookie |
+| `POST` | `/api/v1/auth/logout` | Clear session cookie |
+| `POST` | `/api/v1/auth/2fa/setup` | Generate TOTP secret + QR SVG |
+| `POST` | `/api/v1/auth/2fa/verify` | Verify TOTP code |
+| `POST` | `/api/v1/auth/2fa/disable` | Disable 2FA for user |
+| `POST` | `/api/v1/auth/verify-email` | Verify email OTP (Resend flow) |
+
+### Presentation Endpoints
+
+| Method | Path | Description |
+|--------|------|-------------|
+| `GET` | `/api/v1/ppt/presentation/all` | List all presentations |
+| `GET` | `/api/v1/ppt/presentation/{id}` | Get presentation with slides |
+| `POST` | `/api/v1/ppt/presentation/create` | Create empty presentation |
+| `POST` | `/api/v1/ppt/presentation/generate` | Generate full presentation (SSE) |
+| `DELETE` | `/api/v1/ppt/presentation/{id}` | Delete presentation |
+| `POST` | `/api/v1/ppt/presentation/{id}/duplicate` | Duplicate presentation |
+| `POST` | `/api/v1/ppt/presentation/{id}/export` | Export as PPTX/PDF (async) |
+
+### Slide Endpoints
+
+| Method | Path | Description |
+|--------|------|-------------|
+| `GET` | `/api/v1/ppt/slide/{id}` | Get slide |
+| `PUT` | `/api/v1/ppt/slide/{id}` | Update slide content/properties |
+| `POST` | `/api/v1/ppt/slide/add` | Add new slide |
+| `DELETE` | `/api/v1/ppt/slide/{id}` | Delete slide |
+| `POST` | `/api/v1/ppt/slide/reorder` | Reorder slides |
+
+### Chat Endpoints
+
+| Method | Path | Description |
+|--------|------|-------------|
+| `GET` | `/api/v1/ppt/chat/conversations` | List conversations |
+| `GET` | `/api/v1/ppt/chat/history` | Get conversation history |
+| `POST` | `/api/v1/ppt/chat/message` | Send message (non-streaming) |
+| `POST` | `/api/v1/ppt/chat/message/stream` | Send message (SSE streaming) |
+| `DELETE` | `/api/v1/ppt/chat/conversation` | Delete conversation |
+
+### Additional Endpoint Groups
+
+| Group | Path Prefix | Purpose |
+|-------|-------------|---------|
+| Templates | `/api/v1/ppt/template/*` | CRUD for presentation templates |
+| Images | `/api/v1/ppt/images/*` | Multi-provider image generation |
+| Icons | `/api/v1/ppt/icons/*` | SVG icon search + retrieval |
+| Fonts | `/api/v1/ppt/fonts/*` | Custom font upload + management |
+| Files | `/api/v1/ppt/files/*` | Document upload + management |
+| Outlines | `/api/v1/ppt/outlines/*` | Outline generation |
+| Themes | `/api/v1/ppt/themes/*` | Theme management |
+| Layouts | `/api/v1/ppt/layouts/*` | Layout management |
+| LLM Providers | `/api/v1/ppt/{provider}/*` | OpenAI, Anthropic, Google, Ollama |
+| Async Tasks | `/api/v1/async-tasks/*` | Background job status polling |
+| Webhooks | `/api/v1/webhook/*` | Subscribe/unsubscribe |
+| Hackathons | `/api/v1/hackathons/*` | Hackathon data |
+| Mock | `/api/v1/mock/*` | Testing endpoints |
+
+### BFF API Routes (Next.js)
+
+| Route | Method | Purpose |
+|-------|--------|---------|
+| `/api/user-config` | GET/POST | Read/write user configuration |
+| `/api/template` | GET/POST | Template operations |
+| `/api/templates` | GET | List available templates |
+| `/api/coach` | POST | AI coach interaction (OpenRouter 120B) |
+| `/api/export-presentation` | POST | Trigger PPTX/PDF export |
+| `/api/export-presentation/file` | GET | Download exported file |
+| `/api/upload-image` | POST | Upload image asset |
+| `/api/validate-layout-code` | POST | Validate custom Monaco layout code |
+| `/api/has-required-key` | GET | Check if API keys configured |
+| `/api/can-change-keys` | GET | Check key modification permission |
+| `/api/telemetry-status` | GET | Mixpanel analytics opt-in status |
+
+---
+
+## 🚀 Deployment
+
+### Deployment Architecture
+
+```mermaid
+graph TB
+    subgraph PROD["Production - Docker Compose"]
+        NGINX["nginx Reverse Proxy\nPort 80 and 443"]
+        NEXT["Next.js\nPort 3000"]
+        FAST["FastAPI\nPort 8000"]
+        MCP_S["MCP Server\nPort 8001"]
+        POSTGRES[("PostgreSQL")]
+        APP_DATA["/app_data volume"]
+        NGINX --> NEXT & FAST
+        NEXT -->|internal network| FAST
+        FAST --> POSTGRES & APP_DATA
+    end
+
+    subgraph K8S["Kubernetes"]
+        INGRESS["Ingress Controller"]
+        NEXT_POD["Next.js Pods"]
+        FAST_POD["FastAPI Pods"]
+        PG_POD["PostgreSQL StatefulSet"]
+        PVC["PersistentVolumeClaim"]
+        INGRESS --> NEXT_POD & FAST_POD
+        FAST_POD --> PG_POD & PVC
+    end
+
+    subgraph ELECTRON["Electron Desktop"]
+        E_NEXT["Next.js\nPort 3000"]
+        E_FAST["FastAPI\nPort 8000"]
+        E_SQLITE[("SQLite")]
+        E_NEXT -->|loopback| E_FAST --> E_SQLITE
+    end
+
+    subgraph VERCEL["Vercel - Frontend Only"]
+        V_NEXT["Next.js SSR + Static"]
+        V_CDN["Vercel Edge CDN"]
+        V_NEXT --> V_CDN
+    end
+```
+
+### Docker Quick Start
+
+```bash
+docker compose up -d
+# Frontend: http://localhost:3000
+# Backend API: http://localhost:8000
+# API Docs: http://localhost:8000/docs
+```
+
+See [DOCKER.md](DOCKER.md) and [KUBERNETES.md](KUBERNETES.md) for full deployment guides.
+
+### Environment Variables
+
+#### Backend
+
+| Variable | Default | Purpose |
+|----------|---------|---------|
+| `DATABASE_URL` | `sqlite:///app_data/fastapi.db` | Database connection string |
+| `APP_DATA_DIRECTORY` | `{project}/app_data` | Upload/export/font storage |
+| `MIGRATE_DATABASE_ON_STARTUP` | `false` | Auto-run Alembic migrations |
+| `DISABLE_AUTH` | `true` | Disable authentication |
+| `AUTH_USERNAME` | - | Auto-configure admin username |
+| `AUTH_PASSWORD` | - | Auto-configure admin password |
+| `AUTH_OVERRIDE_FROM_ENV` | `false` | Overwrite stored credentials |
+| `RESET_AUTH` | `false` | Clear all stored credentials |
+| `RESEND_API_KEY` | - | Enable email OTP on signup |
+| `LLM` | - | Active LLM provider |
+| `OPENAI_API_KEY` | - | OpenAI API key |
+| `ANTHROPIC_API_KEY` | - | Anthropic API key |
+| `GOOGLE_API_KEY` | - | Google AI API key |
+| `GROQ_API_KEY` | - | Groq API key |
+| `SENTRY_DSN` | - | Sentry error tracking DSN |
+| `LOG_LEVEL` | `INFO` | Logging verbosity |
+| `DB_POOL_SIZE` | `5` | Database connection pool size |
+| `DB_MAX_OVERFLOW` | `10` | Max pool overflow connections |
+
+#### Frontend
+
+| Variable | Default | Purpose |
+|----------|---------|---------|
+| `NEXT_PUBLIC_FAST_API` | `http://127.0.0.1:8000` | Backend URL (browser-side) |
+| `FAST_API_INTERNAL_URL` | - | Backend URL (server-side, Docker internal) |
+| `NEXT_PUBLIC_HACKATHONS_API_URL` | - | External hackathon data API |
+
+---
+
+## 🛠️ Development Setup
+
+### Prerequisites
+
+| Tool | Version | Purpose |
+|------|---------|---------|
+| **Node.js** | 20+ | Frontend runtime |
+| **Python** | 3.11 | Backend runtime |
+| **uv** | latest | Fast Python package manager |
+| **npm** | latest | Frontend package manager |
+
+### 1. Backend
+
+```bash
+cd backend
+uv sync
+cp .env.example .env
+# Edit .env with your LLM API keys
+uv run python server.py --port 8000 --reload true
+```
+
+> API docs available at: `http://127.0.0.1:8000/docs`
+
+**Windows (restricted environments):**
+
+```powershell
+cd backend
+.\.venv\Scripts\python.exe server.py --port 8000 --reload true
+```
+
+### 2. Frontend
+
+```bash
+cd frontend
+npm install
+echo "NEXT_PUBLIC_FAST_API=http://127.0.0.1:8000" > .env.local
+npm run dev
+```
+
+> App available at: `http://localhost:3000`
+
+### 3. App Builder CLI (Optional)
+
+```bash
+cd app_builder
+pip install -r requirements-runtime.txt
+python tui.py
+# Or instantly via npm:
+npx hackit-ai
+```
+
+### Running Tests
+
+```bash
+cd backend
+uv run pytest                # All tests
+uv run pytest --cov          # With coverage report
+uv run pytest tests/unit/    # Unit tests only
+```
+
+### Database Migrations
+
+```bash
+cd backend
+alembic revision --autogenerate -m "description"
+alembic upgrade head
+alembic downgrade -1         # Rollback one version
+```
+
+### Middleware Stack
+
+| Order | Middleware | Purpose |
+|-------|-----------|---------|
+| 1 | **CORS** | Restrict origins (configured URL or * in dev) |
+| 2 | **UserConfigEnvUpdate** | Injects user-config keys into env per request |
+| 3 | **SessionAuth** | Validates HMAC tokens on all /api/* paths |
+| 4 | **Static Icon Fallback** | Returns placeholder SVG for missing icon paths |
+
+### Backend Startup Sequence
+
+```
+1. Configure logging (LOG_LEVEL env, default INFO)
+2. Create APP_DATA_DIRECTORY if not exists
+3. Run Alembic migrations (MIGRATE_DATABASE_ON_STARTUP=true)
+4. Create any missing database tables
+5. Import 5 default presentation templates
+6. Bootstrap auth from env (AUTH_USERNAME / AUTH_PASSWORD)
+7. Sync env with user config store
+8. Check LLM + image provider API key availability
+```
+
+---
+
+<div align="center">
+
+---
+
+### ⭐ Built for Hackathons. Designed for Winners.
+
+**Made with ❤️ by AC-DC for Summer of Codefest 2.0**
+
+[![GitHub Stars](https://img.shields.io/github/stars/Rachit-Tiwari-7/HACKIT-AI?style=social)](https://github.com/Rachit-Tiwari-7/HACKIT-AI)
+[![npm downloads](https://img.shields.io/npm/dt/hackit-ai?label=CLI%20Downloads&style=social)](https://www.npmjs.com/package/hackit-ai)
+
+</div>
