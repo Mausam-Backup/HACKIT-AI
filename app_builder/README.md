@@ -1,150 +1,38 @@
-# 🚀 HACKIT — Autonomous AI App Builder & Hackathon Coach
+# 🛠️ HACKIT-AI App Builder CLI
 
-[![npm version](https://img.shields.io/npm/v/hackit-ai.svg?color=blue&style=flat-square)](https://www.npmjs.com/package/hackit-ai)
-[![license](https://img.shields.io/npm/l/hackit-ai.svg?color=green&style=flat-square)](https://github.com/npm/cli)
-[![node version](https://img.shields.io/node/v/hackit-ai.svg?style=flat-square)](https://nodejs.org)
+[![Python](https://img.shields.io/badge/Python-3.11+-blue.svg?style=flat&logo=python&logoColor=white)](https://www.python.org)
+[![Typer](https://img.shields.io/badge/Typer-CLI-000000.svg?style=flat&logo=terminal&logoColor=white)](https://typer.tiangolo.com/)
+[![License](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-> **From idea → plan → full-stack code → validation → hackathon pitch in minutes.**
+The **App Builder CLI** is an autonomous, multi-agent terminal interface that takes a single text prompt and scaffolds a complete, production-ready full-stack application (frontend + backend). 
 
-**HACKIT** (`hackit-ai`) is an autonomous, multi-agent AI system packaged into an interactive React/Ink Terminal User Interface (TUI). It acts as your AI Hackathon Coach and lead engineer—analyzing project ideas, architecting full-stack applications (Vite + React frontend & Node.js/Express backend), generating comprehensive documentation, running automated compilation checks with self-repair, and scoring your project against real hackathon judging rubrics.
+It utilizes specialized LLM sub-agents to coach, architect, code, and generate pitch slides for your hackathon project.
 
----
+## 📂 Folder Structure
 
-## ⚡ Quick Start
+| Directory / File | Description |
+|------------------|-------------|
+| `agents/` | System prompts and spec definitions mapping for the LLM multi-agent swarm (`coach`, `coder`, `reviewer`). |
+| `app_builder/` | The generation destination where scaffolded Node.js/Python projects are dumped. |
+| `cli.py` | The main Typer command-line interface entry point. |
+| `orchestrator.py` | The core state machine that orchestrates the handoffs between different specialized LLMs. |
+| `tui.py` | Interactive Rich/Textual powered UI components for terminal rendering. |
 
-You can run HACKIT instantly using `npx` (no pre-installation required):
+## 🚀 Features
+
+- **End-to-End Generation:** Automatically creates React/Vite frontends and Express/FastAPI backends.
+- **AI Coach:** Validates your idea before writing code, checking for originality and technical feasibility.
+- **Pitch Deck Generation:** Automatically extracts app features to generate a PowerPoint slide deck for your presentation.
+- **Docker Ready:** Scaffolds `Dockerfile` and `docker-compose.yml` for instant deployment.
+
+## 💻 Quick Start
+
+Make sure you have configured your LLM provider keys in the main `.env`.
 
 ```bash
-npx hackit-ai
+# Run the interactive setup
+python cli.py start
+
+# Or pass a prompt directly
+python cli.py build "Create an expense tracker app with a dashboard"
 ```
-
-Or install it globally to access the `hackit` command anywhere on your system:
-
-```bash
-npm install -g hackit-ai
-
-# Launch interactive Chat TUI
-hackit
-
-# Or build directly with a prompt
-hackit "create an AI-powered expense tracker for Indians"
-```
-
----
-
-## ✨ Key Features
-
-- **🧠 Coach Agent (Planning & Spec Generation)**: Analyzes your prompt, cuts unnecessary scope, defines MVP features, and generates complete architectural docs (`PLAN.md`, `ARCHITECTURE.md`, `TASKS.md`, `WALKTHROUGH.md`, `NEXT-STEPS.md`).
-- **⚡ Parallel Builder Agents**: Generates a complete full-stack web application concurrently—building a modern React (Vite + Lucide Icons) frontend and a Node.js/Express (SQLite) backend.
-- **🎨 Built-in UI Design System**: Automatically enforces sleek dark-mode aesthetics, glassmorphism cards, responsive layouts, loading states, empty-state artwork, and pre-populated seed data so your app looks alive on first boot.
-- **🔄 Automated Build & Self-Repair**: Executes `npm run build`, linting, and automated tests. If a syntax or build error occurs, HACKIT automatically analyzes the failure logs and executes up to 2 repair iterations.
-- **🎤 Pitch & Judge Scorer**: Generates a 3-minute hackathon pitch deck and demo script (`HACKATHON.md`) and evaluates your project against real competition rubrics (`JUDGE_SCORE.md`).
-- **💻 Responsive Terminal UI**: Built with React & Ink. Features live stage progress tracking, scrollable build logs, a tech stack switcher, and post-pipeline follow-up prompts.
-
----
-
-## ⌨️ Interactive TUI Controls & Shortcuts
-
-When running the interactive `hackit` terminal interface:
-
-| Key / Command | Action |
-|:---|:---|
-| `Tab` | Cycle through Tech Stack presets (Vite + React + Express, Next.js, Vanilla, Vue 3, Custom) |
-| `↑` / `↓` Arrow Keys | Scroll live pipeline logs up and down during or after a run |
-| `/new` | Reset current workspace and start a fresh project idea |
-| `Ctrl + C` | Safely exit the CLI and restore terminal screen state |
-
----
-
-## 🏗️ Architecture & Pipeline Stages
-
-```
- ┌───────────────────────────────────────────────────────────┐
- │                  1. Coach Planning Phase                  │
- │ Analyzes prompt, designs schema, writes PLAN & ARCH       │
- └─────────────────────────────┬─────────────────────────────┘
-                               │
-                               ▼
- ┌───────────────────────────────────────────────────────────┐
- │                  2. Parallel Code Builder                 │
- │ ├── Frontend Builder (Vite + React 18 + Lucide Icons)     │
- │ └── Backend Builder  (Node.js + Express + SQLite)         │
- └─────────────────────────────┬─────────────────────────────┘
-                               │
-                               ▼
- ┌───────────────────────────────────────────────────────────┐
- │             3. Validation & Auto-Repair Loop              │
- │ Runs npm run build; auto-repairs code if compilation fails│
- └─────────────────────────────┬─────────────────────────────┘
-                               │
-                               ▼
- ┌───────────────────────────────────────────────────────────┐
- │              4. Pitch Generator & Judge Score             │
- │ Produces HACKATHON.md demo script & JUDGE_SCORE.md audit  │
- └───────────────────────────────────────────────────────────┘
-```
-
----
-
-## 📄 Generated Project Artifacts
-
-Every project created by HACKIT is saved in its own directory containing full source code and complete documentation:
-
-```
-my-project/
-├── frontend/             # React 18 + Vite 5 frontend app
-├── backend/              # Node.js + Express API server
-├── package.json          # Concurrent root runner ("npm run dev")
-├── PLAN.md               # Executive summary, MVP scope, stretch goals
-├── ARCHITECTURE.md       # Technical design, component map, DB schema
-├── TASKS.md              # Checkbox task tracking list
-├── WALKTHROUGH.md        # Codebase directory map & manual verification steps
-├── NEXT-STEPS.md         # Prompts for incremental feature expansion
-├── HACKATHON.md          # 3-minute pitch outline & live demo script
-└── JUDGE_SCORE.md        # AI judge scoring against hackathon rubrics
-```
-
----
-
-## 🛠️ Configuration (`config.yaml`)
-
-HACKIT can be customized via `config.yaml` or environment variables:
-
-```yaml
-# Server Port Configuration
-server_port: 4190
-
-# AI Model Overrides
-coach_model: opencode/gpt-4o
-builder_model: opencode/gpt-4o
-
-# Pipeline Execution Settings
-coach_timeout: 1800
-builder_timeout: 1800
-max_repair_attempts: 2
-strict_models: false
-```
-
----
-
-## 💻 Tech Stack Presets
-
-Select your stack before starting a project:
-- **Vite + React + Express** *(Default / Recommended)*
-- **Next.js + Tailwind + Supabase**
-- **Vanilla HTML + JS + CSS**
-- **Vue 3 + Vite + Node**
-- **Custom Tech Stack** *(Specified directly in your prompt)*
-
----
-
-## 📋 Requirements
-
-- **Node.js**: `>= 18.0.0`
-- **Python**: `>= 3.11` (automatically sets up lightweight runtime dependencies on first run via `postinstall`)
-
----
-
-## 📄 License
-
-MIT © [Google DeepMind Advanced Agentic Coding Team](https://github.com/npm/cli)
