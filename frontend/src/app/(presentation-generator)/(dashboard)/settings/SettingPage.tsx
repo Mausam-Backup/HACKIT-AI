@@ -24,7 +24,7 @@ import {
 } from "@/utils/providerConstants";
 import { ImagesApi } from "@/app/(presentation-generator)/services/api/images";
 import { getApiUrl } from "@/utils/api";
-import LogoutButton from "@/components/auth/LogoutButton";
+
 import {
   CHATGPT_AUTH_REQUIRED_EVENT,
   requestChatGptReauth,
@@ -390,27 +390,12 @@ const SettingsPage = () => {
           {selectedProvider === 'image-provider' && <ImageProvider llmConfig={llmConfig} setLlmConfig={setLlmConfig} />}
           {selectedProvider === 'web-search-provider' && <WebSearchProvider llmConfig={llmConfig} setLlmConfig={setLlmConfig} />}
           {selectedProvider === 'privacy' && <PrivacySettings />}
-          {selectedProvider === "session" && (
-            <div className="w-full max-w-lg space-y-5 rounded-[20px] border border-[#EDEEEF] bg-white p-7">
-              <div>
-                <h4 className="font-unbounded text-lg font-normal text-black">Sign out</h4>
-                <p className="mt-2 font-syne text-sm leading-relaxed text-[#494A4D]">
-                  End your session on this deployment. You will need to sign in again to use the app and access the API.
-                </p>
-              </div>
-              <LogoutButton
-                label="Sign out"
-                className="inline-flex w-full items-center justify-center gap-2 rounded-[58px] border border-[#EDEEEF] bg-[#7C51F8] px-5 py-3 font-syne text-xs font-semibold text-white transition hover:bg-[#6d46e6] disabled:cursor-not-allowed disabled:opacity-60"
-              />
-            </div>
-          )}
+
 
         </div>
       </main>
 
-      {/* Fixed Bottom Button — hidden on Sign out; nothing to save there */}
-      {selectedProvider !== "session" ? (
-        <div className=" mx-auto fixed bottom-20 right-5 ">
+      <div className=" mx-auto fixed bottom-20 right-5 ">
           <button
             onClick={handleSaveConfig}
             disabled={buttonState.isDisabled}
@@ -435,7 +420,7 @@ const SettingsPage = () => {
             <ChevronRight className="w-4 h-4" />
           </button>
         </div>
-      ) : null}
+
 
     </div>
   );
