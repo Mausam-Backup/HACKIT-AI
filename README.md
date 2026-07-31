@@ -1,4 +1,4 @@
-﻿<div align="center">
+<div align="center">
 
 <img src="frontend/public/logo.png" alt="Hack-It AI Logo" width="100" height="100"/>
 
@@ -54,36 +54,54 @@
   <tr>
     <td align="center" width="50%">
       <b>🎬 Presentation Generator</b><br/>
-      <video src="frontend/public/ppt-demo.mp4" autoplay loop muted playsinline width="100%"></video>
+      <a href="frontend/public/ppt-demo.mp4">
+        <img src="frontend/public/assets/work1.png" alt="Presentation Generator Demo" width="100%" style="border-radius:8px"/>
+      </a>
+      <video src="frontend/public/ppt-demo.mp4" autoplay loop muted playsinline width="100%" style="border-radius:8px"></video>
       <br/><sub>AI slide deck creation from prompt or document upload</sub>
     </td>
     <td align="center" width="50%">
       <b>🤖 AI Hackathon Coach</b><br/>
-      <video src="frontend/public/hack-coach-demo.mp4" autoplay loop muted playsinline width="100%"></video>
+      <a href="frontend/public/hack-coach-demo.mp4">
+        <img src="frontend/public/assets/work2.png" alt="AI Hackathon Coach Demo" width="100%" style="border-radius:8px"/>
+      </a>
+      <video src="frontend/public/hack-coach-demo.mp4" autoplay loop muted playsinline width="100%" style="border-radius:8px"></video>
       <br/><sub>Strategic advisor powered by OpenRouter OSS 120B</sub>
     </td>
   </tr>
   <tr>
     <td align="center" width="50%">
       <b>🎙️ AI Interview Prep</b><br/>
-      <video src="frontend/public/ai-interview-demo.mp4" autoplay loop muted playsinline width="100%"></video>
+      <a href="frontend/public/ai-interview-demo.mp4">
+        <img src="frontend/public/assets/card2.png" alt="AI Interview Demo" width="100%" style="border-radius:8px"/>
+      </a>
+      <video src="frontend/public/ai-interview-demo.mp4" autoplay loop muted playsinline width="100%" style="border-radius:8px"></video>
       <br/><sub>Voice-enabled mock interviews with real-time AI feedback</sub>
     </td>
     <td align="center" width="50%">
-      <b>🏆 Hackathons and Resources</b><br/>
-      <video src="frontend/public/hacakthon-video.mp4" autoplay loop muted playsinline width="100%"></video>
-      <br/><sub>Live hackathon browser with filters and resource library</sub>
+      <b>🏆 Hackathons &amp; Resources</b><br/>
+      <a href="frontend/public/hacakthon-video.mp4">
+        <img src="frontend/public/assets/card3.png" alt="Hackathons Demo" width="100%" style="border-radius:8px"/>
+      </a>
+      <video src="frontend/public/hacakthon-video.mp4" autoplay loop muted playsinline width="100%" style="border-radius:8px"></video>
+      <br/><sub>Live hackathon browser with filters &amp; resource library</sub>
     </td>
   </tr>
   <tr>
     <td align="center" width="50%">
       <b>⚡ AI Workflow Builder</b><br/>
-      <video src="frontend/public/Ai-automation.mp4" autoplay loop muted playsinline width="100%"></video>
+      <a href="frontend/public/Ai-automation.mp4">
+        <img src="frontend/public/assets/card4.png" alt="Workflow Builder Demo" width="100%" style="border-radius:8px"/>
+      </a>
+      <video src="frontend/public/Ai-automation.mp4" autoplay loop muted playsinline width="100%" style="border-radius:8px"></video>
       <br/><sub>Visual drag-and-drop multi-agent workflow designer</sub>
     </td>
     <td align="center" width="50%">
-      <b>💬 Chat UI and Slide Editor</b><br/>
-      <video src="frontend/public/chat-ui-video.mp4" autoplay loop muted playsinline width="100%"></video>
+      <b>💬 Chat UI &amp; Slide Editor</b><br/>
+      <a href="frontend/public/chat-ui-video.mp4">
+        <img src="frontend/public/assets/Hero section Visual.png" alt="Chat UI Demo" width="100%" style="border-radius:8px"/>
+      </a>
+      <video src="frontend/public/chat-ui-video.mp4" autoplay loop muted playsinline width="100%" style="border-radius:8px"></video>
       <br/><sub>Real-time SSE streaming chat with context-aware slide editing</sub>
     </td>
   </tr>
@@ -694,73 +712,73 @@ sequenceDiagram
 
 | Category | Technology | Version | Purpose |
 |----------|-----------|---------|---------|
-| **Framework** | Next.js App Router | 16.2.10 | SSR + client-side routing |
-| **Language** | TypeScript | 5.x | Type-safe development |
-| **UI Library** | React | 19.2.4 | Component-based UI |
-| **Styling** | Tailwind CSS | 4.x | Utility-first CSS |
-| **Component System** | shadcn/ui (Radix primitives) | base-nova | Accessible UI components |
-| **State Management** | Redux Toolkit | 2.2.8 | Global state (4 slices) |
-| **Server State** | TanStack React Query + SWR | 5.x / 2.x | Data fetching and caching |
-| **Text Editor** | TipTap (ProseMirror) | 2.x | Rich-text slide editing |
-| **Code Editor** | Monaco Editor | 4.x | Layout code + custom templates |
-| **Drag and Drop** | dnd-kit | 6.x / 10.x | Slide reordering |
-| **Animation** | Framer Motion + GSAP + Lenis | 12.x / 3.15 / 1.3 | Micro-animations + smooth scroll |
-| **3D / WebGL** | ogl + react-konva + d3 | 1.x / 19.x / 7.x | Aurora hero + globe wireframe |
-| **Charts** | Chart.js + Recharts + Mermaid | 4.x / 3.x / 11.x | Analytics + diagrams |
-| **Form Validation** | Zod | 4.x | Schema validation |
-| **Icons** | Lucide React + Phosphor Icons | latest | UI icons |
-| **Fonts** | Geist + Outfit + Inter | latest | Typography via next/font |
-| **Voice AI** | Vapi AI Web SDK | 2.x | Interview voice sessions |
-| **Analytics** | Mixpanel | latest | Usage event tracking |
-| **Notifications** | Sonner | 2.x | Toast notifications |
-| **Workflow Builder** | Custom React Canvas | - | Drag-and-drop agent designer |
+| **Framework** | <img src="https://img.shields.io/badge/-Next.js-black?logo=nextdotjs&logoColor=white&style=flat-square" height="20"/> Next.js App Router | 16.2.10 | SSR + client-side routing |
+| **Language** | <img src="https://img.shields.io/badge/-TypeScript-3178C6?logo=typescript&logoColor=white&style=flat-square" height="20"/> TypeScript | 5.x | Type-safe development |
+| **UI Library** | <img src="https://img.shields.io/badge/-React-61DAFB?logo=react&logoColor=black&style=flat-square" height="20"/> React | 19.2.4 | Component-based UI |
+| **Styling** | <img src="https://img.shields.io/badge/-Tailwind_CSS-06B6D4?logo=tailwindcss&logoColor=white&style=flat-square" height="20"/> Tailwind CSS | 4.x | Utility-first CSS |
+| **Component System** | <img src="https://img.shields.io/badge/-shadcn/ui-000000?logo=shadcnui&logoColor=white&style=flat-square" height="20"/> shadcn/ui (Radix) | base-nova | Accessible UI components |
+| **State Management** | <img src="https://img.shields.io/badge/-Redux_Toolkit-764ABC?logo=redux&logoColor=white&style=flat-square" height="20"/> Redux Toolkit | 2.2.8 | Global state (4 slices) |
+| **Server State** | <img src="https://img.shields.io/badge/-React_Query-FF4154?logo=reactquery&logoColor=white&style=flat-square" height="20"/> TanStack Query + SWR | 5.x / 2.x | Data fetching & caching |
+| **Text Editor** | <img src="https://img.shields.io/badge/-TipTap-1A1A1A?logo=tiptap&logoColor=white&style=flat-square" height="20"/> TipTap (ProseMirror) | 2.x | Rich-text slide editing |
+| **Code Editor** | <img src="https://img.shields.io/badge/-Monaco_Editor-0078D4?logo=visualstudiocode&logoColor=white&style=flat-square" height="20"/> Monaco Editor | 4.x | Layout code + custom templates |
+| **Drag & Drop** | <img src="https://img.shields.io/badge/-dnd--kit-4A90D9?logo=dnd&logoColor=white&style=flat-square" height="20"/> dnd-kit | 6.x / 10.x | Slide reordering |
+| **Animation** | <img src="https://img.shields.io/badge/-Framer_Motion-0055FF?logo=framer&logoColor=white&style=flat-square" height="20"/> Framer Motion + GSAP + Lenis | 12.x / 3.15 / 1.3 | Micro-animations + smooth scroll |
+| **3D / WebGL** | <img src="https://img.shields.io/badge/-WebGL-990000?logo=webgl&logoColor=white&style=flat-square" height="20"/> ogl + react-konva + d3 | 1.x / 19.x / 7.x | Aurora hero + globe wireframe |
+| **Charts** | <img src="https://img.shields.io/badge/-Chart.js-FF6384?logo=chartdotjs&logoColor=white&style=flat-square" height="20"/> Chart.js + Recharts + Mermaid | 4.x / 3.x / 11.x | Analytics + diagrams |
+| **Form Validation** | <img src="https://img.shields.io/badge/-Zod-3E67B1?logo=zod&logoColor=white&style=flat-square" height="20"/> Zod | 4.x | Schema validation |
+| **Icons** | <img src="https://img.shields.io/badge/-Lucide-F56565?logo=lucide&logoColor=white&style=flat-square" height="20"/> Lucide React + Phosphor Icons | latest | UI icon libraries |
+| **Fonts** | <img src="https://img.shields.io/badge/-Google_Fonts-4285F4?logo=googlefonts&logoColor=white&style=flat-square" height="20"/> Geist + Outfit + Inter | latest | Typography via next/font |
+| **Voice AI** | <img src="https://img.shields.io/badge/-Vapi_AI-FF6B35?logo=microphone&logoColor=white&style=flat-square" height="20"/> Vapi AI Web SDK | 2.x | Interview voice sessions |
+| **Analytics** | <img src="https://img.shields.io/badge/-Mixpanel-7856FF?logo=mixpanel&logoColor=white&style=flat-square" height="20"/> Mixpanel | latest | Usage event tracking |
+| **Notifications** | <img src="https://img.shields.io/badge/-Sonner-000000?logo=sonner&logoColor=white&style=flat-square" height="20"/> Sonner | 2.x | Toast notifications |
+| **Workflow Builder** | <img src="https://img.shields.io/badge/-React_Canvas-61DAFB?logo=react&logoColor=black&style=flat-square" height="20"/> Custom React Canvas | — | Drag-and-drop agent designer |
 
 ### Backend
 
 | Category | Technology | Version | Purpose |
 |----------|-----------|---------|---------|
-| **Runtime** | Python | 3.11 | Backend language |
-| **Web Framework** | FastAPI (ASGI) | 0.116+ | REST API + SSE streaming |
-| **Server** | Uvicorn | latest | ASGI production server |
-| **ORM** | SQLModel (SQLAlchemy + Pydantic) | 0.0.24 | Database models |
-| **Migrations** | Alembic | 1.14+ | Schema version management |
-| **Database (dev)** | SQLite + aiosqlite | built-in | Local development |
-| **Database (prod)** | PostgreSQL (asyncpg) or MySQL (aiomysql) | configurable | Production |
-| **LLM Integration** | 15 providers unified adapter | various | AI text generation |
-| **Image Generation** | DALL-E + ComfyUI + Pexels + Pixabay + Open WebUI | various | Slide images |
-| **Vector Store** | FastEmbed (local embeddings) | 0.5.2 | Local semantic search |
-| **Memory** | mem0ai OSS | 0.1.115+ | Persistent LLM context |
-| **Web Search** | SearXNG / Tavily / Exa / Brave / Serper | various | Grounded generation |
-| **Document Parsing** | pdfplumber + python-pptx + Pillow + fonttools | latest | File ingestion |
-| **MCP Protocol** | FastMCP | 2.11+ | LLM tool bridge |
-| **Auth** | Custom PBKDF2-HMAC-SHA256 | built-in | Session management |
-| **2FA** | pyotp + qrcode | latest | TOTP + QR SVG generation |
-| **Email OTP** | resend | latest | Registration email verification |
-| **Error Tracking** | Sentry SDK (optional) | latest | Production monitoring |
-| **Testing** | pytest + pytest-cov | 9.x / 7.x | Unit + integration tests |
-| **Package Manager** | uv | latest | Fast Python dependency management |
+| **Runtime** | <img src="https://img.shields.io/badge/-Python-3776AB?logo=python&logoColor=white&style=flat-square" height="20"/> Python | 3.11 | Backend language |
+| **Web Framework** | <img src="https://img.shields.io/badge/-FastAPI-009688?logo=fastapi&logoColor=white&style=flat-square" height="20"/> FastAPI (ASGI) | 0.116+ | REST API + SSE streaming |
+| **Server** | <img src="https://img.shields.io/badge/-Uvicorn-499848?logo=gunicorn&logoColor=white&style=flat-square" height="20"/> Uvicorn | latest | ASGI production server |
+| **ORM** | <img src="https://img.shields.io/badge/-SQLModel-009688?logo=fastapi&logoColor=white&style=flat-square" height="20"/> SQLModel (SQLAlchemy + Pydantic) | 0.0.24 | Database models |
+| **Migrations** | <img src="https://img.shields.io/badge/-Alembic-6B7280?logo=database&logoColor=white&style=flat-square" height="20"/> Alembic | 1.14+ | Schema version management |
+| **Database (dev)** | <img src="https://img.shields.io/badge/-SQLite-003B57?logo=sqlite&logoColor=white&style=flat-square" height="20"/> SQLite + aiosqlite | built-in | Local development |
+| **Database (prod)** | <img src="https://img.shields.io/badge/-PostgreSQL-336791?logo=postgresql&logoColor=white&style=flat-square" height="20"/> PostgreSQL / <img src="https://img.shields.io/badge/-MySQL-4479A1?logo=mysql&logoColor=white&style=flat-square" height="20"/> MySQL | configurable | Production |  
+| **LLM Integration** | <img src="https://img.shields.io/badge/-OpenAI-412991?logo=openai&logoColor=white&style=flat-square" height="20"/> <img src="https://img.shields.io/badge/-Anthropic-CC785C?logo=anthropic&logoColor=white&style=flat-square" height="20"/> <img src="https://img.shields.io/badge/-Google-4285F4?logo=google&logoColor=white&style=flat-square" height="20"/> + 12 more | various | 15-provider AI generation |
+| **Image Generation** | <img src="https://img.shields.io/badge/-DALL·E-412991?logo=openai&logoColor=white&style=flat-square" height="20"/> DALL-E + ComfyUI + Pexels + Pixabay | various | Slide image generation |
+| **Vector Store** | <img src="https://img.shields.io/badge/-FastEmbed-10B981?logo=databricks&logoColor=white&style=flat-square" height="20"/> FastEmbed (local) | 0.5.2 | Local semantic search |
+| **Memory** | <img src="https://img.shields.io/badge/-Mem0-8B5CF6?logo=buffer&logoColor=white&style=flat-square" height="20"/> mem0ai OSS | 0.1.115+ | Persistent LLM context |
+| **Web Search** | <img src="https://img.shields.io/badge/-Tavily-00B4D8?logo=search&logoColor=white&style=flat-square" height="20"/> Tavily / Exa / Brave / SearXNG / Serper | various | Grounded generation |
+| **Document Parsing** | <img src="https://img.shields.io/badge/-PDF-EC1C24?logo=adobeacrobatreader&logoColor=white&style=flat-square" height="20"/> pdfplumber + python-pptx + Pillow | latest | File ingestion |
+| **MCP Protocol** | <img src="https://img.shields.io/badge/-FastMCP-14B8A6?logo=fastapi&logoColor=white&style=flat-square" height="20"/> FastMCP | 2.11+ | LLM tool bridge |
+| **Auth** | <img src="https://img.shields.io/badge/-PBKDF2-DC2626?logo=letsencrypt&logoColor=white&style=flat-square" height="20"/> Custom PBKDF2-HMAC-SHA256 | built-in | Session management |
+| **2FA** | <img src="https://img.shields.io/badge/-PyOTP-EA580C?logo=authy&logoColor=white&style=flat-square" height="20"/> pyotp + qrcode | latest | TOTP + QR SVG generation |
+| **Email OTP** | <img src="https://img.shields.io/badge/-Resend-000000?logo=gmail&logoColor=white&style=flat-square" height="20"/> Resend | latest | Email verification |
+| **Error Tracking** | <img src="https://img.shields.io/badge/-Sentry-362D59?logo=sentry&logoColor=white&style=flat-square" height="20"/> Sentry SDK | latest | Production monitoring |
+| **Testing** | <img src="https://img.shields.io/badge/-pytest-0A9EDC?logo=pytest&logoColor=white&style=flat-square" height="20"/> pytest + pytest-cov | 9.x / 7.x | Unit + integration tests |
+| **Package Manager** | <img src="https://img.shields.io/badge/-uv-DE5FE9?logo=astral&logoColor=white&style=flat-square" height="20"/> uv | latest | Fast Python dependency management |
 
 ### App Builder CLI
 
 | Category | Technology | Purpose |
 |----------|-----------|---------|
-| **TUI Framework** | React + Ink | Interactive terminal UI |
-| **Orchestration** | orchestrator.py (36KB) | Multi-agent pipeline runner |
-| **Agent Specs** | Markdown prompt files | Coach, Frontend, Backend definitions |
-| **Stack Manager** | stack_manager.py (9KB) | Tech stack preset management |
-| **API Client** | hackit_client.py (22KB) | FastAPI backend integration |
-| **Scaffold Engine** | scaffold.py (22KB) | Full-stack code generation |
-| **Dev Server** | dev_server.py (13KB) | Development server management |
+| **TUI Framework** | <img src="https://img.shields.io/badge/-React_Ink-61DAFB?logo=react&logoColor=black&style=flat-square" height="20"/> React + Ink | Interactive terminal UI |
+| **Orchestration** | <img src="https://img.shields.io/badge/-Python-3776AB?logo=python&logoColor=white&style=flat-square" height="20"/> orchestrator.py (36KB) | Multi-agent pipeline runner |
+| **Agent Specs** | <img src="https://img.shields.io/badge/-Markdown-000000?logo=markdown&logoColor=white&style=flat-square" height="20"/> Markdown prompt files | Coach, Frontend, Backend definitions |
+| **Stack Manager** | <img src="https://img.shields.io/badge/-Python-3776AB?logo=python&logoColor=white&style=flat-square" height="20"/> stack_manager.py (9KB) | Tech stack preset management |
+| **API Client** | <img src="https://img.shields.io/badge/-FastAPI-009688?logo=fastapi&logoColor=white&style=flat-square" height="20"/> hackit_client.py (22KB) | FastAPI backend integration |
+| **Scaffold Engine** | <img src="https://img.shields.io/badge/-Python-3776AB?logo=python&logoColor=white&style=flat-square" height="20"/> scaffold.py (22KB) | Full-stack code generation |
+| **Dev Server** | <img src="https://img.shields.io/badge/-Node.js-339933?logo=nodedotjs&logoColor=white&style=flat-square" height="20"/> dev_server.py (13KB) | Development server management |
 
-### Infrastructure and DevOps
+### Infrastructure & DevOps
 
 | Tool | Purpose |
 |------|---------|
-| **Docker + Compose** | Containerized multi-service deployment |
-| **Kubernetes** | Production k8s manifests in /k8s |
-| **Nginx** | Reverse proxy on port 80 and 443 |
-| **Vercel** | Frontend-only CDN deployment |
-| **Electron** | Desktop app packaging |
+| <img src="https://img.shields.io/badge/-Docker-2496ED?logo=docker&logoColor=white&style=flat-square" height="20"/> **Docker + Compose** | Containerized multi-service deployment |
+| <img src="https://img.shields.io/badge/-Kubernetes-326CE5?logo=kubernetes&logoColor=white&style=flat-square" height="20"/> **Kubernetes** | Production k8s manifests in /k8s |
+| <img src="https://img.shields.io/badge/-Nginx-009639?logo=nginx&logoColor=white&style=flat-square" height="20"/> **Nginx** | Reverse proxy on port 80/443 |
+| <img src="https://img.shields.io/badge/-Vercel-000000?logo=vercel&logoColor=white&style=flat-square" height="20"/> **Vercel** | Frontend-only CDN deployment |
+| <img src="https://img.shields.io/badge/-Electron-47848F?logo=electron&logoColor=white&style=flat-square" height="20"/> **Electron** | Desktop app packaging |
 
 ---
 
