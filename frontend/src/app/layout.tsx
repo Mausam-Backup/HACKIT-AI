@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils";
 import SmoothScroll from "@/components/ui/SmoothScroll";
 import { Providers } from "./providers";
 import { Toaster } from "@/components/ui/sonner";
+import DesktopOnlyModal from "@/components/ui/DesktopOnlyModal";
 
 const geist = Geist({subsets:['latin'],variable:'--font-sans'});
 const outfit = Outfit({subsets:['latin'],variable:'--font-outfit'});
@@ -40,6 +41,7 @@ export default function RootLayout({
         />
       </head>
       <body>
+        <DesktopOnlyModal />
         <Providers>
           <SmoothScroll>
             {children}

@@ -17,6 +17,7 @@ from utils.simple_auth import (
     verify_2fa_code,
     disable_2fa,
     verify_email_code,
+    get_configured_auth_username,
 )
 from utils.get_env import is_disable_auth_enabled
 
@@ -136,6 +137,26 @@ async def login(body: AuthCredentialsRequest, request: Request):
             raise HTTPException(status_code=401, detail="Invalid 2FA code")
 
     username = body.username.strip()
+    token = create_session_token(username)
+    response = JSONResponse(
+        {
+            "configured": True,
+            "authenticated": True,
+            "username": username,
+            "access_token": token,
+            "token_type": "bearer",
+        }
+    )
+    set_session_cookie(response, token, request)
+    return response
+
+
+@API_V1_AUTH_ROUTER.post("/judge-login")
+async def judge_login(request: Request):
+    username = get_configured_auth_username()
+    if not username:
+        raise HTTPException(status_code=428, detail="Setup required before judge access")
+        
     token = create_session_token(username)
     response = JSONResponse(
         {

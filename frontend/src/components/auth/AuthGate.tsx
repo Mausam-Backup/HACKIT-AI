@@ -5,7 +5,7 @@ import Image from "next/image";
 import { getApiUrl } from "@/utils/api";
 import { isAuthDisabled } from "@/utils/auth";
 import { formatFastApiDetail, UNAUTHORIZED_DETAIL } from "@/utils/authErrors";
-import { Loader2 } from "lucide-react";
+import { Loader2, Sparkles } from "lucide-react";
 import { notify } from "@/components/ui/sonner";
 import { sanitizeAnalyticsError } from "@/utils/analytics";
 import { MixpanelEvent, trackEvent } from "@/utils/mixpanel";
@@ -325,6 +325,31 @@ export default function AuthGate() {
     }
   };
 
+  const handleJudgeLogin = async () => {
+    setIsSubmitting(true);
+    try {
+      const response = await fetch(getApiUrl("/api/v1/auth/judge-login"), {
+        method: "POST",
+        credentials: "include",
+      });
+      const payload = await response.json();
+      if (response.ok) {
+        setStatus({
+          configured: true,
+          authenticated: true,
+          username: payload.username,
+        });
+        notify.success("Judge Access Granted", "Welcome to the hackathon platform.");
+      } else {
+        notify.error("Judge Login Failed", "Could not sign in as judge.");
+      }
+    } catch (e) {
+      notify.error("Error", "Judge login service unavailable.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   if (isLoading || isRedirecting || status.authenticated) {
     return (
       <div className="w-full h-screen flex flex-col items-center justify-center bg-[#f4f6f8] dark:bg-[#24252f]">
@@ -494,6 +519,18 @@ export default function AuthGate() {
                     ? "Create account"
                     : is2faMode ? "Verify Code" : "Log in"}
               </button>
+
+              {!isSetupMode && !isVerifyMode && !is2faMode && (
+                <button
+                  type="button"
+                  onClick={handleJudgeLogin}
+                  disabled={isSubmitting}
+                  className="w-full text-[15px] h-12 mt-3 bg-white dark:bg-white/5 hover:bg-gray-50 dark:hover:bg-white/10 text-gray-800 dark:text-white border border-gray-200 dark:border-white/10 rounded-lg font-semibold transition-colors flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed shadow-sm"
+                >
+                  <Sparkles className="w-4 h-4 text-violet-500" />
+                  Judge Evaluation Access
+                </button>
+              )}
 
               {!is2faMode && !isVerifyMode && (
                 <div className="mt-6 text-center text-sm">
