@@ -686,3 +686,192 @@ sequenceDiagram
 | **Protected** | All `/api/*`, `/docs`, `/openapi.json`, `/redoc` |
 | **Public** | `/api/v1/auth/*`, `/app_data/images/*`, `/app_data/fonts/*` |
 
+---
+
+## ⚡ Tech Stack
+
+### Frontend
+
+| Category | Technology | Version | Purpose |
+|----------|-----------|---------|---------|
+| **Framework** | Next.js App Router | 16.2.10 | SSR + client-side routing |
+| **Language** | TypeScript | 5.x | Type-safe development |
+| **UI Library** | React | 19.2.4 | Component-based UI |
+| **Styling** | Tailwind CSS | 4.x | Utility-first CSS |
+| **Component System** | shadcn/ui (Radix primitives) | base-nova | Accessible UI components |
+| **State Management** | Redux Toolkit | 2.2.8 | Global state (4 slices) |
+| **Server State** | TanStack React Query + SWR | 5.x / 2.x | Data fetching and caching |
+| **Text Editor** | TipTap (ProseMirror) | 2.x | Rich-text slide editing |
+| **Code Editor** | Monaco Editor | 4.x | Layout code + custom templates |
+| **Drag and Drop** | dnd-kit | 6.x / 10.x | Slide reordering |
+| **Animation** | Framer Motion + GSAP + Lenis | 12.x / 3.15 / 1.3 | Micro-animations + smooth scroll |
+| **3D / WebGL** | ogl + react-konva + d3 | 1.x / 19.x / 7.x | Aurora hero + globe wireframe |
+| **Charts** | Chart.js + Recharts + Mermaid | 4.x / 3.x / 11.x | Analytics + diagrams |
+| **Form Validation** | Zod | 4.x | Schema validation |
+| **Icons** | Lucide React + Phosphor Icons | latest | UI icons |
+| **Fonts** | Geist + Outfit + Inter | latest | Typography via next/font |
+| **Voice AI** | Vapi AI Web SDK | 2.x | Interview voice sessions |
+| **Analytics** | Mixpanel | latest | Usage event tracking |
+| **Notifications** | Sonner | 2.x | Toast notifications |
+| **Workflow Builder** | Custom React Canvas | - | Drag-and-drop agent designer |
+
+### Backend
+
+| Category | Technology | Version | Purpose |
+|----------|-----------|---------|---------|
+| **Runtime** | Python | 3.11 | Backend language |
+| **Web Framework** | FastAPI (ASGI) | 0.116+ | REST API + SSE streaming |
+| **Server** | Uvicorn | latest | ASGI production server |
+| **ORM** | SQLModel (SQLAlchemy + Pydantic) | 0.0.24 | Database models |
+| **Migrations** | Alembic | 1.14+ | Schema version management |
+| **Database (dev)** | SQLite + aiosqlite | built-in | Local development |
+| **Database (prod)** | PostgreSQL (asyncpg) or MySQL (aiomysql) | configurable | Production |
+| **LLM Integration** | 15 providers unified adapter | various | AI text generation |
+| **Image Generation** | DALL-E + ComfyUI + Pexels + Pixabay + Open WebUI | various | Slide images |
+| **Vector Store** | FastEmbed (local embeddings) | 0.5.2 | Local semantic search |
+| **Memory** | mem0ai OSS | 0.1.115+ | Persistent LLM context |
+| **Web Search** | SearXNG / Tavily / Exa / Brave / Serper | various | Grounded generation |
+| **Document Parsing** | pdfplumber + python-pptx + Pillow + fonttools | latest | File ingestion |
+| **MCP Protocol** | FastMCP | 2.11+ | LLM tool bridge |
+| **Auth** | Custom PBKDF2-HMAC-SHA256 | built-in | Session management |
+| **2FA** | pyotp + qrcode | latest | TOTP + QR SVG generation |
+| **Email OTP** | resend | latest | Registration email verification |
+| **Error Tracking** | Sentry SDK (optional) | latest | Production monitoring |
+| **Testing** | pytest + pytest-cov | 9.x / 7.x | Unit + integration tests |
+| **Package Manager** | uv | latest | Fast Python dependency management |
+
+### App Builder CLI
+
+| Category | Technology | Purpose |
+|----------|-----------|---------|
+| **TUI Framework** | React + Ink | Interactive terminal UI |
+| **Orchestration** | orchestrator.py (36KB) | Multi-agent pipeline runner |
+| **Agent Specs** | Markdown prompt files | Coach, Frontend, Backend definitions |
+| **Stack Manager** | stack_manager.py (9KB) | Tech stack preset management |
+| **API Client** | hackit_client.py (22KB) | FastAPI backend integration |
+| **Scaffold Engine** | scaffold.py (22KB) | Full-stack code generation |
+| **Dev Server** | dev_server.py (13KB) | Development server management |
+
+### Infrastructure and DevOps
+
+| Tool | Purpose |
+|------|---------|
+| **Docker + Compose** | Containerized multi-service deployment |
+| **Kubernetes** | Production k8s manifests in /k8s |
+| **Nginx** | Reverse proxy on port 80 and 443 |
+| **Vercel** | Frontend-only CDN deployment |
+| **Electron** | Desktop app packaging |
+
+---
+
+## 📁 Project Structure
+
+```
+HACKIT-AI/
+│
+├── frontend/                              # Next.js 16 application
+│   ├── src/
+│   │   ├── app/                           # App Router pages
+│   │   │   ├── layout.tsx                 # Root layout (Providers, fonts)
+│   │   │   ├── page.tsx                   # Landing page (server-rendered)
+│   │   │   ├── providers.tsx              # Redux Provider wrapper
+│   │   │   ├── globals.css                # Tailwind v4 + global styles
+│   │   │   ├── (presentation-generator)/  # Auth-protected routes
+│   │   │   │   ├── upload/               # File upload + prompt input
+│   │   │   │   ├── outline/              # AI outline review
+│   │   │   │   ├── presentation/         # Slide editor (TipTap + dnd-kit)
+│   │   │   │   ├── documents-preview/    # Document viewer
+│   │   │   │   ├── template-preview/     # Template browser
+│   │   │   │   └── custom-template/      # Monaco layout builder
+│   │   │   ├── coach/                    # AI Pitch Coach (OpenRouter 120B)
+│   │   │   ├── interviews/               # Interview Prep (VAPI Voice AI)
+│   │   │   ├── upcoming-hackathons/      # Hackathon browser + filters
+│   │   │   ├── resources/                # Resource library
+│   │   │   ├── workflow/                 # AI Workflow Builder (Groq)
+│   │   │   ├── signup/                   # Auth pages
+│   │   │   └── api/                      # BFF API route handlers (15 routes)
+│   │   │
+│   │   ├── components/
+│   │   │   ├── ui/                       # shadcn/ui primitives
+│   │   │   ├── landing/                  # Hero, Showcase, Capabilities (13 files)
+│   │   │   ├── auth/                     # Login/setup forms
+│   │   │   ├── slide-editor/             # Slide editor + toolbar
+│   │   │   ├── coach/                    # Coach chat UI components
+│   │   │   ├── interview/               # Interview components
+│   │   │   ├── hackathons/              # Hackathon browser cards
+│   │   │   ├── workflow/                # Workflow canvas + panels (9 files)
+│   │   │   ├── OnBoarding/              # First-run onboarding
+│   │   │   └── analytics/               # Usage analytics widgets
+│   │   │
+│   │   ├── store/
+│   │   │   ├── store.ts
+│   │   │   └── slices/
+│   │   │       ├── presentationGeneration.ts
+│   │   │       ├── presentationGenUpload.ts
+│   │   │       ├── userConfig.ts
+│   │   │       └── undoRedoSlice.ts
+│   │   │
+│   │   ├── hooks/                       # Custom React hooks
+│   │   ├── lib/                         # Template compilation, groqGenerator
+│   │   ├── services/                    # coach-service, groq client
+│   │   ├── types/                       # TypeScript definitions
+│   │   └── utils/                       # API client, auth, constants
+│   │
+│   ├── templates/                       # 5 presentation template variants
+│   │   ├── swift/
+│   │   ├── standard/
+│   │   ├── modern/
+│   │   ├── dynamic/
+│   │   └── general/
+│   └── public/                          # Static assets + 6 demo .mp4 videos
+│
+├── backend/                             # FastAPI Python backend
+│   ├── api/
+│   │   ├── main.py                      # App factory + middleware
+│   │   ├── lifespan.py                  # Startup/shutdown lifecycle
+│   │   ├── middlewares.py               # SessionAuth + UserConfigEnv
+│   │   └── v1/
+│   │       ├── auth/router.py           # /auth/* endpoints (+ 2FA)
+│   │       ├── ppt/                     # 23 presentation endpoint modules
+│   │       ├── hackathons/              # Hackathon data endpoints
+│   │       ├── async_tasks/router.py
+│   │       └── webhook/router.py
+│   │
+│   ├── models/sql/                      # 14 SQLModel ORM tables
+│   ├── services/
+│   │   ├── chat/                        # Chat + memory management
+│   │   ├── image_generation_service.py  # Multi-provider image gen
+│   │   ├── export_task_service.py       # PPTX/PDF async export
+│   │   ├── mem0_oss_memory.py           # Long-term LLM memory
+│   │   └── webhook_service.py
+│   │
+│   ├── utils/
+│   │   ├── simple_auth.py               # PBKDF2 + 2FA + session logic (480 lines)
+│   │   ├── llm_provider.py              # LLM factory (15 providers)
+│   │   ├── llm_calls/                   # Per-provider implementations
+│   │   └── oauth/                       # OAuth integrations
+│   │
+│   ├── templates/                       # Rendering engine (v2 schema)
+│   ├── server.py                        # Uvicorn entrypoint
+│   ├── mcp_server.py                    # FastMCP (port 8001)
+│   └── pyproject.toml
+│
+├── app_builder/                         # Multi-Agent Autonomous CLI
+│   ├── orchestrator.py                  # Pipeline orchestrator (36KB)
+│   ├── hackit_client.py                 # FastAPI integration client (22KB)
+│   ├── scaffold.py                      # Code generation engine (22KB)
+│   ├── stack_manager.py                 # Tech stack presets (9KB)
+│   ├── agents/
+│   │   ├── coach.md                     # Coach agent prompt spec
+│   │   ├── frontend.md                  # Frontend builder spec
+│   │   └── backend.md                   # Backend builder spec
+│   ├── prompts/                         # System prompt templates
+│   └── tui.py                           # React/Ink TUI entry point
+│
+├── k8s/                                 # Kubernetes manifests
+├── docker-compose.yml
+├── DOCKER.md
+├── KUBERNETES.md
+└── README.md
+```
+
