@@ -399,3 +399,290 @@ flowchart TD
     L -->|Yes| M(["GET download URL - File delivered"])
 ```
 
+---
+
+## 🏛️ System Architecture
+
+### High-Level Platform Overview
+
+```mermaid
+graph TB
+    subgraph CLIENT["Client Layer"]
+        B["Browser - React 19 SPA"]
+    end
+
+    subgraph FRONTEND["Next.js 16 - Port 3000"]
+        direction TB
+        R["App Router - Server Components"]
+        C["Client Components - Framer Motion + GSAP"]
+        N["BFF API Routes - 15 handlers"]
+        S["Redux Store - 4 slices"]
+        R --> C --> S
+        N --> C
+    end
+
+    subgraph PROXY["Next.js Rewrites Proxy"]
+        P1["/api/v1/* to FastAPI"]
+        P2["/api/v2/* to FastAPI"]
+        P3["/app_data/* to FastAPI"]
+        P4["/static/* to FastAPI"]
+    end
+
+    subgraph BACKEND["FastAPI - Port 8000"]
+        direction TB
+        M["Middleware Stack - SessionAuth / CORS / Sentry"]
+        RT["Routers - ppt / auth / async-tasks / webhook / hackathons"]
+        SV["Services - Chat / Image / Export / Webhook / Memory"]
+        LLM["LLM Adapters - 15 providers"]
+        M --> RT --> SV --> LLM
+    end
+
+    subgraph AGENTS["App Builder TUI - Port 4190"]
+        ORCH["Orchestrator Engine"]
+        COACH_A["Coach Agent"]
+        FE_A["Frontend Builder"]
+        BE_A["Backend Builder"]
+        ORCH --> COACH_A & FE_A & BE_A
+    end
+
+    subgraph MCP["MCP Server - Port 8001"]
+        MCP_S["FastMCP - OpenAPI to Tool Defs"]
+    end
+
+    subgraph DB["Database Layer"]
+        SQL[("SQLite / PostgreSQL / MySQL")]
+        MEM["Mem0 OSS Vector Memory"]
+    end
+
+    subgraph STORAGE["Storage Layer"]
+        APP_DATA["/app_data/ - Uploads / Exports / Fonts"]
+        STATIC["/static/ - Icons / Placeholders"]
+    end
+
+    subgraph EXT["External Services"]
+        LLM_API["LLM APIs - OpenAI / Anthropic / Groq"]
+        IMG_API["Image APIs - DALL-E / Pexels / Pixabay"]
+        SEARCH_API["Search - Tavily / Exa / Brave"]
+        EMAIL_API["Email - Resend API"]
+        VAPI_API["Voice AI - Vapi SDK"]
+    end
+
+    B --> FRONTEND
+    FRONTEND --> PROXY --> BACKEND
+    BACKEND --> DB & STORAGE
+    BACKEND -.->|Optional| MCP
+    SV -.->|API Calls| EXT
+```
+
+### Request Lifecycle
+
+```mermaid
+sequenceDiagram
+    participant U as User
+    participant F as Next.js Frontend
+    participant B as FastAPI Backend
+    participant DB as Database
+    participant LLM as LLM Provider
+
+    U->>F: Upload document and select template
+    F->>B: POST /api/v1/ppt/presentation/create
+    B->>DB: Insert presentation record
+    B-->>F: Return presentation ID
+    F->>B: POST /api/v1/ppt/presentation/generate
+    B->>B: Parse uploaded document
+    B->>LLM: Generate outline - LLM call 1
+    LLM-->>B: Return outline
+    B-->>F: SSE outline_chunk events
+    U->>F: Review and approve outline
+    F->>B: Confirm outline
+    B->>LLM: Generate slides - LLM calls 2 to N parallel
+    LLM-->>B: Return slide content
+    B->>DB: Insert slides
+    B-->>F: SSE slide_complete events
+    F->>U: Render slide editor
+    U->>F: Edit slide content
+    F->>B: PUT /api/v1/ppt/slide/id
+    B->>DB: Update slide
+    U->>F: Click Export
+    F->>B: POST /api/v1/ppt/presentation/id/export
+    B->>B: Generate PPTX or PDF
+    B->>DB: Store export path
+    B-->>F: Return download URL
+    F->>U: Download file
+```
+
+### Frontend Component Tree
+
+```mermaid
+graph TB
+    subgraph ROOT["Root Layout"]
+        P["Providers - Redux"]
+        SS["SmoothScroll - Lenis"]
+        T["Toaster - Sonner"]
+        F["Fonts: Geist / Outfit / Inter"]
+    end
+
+    subgraph LANDING["Landing Page /"]
+        H["Hero - Aurora WebGL + Globe Wireframe + Marquee"]
+        SH["Showcase - Scroll-triggered tabs + 4 AI stages"]
+        CP["Capabilities - Bento grid + Embedded videos"]
+        ST["StatsSection - Interactive analytics tabs"]
+        VS["VideoStories - Dual-column testimonials"]
+    end
+
+    subgraph DASHBOARD["Presentation Generator - auth-protected"]
+        UPL["/upload - File upload + Prompt + Template selector"]
+        OUTL["/outline - Outline review + Edit + Approve"]
+        PRES["/presentation - TipTap + dnd-kit + Monaco"]
+        TEMP["/custom-template - Monaco layout builder"]
+    end
+
+    subgraph MODULES["Feature Modules"]
+        COACH["/coach - AI Pitch Coach - OpenRouter 120B"]
+        INT["/interviews - Interview Prep - VAPI Voice AI"]
+        HACK["/upcoming-hackathons - Hackathon Browser"]
+        RES["/resources - Resource Library"]
+        WF["/workflow - AI Workflow Builder - Groq"]
+    end
+
+    subgraph STATE["Redux Store - 4 Slices"]
+        PG["presentationGeneration - SSE stream + generatedSlides"]
+        PU["pptGenUpload - Upload queue + Processing status"]
+        UC["userConfig - LLM provider + API keys"]
+        UR["undoRedo - Editor history stack"]
+    end
+
+    ROOT --> LANDING & DASHBOARD & MODULES
+    DASHBOARD --> STATE
+```
+
+---
+
+## 🔐 Authentication & 2FA
+
+> HACKIT ships with a **fully custom, enterprise-grade auth system** built entirely from scratch in `backend/utils/simple_auth.py`. Zero third-party auth library dependency.
+
+### Authentication Architecture
+
+```mermaid
+flowchart TD
+    subgraph REGISTRATION["Registration Flow"]
+        A(["User submits username and password"])
+        B{{"RESEND_API_KEY set?"}}
+        C["Hash password - PBKDF2-HMAC-SHA256\n200,000 iterations + 16-byte salt"]
+        D["Store in PENDING_USERS temporarily"]
+        E["Send 6-digit OTP via Resend Email API"]
+        F["User submits OTP - verify_email_code()"]
+        G["Promote to USERS - store in user-config.json"]
+    end
+
+    subgraph LOGIN["Login Flow"]
+        H(["User submits credentials"])
+        I["Verify PBKDF2 hash - hmac.compare_digest() constant time"]
+        J{{"2FA enabled for user?"}}
+        K["Prompt TOTP 6-digit code"]
+        L["pyotp.TOTP.verify(code)"]
+        M["Generate HMAC-SHA256 signed session token"]
+        N["Set HttpOnly cookie presenton_session"]
+    end
+
+    subgraph SESSION["Session Validation - Every /api/* Request"]
+        O["Extract token from cookie or Bearer header"]
+        P["Verify HMAC signature"]
+        Q["Check expiry - 30 days TTL"]
+        R["Look up username in USERS store"]
+        T["Request authorized 200 OK"]
+        U["401 Unauthorized - redirect to login"]
+    end
+
+    A --> B
+    B -->|Yes| C --> D --> E --> F --> G
+    B -->|No| C --> G
+    H --> I --> J
+    J -->|Yes| K --> L --> M --> N
+    J -->|No| M --> N
+    O --> P --> Q --> R
+    R -->|Found| T
+    R -->|Not found| U
+    Q -->|Expired| U
+```
+
+### Password Security
+
+| Property | Value |
+|----------|-------|
+| **Algorithm** | PBKDF2-HMAC-SHA256 |
+| **Iterations** | 200,000 (NIST recommended minimum) |
+| **Salt** | 16-byte cryptographic random via `secrets.token_bytes` |
+| **Comparison** | Constant-time `hmac.compare_digest()` — prevents timing attacks |
+| **Storage** | `user-config.json` in `APP_DATA_DIRECTORY` |
+| **Format** | `pbkdf2_sha256$200000$<salt_b64url>$<digest_b64url>` |
+
+### Session Tokens
+
+| Property | Value |
+|----------|-------|
+| **Signing Algorithm** | HMAC-SHA256 |
+| **Payload** | `{"v":1, "u":username, "iat":issued_at, "exp":expiry}` |
+| **Encoding** | Base64URL (URL-safe, no padding) |
+| **TTL** | 30 days |
+| **Transport** | HTTP-only cookie `presenton_session` OR `Authorization: Bearer <token>` |
+| **Service-to-Service** | `Authorization: Basic <base64>` fallback |
+
+### Two-Factor Authentication (2FA)
+
+Full TOTP implementation using `pyotp` and QR code SVG generation via `qrcode`:
+
+```mermaid
+sequenceDiagram
+    participant U as User
+    participant FE as Frontend
+    participant BE as Backend
+    participant AUTH as Auth Store
+
+    U->>FE: Enable 2FA in settings
+    FE->>BE: POST /auth/2fa/setup with username
+    BE->>BE: pyotp.random_base32() - generate TOTP secret
+    BE->>AUTH: Store totp_secret for user
+    BE->>BE: Generate QR code SVG via qrcode library
+    BE-->>FE: Return secret and qr_code_svg
+    FE->>U: Display QR code for Authenticator app scan
+
+    Note over U: User scans QR in Google Authenticator or Authy
+
+    U->>FE: Next login - submit 6-digit TOTP code
+    FE->>BE: POST /auth/login with username, password, totp_code
+    BE->>BE: pyotp.TOTP(secret).verify(code)
+    BE-->>FE: 200 OK + session token set as HttpOnly cookie
+```
+
+### Email OTP Verification (via Resend)
+
+| Step | Action |
+|------|--------|
+| 1 | User registers with email as username |
+| 2 | 6-digit OTP generated via `random.randint(0, 999999)` |
+| 3 | Credentials stored in `PENDING_USERS` (temporary) |
+| 4 | Email dispatched via Resend API from `onboarding@resend.dev` |
+| 5 | User submits OTP → `verify_email_code()` validates match |
+| 6 | Credentials promoted from `PENDING_USERS` → `USERS` |
+
+### Auth Modes
+
+| Mode | Environment Variable | Behavior |
+|------|---------------------|----------|
+| **Disabled** | `DISABLE_AUTH=true` | No auth required (Electron desktop default) |
+| **Enabled** | `DISABLE_AUTH=false` | Login/setup flow enforced on all /api/* |
+| **Auto-Setup** | `AUTH_USERNAME` + `AUTH_PASSWORD` | Credentials bootstrapped from env at startup |
+| **Override** | `AUTH_OVERRIDE_FROM_ENV=true` | Overwrites any stored credentials |
+| **Reset** | `RESET_AUTH=true` | Clears all stored credentials |
+| **Email OTP** | `RESEND_API_KEY=<key>` | Email verification enabled on signup |
+| **TOTP 2FA** | Enabled via UI settings | QR code + pyotp TOTP verification per login |
+
+### Protected Paths
+
+| Status | Paths |
+|--------|-------|
+| **Protected** | All `/api/*`, `/docs`, `/openapi.json`, `/redoc` |
+| **Public** | `/api/v1/auth/*`, `/app_data/images/*`, `/app_data/fonts/*` |
+
