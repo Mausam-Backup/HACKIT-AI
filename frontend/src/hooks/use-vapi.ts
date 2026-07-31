@@ -33,6 +33,7 @@ export function useVapi() {
       if (!vapi) return;
 
       const onCallStart = () => {
+        console.log("VAPI Call Started!");
         setIsCallActive(true);
         setIsThinking(false);
         setIsSpeaking(false);
@@ -60,9 +61,17 @@ export function useVapi() {
       };
 
       const onMessage = (message: any) => {
+        console.log("VAPI Message received:", message);
         if (message.type === "transcript") {
-          setLastTranscript(message.transcript);
-          if (message.transcriptType === "final") {
+          if (message.transcriptType === "partial") {
+            setLastTranscript(message.transcript);
+          } else if (message.transcriptType === "final") {
+            setLastTranscript("");
+            setMessages((prev) => [...prev, message]);
+          }
+        } else if (message.type === "model-output" || message.type === "message" || message.type === "conversation-update") {
+          // If the AI assistant is speaking or conversation is updating
+          if (message.message || message.content) {
             setMessages((prev) => [...prev, message]);
           }
         }

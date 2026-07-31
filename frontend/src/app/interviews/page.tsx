@@ -34,28 +34,7 @@ const getStoredInterviews = (): Interview[] => {
       return JSON.parse(stored);
     } catch {}
   }
-  return [
-    {
-      id: 1,
-      title: 'Senior Frontend Engineer Technical & Behavioral',
-      role: 'Staff Engineer',
-      difficulty: 'Hard',
-      type: 'Behavioral & Technical',
-      status: 'pending',
-      created_at: new Date().toISOString(),
-      turn_count: 0
-    },
-    {
-      id: 2,
-      title: 'Distributed Systems & Architecture Assessment',
-      role: 'Backend Architect',
-      difficulty: 'Expert',
-      type: 'System Design',
-      status: 'completed',
-      created_at: new Date(Date.now() - 86400000).toISOString(),
-      turn_count: 8
-    }
-  ];
+  return [];
 };
 
 const saveInterviews = (interviews: Interview[]) => {
