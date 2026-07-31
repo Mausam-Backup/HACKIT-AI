@@ -50,6 +50,12 @@
 
 > Key platform feature demos showcasing core functionality.
 
+<div align="center">
+  <img src="demo.gif" alt="HACK-IT AI Full Platform Showcase" width="100%" />
+</div>
+
+<br/>
+
 <table>
   <tr>
     <td align="center" width="50%">
