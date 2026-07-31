@@ -75,6 +75,18 @@
       <br/><sub>Voice-enabled mock interviews with real-time AI feedback</sub>
     </td>
   </tr>
+  <tr>
+    <td align="center" width="50%">
+      <b>⚡ AI Workflow Builder</b><br/><br/>
+      <img src="frontend/public/GIFS/WORKFLOW%20generator.gif" alt="AI Workflow Builder" width="100%" />
+      <br/><sub>Visual drag-and-drop multi-agent workflow designer</sub>
+    </td>
+    <td align="center" width="50%">
+      <b>🏆 Hackathons &amp; Resources</b><br/><br/>
+      <img src="frontend/public/GIFS/RESOURCES%20AND%20HACKATHON%20HUNT.gif" alt="Hackathons &amp; Resources" width="100%" />
+      <br/><sub>Live hackathon browser with filters &amp; resource library</sub>
+    </td>
+  </tr>
 </table>
 
 ---
