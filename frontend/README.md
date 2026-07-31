@@ -5,36 +5,62 @@
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3.4-38B2AC.svg?style=flat&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
 [![Zustand](https://img.shields.io/badge/State-Zustand-orange.svg)](#)
 
-The highly interactive, beautiful Next.js frontend for the HACKIT-AI platform. It includes real-time WebSockets for AI interviews, a complex Konva-based slide canvas editor, Aceternity UI animations, and a rich Markdown text editor powered by Tiptap.
+The highly interactive, beautiful Next.js frontend for the HACKIT-AI platform. It is designed to feel like a premium, native desktop application running entirely in the browser, complete with complex canvas editors, real-time voice streaming, and hardware-accelerated animations.
 
-## 📂 Architecture & Folder Structure
+---
 
-| Directory | Description |
-|-----------|-------------|
-| `src/app/` | Next.js 14 App Router pages (`/dashboard`, `/editor`, `/interview`). |
-| `src/components/` | Modular React components broken down by feature. |
-| ↳ `components/canvas/` | The complex React-Konva slide editor engine (shapes, text bounding, transformers). |
-| ↳ `components/landing/` | Aceternity UI landing page blocks (Aurora background, Video stories, 3D globes). |
-| ↳ `components/ui/` | Reusable Radix UI primitives and Aceternity components (buttons, dialogs, charts). |
-| ↳ `components/workflow/` | The interactive node-based canvas for the AI Workflow builder. |
-| `src/store/` | Zustand state slices for global state management (undo/redo, presentation layouts). |
-| `src/lib/` | Core utilities for fetching data, processing markdown, compiling slide schemas, and websocket connections. |
-| `public/assets/` | Static media, icons, fonts, and demonstration videos. |
+## 🏗️ Core Architecture & UI Systems
 
-## 🚀 Key Features
+### 1. The Presentation Canvas (`react-konva`)
+Located in `src/components/canvas/`, this is a massive engineering effort to replicate PowerPoint-like functionality in the browser. 
+- **Layers & Bounds:** Implements custom coordinate mapping, Z-index layer management, and boundary collision detection.
+- **Transformers:** Allows users to drag, drop, resize, and rotate elements freely across the slide.
+- **Inline Editing:** Intercepts Konva text nodes and hot-swaps them with HTML `contenteditable` divs (`TiptapInlineTextEditor.tsx`) for rich text formatting directly on the canvas.
 
-- **Interactive Slide Editor:** A full-fledged presentation editor allowing precise drag-and-drop, bounding box resizing, and text editing layered on top of HTML/SVG standard layouts.
-- **AI Agent Workflows:** A visual node-based editor for configuring autonomous agent chains.
-- **Voice Interview WebSockets:** Connects to the backend via WebSockets to provide real-time STT/TTS (Speech-to-Text / Text-to-Speech) for interview prep.
-- **Premium Aesthetics:** Heavily utilizes Framer Motion, GSAP, and Aceternity UI for smooth, modern micro-animations.
+### 2. State Management (`Zustand`)
+Given the immense complexity of the presentation editor and AI workflow builder, React Context was too slow. 
+- `undoRedoSlice.ts`: Implements a custom stack-based undo/redo mechanism tracking specific node mutations on the canvas.
+- `presentationGeneration.ts`: Manages the state of the LLM generating slide layouts asynchronously.
+
+### 3. Aesthetics & Animations
+Heavily utilizes **Aceternity UI**, **Framer Motion**, and **GSAP**.
+- `Aurora.tsx`: Dynamic canvas-based animated backgrounds.
+- `VideoStories.tsx`: Scroll-jacking GSAP implementations for the landing page.
+- Radix UI primitives are used under the hood for fully accessible dropdowns, dialogs, and sliders.
+
+---
+
+## 📂 Detailed Folder Structure
+
+| Directory / File | Description |
+|------------------|-------------|
+| `src/app/` | Next.js 14 App Router configuration. |
+| ↳ `dashboard/` | User hackathon management and data overview. |
+| ↳ `editor/` | The `/editor` route housing the massive Konva canvas app. |
+| ↳ `interview/` | The WebSocket-powered AI mock interview UI. |
+| `src/components/` | Modular React components broken down by feature domain. |
+| ↳ `canvas/` | Core Konva slide builder logic (Shapes, Text bounds, Selection toolbars). |
+| ↳ `landing/` | Landing page marketing components (Bento grids, Hero sections). |
+| ↳ `ui/` | Reusable atomic UI components (Buttons, Inputs, Dialogs). |
+| ↳ `workflow/` | The visual node-based editor for the AI Workflow builder. |
+| `src/store/` | Zustand state slices for global state management. |
+| `src/lib/` | Core utilities for API requests, JSON schema compilation, and Websocket connections. |
+| `public/` | Static media, icons, `demo.mp4` files, and `assets/`. |
+
+---
 
 ## 💻 Development Setup
 
 ```bash
-# 1. Install dependencies
+# 1. Install all dependencies (we use standard npm)
 npm install
 
-# 2. Run the development server
+# 2. Set environment variables
+# Copy .env.example to .env.local (Ensure NEXT_PUBLIC_API_URL is set to your backend)
+
+# 3. Start the Next.js development server
 npm run dev
-# Server will start on http://localhost:3000
+
+# 4. View in browser
+# Navigate to http://localhost:3000
 ```
