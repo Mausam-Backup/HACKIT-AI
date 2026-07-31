@@ -130,7 +130,7 @@ export default function InterviewsPage() {
                 onClick={() => setIsCreateOpen(true)}
                 className="group relative inline-flex items-center gap-4 px-8 py-4 rounded-full bg-black text-white font-bold text-sm hover:scale-105 transition-transform"
               >
-                <span>Launch Mock Interview</span>
+                <span>Make New Interview</span>
                 <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
               </button>
             </div>
@@ -505,7 +505,7 @@ export default function InterviewsPage() {
                       onClick={handleCreate}
                       className="group relative inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-violet-600 to-indigo-600 text-white font-bold text-xs overflow-hidden shadow-[0_4px_20px_rgba(139,92,246,0.4)] hover:shadow-[0_6px_28px_rgba(139,92,246,0.55)] transition-all hover:-translate-y-0.5"
                     >
-                      <span className="relative z-10">Launch Workspace</span>
+                      <span className="relative z-10">Make New Interview</span>
                       <ArrowRight className="w-3.5 h-3.5 relative z-10 transition-transform group-hover:translate-x-0.5" />
                       <div className="absolute inset-0 bg-gradient-to-r from-violet-500 to-indigo-500 opacity-0 group-hover:opacity-100 transition-opacity" />
                     </button>

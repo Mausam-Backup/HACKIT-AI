@@ -128,28 +128,9 @@ export default function Hero() {
         </div>
       </div>
       {/* brands row */}
-      <div className="brands-row">
-        <span>Trusted by Founders from</span>
-      </div>
-
-      <div className="brand-carousel">
-        <div className="brand-track">
-          <img src="/assets/Qualcomm-Logo 1.png" alt="Qualcomm" />
-          <img src="/assets/Walmart_logo_(2008) 1.png" alt="Walmart" />
-          <img src="/assets/Amazon_logo 1.png" alt="Amazon" />
-          <img src="/assets/Adobe_Corporate_logo 1.png" alt="Adobe" />
-          <img src="/assets/Deloitte_old_blue_logo 1.png" alt="Deloitte" />
-
-          {/* Duplicate for seamless scroll */}
-          <img src="/assets/Qualcomm-Logo 1.png" alt="Qualcomm" />
-          <img src="/assets/Walmart_logo_(2008) 1.png" alt="Walmart" />
-          <img src="/assets/Amazon_logo 1.png" alt="Amazon" />
-          <img src="/assets/Adobe_Corporate_logo 1.png" alt="Adobe" />
-          <img src="/assets/Deloitte_old_blue_logo 1.png" alt="Deloitte" />
-        </div>
-
-        <div className="fade fade-left"></div>
-        <div className="fade fade-right"></div>
+      <div className="brands-row flex flex-col items-center gap-1 mt-10">
+        <span className="text-gray-500 text-base font-medium m-0">Trusted by</span>
+        <span className="text-gray-900 text-2xl font-semibold m-0">Hackers around the world</span>
       </div>
     </section>
   );

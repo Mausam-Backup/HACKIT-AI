@@ -87,7 +87,7 @@ const ListViewIcon = () => (
 
 function DashboardHeader() {
   return (
-    <header className="sticky top-0 z-50 flex min-h-[98px] w-full items-center justify-between gap-6 bg-white px-6 py-7 max-lg:flex-col max-lg:items-start">
+    <header className="sticky top-0 z-50 flex min-h-[98px] w-full items-center justify-between gap-6 bg-white px-6 py-7 max-lg:flex-col max-lg:items-start border-b border-[#EDEEEF]">
       <h1 className="font-unbounded text-[28px] font-normal leading-none tracking-[-0.84px] text-[#101323]">
         Dashboard
       </h1>
@@ -302,7 +302,7 @@ const DashboardPage: React.FC = () => {
               source: "dashboard_actions_card",
             })
           }
-          className="group/action bg-white z-50 mt-2  relative  block w-[304px] max-w-full overflow-visible rounded-[10.8px] outline-none focus-visible:ring-2 focus-visible:ring-[#7A5AF8] focus-visible:ring-offset-4 cursor-pointer"
+          className="group/action bg-white z-10 mt-2  relative  block w-[304px] max-w-full overflow-visible rounded-[10.8px] outline-none focus-visible:ring-2 focus-visible:ring-[#7A5AF8] focus-visible:ring-offset-4 cursor-pointer"
           aria-label="Create presentation"
         >
           <FloatingActionCards />

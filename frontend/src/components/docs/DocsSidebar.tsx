@@ -33,26 +33,25 @@ export default function DocsSidebar() {
     {
       title: 'Getting Started',
       items: [
-        { label: 'Overview', href: '/docs' },
+        { label: 'Overview & Pitch', href: '#overview' },
+        { label: 'Core Capabilities', href: '#features' },
         { label: 'Installation', href: '#installation' },
-        { label: 'Quickstart', href: '#interactive-chat-tui' },
       ],
     },
     {
-      title: 'Core Features',
+      title: 'CLI & TUI Reference',
       items: [
-        { label: 'Coach Agent', href: '#coach-agent', badge: 'New', badgeStyle: 'bg-emerald-500/10 text-emerald-600 rounded-full px-2 py-0.5' },
-        { label: 'Builder Agents', href: '#builder-agents' },
-        { label: 'Auto-repair', href: '#auto-repair' },
-        { label: 'Pitch & Eval', href: '#pitch-eval' },
+        { label: 'Command Reference', href: '#cli-reference', badge: 'CLI', badgeStyle: 'bg-zinc-900 text-white rounded-md px-1.5 py-0.5' },
+        { label: 'TUI Controls', href: '#tui-shortcuts' },
+        { label: 'Configuration Schema', href: '#configuration' },
       ],
     },
     {
-      title: 'Interfaces',
+      title: 'Architecture & Guides',
       items: [
-        { label: 'Interactive TUI', href: '#interactive-chat-tui', badge: 'CLI', badgeStyle: 'bg-zinc-900 text-white rounded-md px-1.5 py-0.5' },
-        { label: 'Direct Build', href: '#direct-prompt-build' },
-        { label: 'Web Dashboard', href: '#web-gui-dashboard' },
+        { label: 'Project Scaffolding', href: '#directory-structure' },
+        { label: 'Practical Workflows', href: '#workflows' },
+        { label: 'Troubleshooting & FAQ', href: '#troubleshooting' },
       ],
     },
   ];

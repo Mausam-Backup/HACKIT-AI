@@ -2,14 +2,15 @@ import React from 'react';
 
 export default function TableOfContents() {
   const links = [
-    { id: 'coach-agent', label: 'Coach Agent', active: false },
-    { id: 'builder-agents', label: 'Builder Agents', active: false },
-    { id: 'auto-repair', label: 'Auto-repair', active: false },
-    { id: 'pitch-eval', label: 'Pitch & Eval', active: false },
-    { id: 'installation', label: 'Installation', active: false, strong: true },
-    { id: 'interactive-chat-tui', label: 'Interactive Chat TUI', active: false, strong: true },
-    { id: 'direct-prompt-build', label: 'Direct Prompt Build', active: false, strong: true },
-    { id: 'web-gui-dashboard', label: 'Web GUI Dashboard', active: false, strong: true },
+    { id: 'overview', label: 'Overview & Value Pitch', strong: true },
+    { id: 'features', label: 'Core Capabilities' },
+    { id: 'installation', label: 'Installation & Setup', strong: true },
+    { id: 'cli-reference', label: 'CLI Reference', strong: true },
+    { id: 'tui-shortcuts', label: 'TUI Controls & Shortcuts' },
+    { id: 'configuration', label: 'Configuration Schema', strong: true },
+    { id: 'directory-structure', label: 'Project Scaffolding', strong: true },
+    { id: 'workflows', label: 'Practical Workflows', strong: true },
+    { id: 'troubleshooting', label: 'Troubleshooting & FAQ', strong: true },
   ];
 
   return (
@@ -20,9 +21,9 @@ export default function TableOfContents() {
           <li key={idx} className="mt-0 pt-2">
             <a
               href={`#${link.id}`}
-              className={`inline-block no-underline transition-colors ${
-                link.active ? 'font-medium bg-black !text-white px-2 py-0.5 rounded-md hover:!text-white' : 'text-zinc-500 hover:text-zinc-900'
-              } ${link.strong && !link.active ? 'font-semibold text-zinc-900 mt-2' : ''}`}
+              className={`inline-block no-underline transition-colors text-zinc-500 hover:text-zinc-900 ${
+                link.strong ? 'font-semibold text-zinc-900 mt-2' : ''
+              }`}
             >
               {link.label}
             </a>
@@ -41,3 +42,4 @@ export default function TableOfContents() {
     </div>
   );
 }
+

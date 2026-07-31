@@ -71,7 +71,16 @@ def is_presenton_electron_desktop():
 
 
 def get_llm_provider_env():
-    return os.getenv("LLM")
+    val = os.getenv("LLM")
+    if val and val.strip():
+        return val.strip().lower()
+    if os.getenv("GROQ_API_KEY"):
+        return "groq"
+    if os.getenv("GOOGLE_API_KEY"):
+        return "google"
+    if os.getenv("OPENAI_API_KEY"):
+        return "openai"
+    return "groq"
 
 
 def get_anthropic_api_key_env():

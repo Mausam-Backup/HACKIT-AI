@@ -47,16 +47,20 @@ from utils.get_env import (
 
 
 def get_llm_provider():
+    provider_str = get_llm_provider_env() or "groq"
     try:
-        return LLMProvider(get_llm_provider_env())
-    except:
+        return LLMProvider(provider_str)
+    except Exception:
+        for provider in LLMProvider:
+            if provider.value.lower() == str(provider_str).lower():
+                return provider
         raise HTTPException(
             status_code=500,
             detail=(
                 "Invalid LLM provider. Please select one of: "
                 "openai, deepseek, google, vertex, azure, bedrock, openrouter, "
                 "fireworks, together, cerebras, anthropic, litellm, "
-                "lmstudio, ollama, custom, codex"
+                "lmstudio, ollama, custom, codex, groq"
             ),
         )
 
