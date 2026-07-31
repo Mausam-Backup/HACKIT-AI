@@ -1034,42 +1034,42 @@ erDiagram
 
 | Provider | Config Value | Models |
 |----------|-------------|--------|
-| **OpenAI** | `LLM=openai` | GPT-4o, GPT-4, o1, o3 |
-| **Anthropic** | `LLM=anthropic` | Claude 3.5 Sonnet, Claude 4 |
-| **Google Gemini** | `LLM=google` | Gemini 1.5 Pro, Gemini 2.0 Flash |
-| **Groq** | `LLM=groq` | Llama 3, Mixtral, Gemma (fast inference) |
-| **Ollama** | `LLM=ollama` | Any local model (pull API included) |
-| **DeepSeek** | `LLM=deepseek` | DeepSeek V2, DeepSeek V3 |
-| **Azure OpenAI** | `LLM=azure` | Azure-deployed GPT models |
-| **AWS Bedrock** | `LLM=bedrock` | Claude via AWS |
-| **OpenRouter** | `LLM=openrouter` | 200+ models unified API |
-| **Fireworks** | `LLM=fireworks` | Fast open-source inference |
-| **Together AI** | `LLM=together` | Open-source model hosting |
-| **Cerebras** | `LLM=cerebras` | Ultra-low latency inference |
-| **LiteLLM** | `LLM=litellm` | Proxy for 100+ providers |
-| **LMStudio** | `LLM=lmstudio` | Local OpenAI-compatible server |
-| **Custom** | `LLM=custom` | Any OpenAI-compatible endpoint |
+| <img src="https://img.shields.io/badge/-OpenAI-412991?logo=openai&logoColor=white&style=flat-square" height="20"/> **OpenAI** | `LLM=openai` | GPT-4o, GPT-4, o1, o3 |
+| <img src="https://img.shields.io/badge/-Anthropic-CC785C?logo=anthropic&logoColor=white&style=flat-square" height="20"/> **Anthropic** | `LLM=anthropic` | Claude 3.5 Sonnet, Claude 4 |
+| <img src="https://img.shields.io/badge/-Google_Gemini-4285F4?logo=google&logoColor=white&style=flat-square" height="20"/> **Google Gemini** | `LLM=google` | Gemini 1.5 Pro, Gemini 2.0 Flash |
+| <img src="https://img.shields.io/badge/-Groq-F55036?logo=groq&logoColor=white&style=flat-square" height="20"/> **Groq** | `LLM=groq` | Llama 3, Mixtral, Gemma (fast inference) |
+| <img src="https://img.shields.io/badge/-Ollama-000000?logo=ollama&logoColor=white&style=flat-square" height="20"/> **Ollama** | `LLM=ollama` | Any local model (pull API included) |
+| <img src="https://img.shields.io/badge/-DeepSeek-4D6BFE?logo=deepseek&logoColor=white&style=flat-square" height="20"/> **DeepSeek** | `LLM=deepseek` | DeepSeek V2, DeepSeek V3 |
+| <img src="https://img.shields.io/badge/-Azure-0078D4?logo=microsoftazure&logoColor=white&style=flat-square" height="20"/> **Azure OpenAI** | `LLM=azure` | Azure-deployed GPT models |
+| <img src="https://img.shields.io/badge/-AWS_Bedrock-FF9900?logo=amazonaws&logoColor=white&style=flat-square" height="20"/> **AWS Bedrock** | `LLM=bedrock` | Claude via AWS |
+| <img src="https://img.shields.io/badge/-OpenRouter-6467F2?logo=openrouter&logoColor=white&style=flat-square" height="20"/> **OpenRouter** | `LLM=openrouter` | 200+ models unified API |
+| <img src="https://img.shields.io/badge/-Fireworks_AI-FF4A00?logo=fireworks&logoColor=white&style=flat-square" height="20"/> **Fireworks** | `LLM=fireworks` | Fast open-source inference |
+| <img src="https://img.shields.io/badge/-Together_AI-4A90D9?logo=together&logoColor=white&style=flat-square" height="20"/> **Together AI** | `LLM=together` | Open-source model hosting |
+| <img src="https://img.shields.io/badge/-Cerebras-F1592A?logo=cerebras&logoColor=white&style=flat-square" height="20"/> **Cerebras** | `LLM=cerebras` | Ultra-low latency inference |
+| <img src="https://img.shields.io/badge/-LiteLLM-8B5CF6?logo=litellm&logoColor=white&style=flat-square" height="20"/> **LiteLLM** | `LLM=litellm` | Proxy for 100+ providers |
+| <img src="https://img.shields.io/badge/-LM_Studio-1C1C1E?logo=lmstudio&logoColor=white&style=flat-square" height="20"/> **LMStudio** | `LLM=lmstudio` | Local OpenAI-compatible server |
+| <img src="https://img.shields.io/badge/-Custom-6B7280?logo=openai&logoColor=white&style=flat-square" height="20"/> **Custom** | `LLM=custom` | Any OpenAI-compatible endpoint |
 
 ### Image Generation Providers
 
 | Provider | Config | Type |
 |----------|--------|------|
-| **OpenAI DALL-E** | `openai` | Cloud API |
-| **ComfyUI** | `comfyui` | Self-hosted |
-| **Pexels** | `pexels` | Stock photo API |
-| **Pixabay** | `pixabay` | Stock photo API |
-| **Open WebUI** | `open-webui` | Self-hosted |
-| **OpenAI Compatible** | `openai-compatible` | Any compatible API |
+| <img src="https://img.shields.io/badge/-DALL·E-412991?logo=openai&logoColor=white&style=flat-square" height="20"/> **OpenAI DALL-E** | `openai` | Cloud API |
+| <img src="https://img.shields.io/badge/-ComfyUI-2B2D42?logo=comfyui&logoColor=white&style=flat-square" height="20"/> **ComfyUI** | `comfyui` | Self-hosted |
+| <img src="https://img.shields.io/badge/-Pexels-05A081?logo=pexels&logoColor=white&style=flat-square" height="20"/> **Pexels** | `pexels` | Stock photo API |
+| <img src="https://img.shields.io/badge/-Pixabay-2EC66D?logo=pixabay&logoColor=white&style=flat-square" height="20"/> **Pixabay** | `pixabay` | Stock photo API |
+| <img src="https://img.shields.io/badge/-Open_WebUI-343541?logo=openai&logoColor=white&style=flat-square" height="20"/> **Open WebUI** | `open-webui` | Self-hosted |
+| <img src="https://img.shields.io/badge/-OpenAI_Compatible-412991?logo=openai&logoColor=white&style=flat-square" height="20"/> **OpenAI Compatible** | `openai-compatible` | Any compatible API |
 
 ### Web Search Providers
 
 | Provider | Config |
 |----------|--------|
-| **SearXNG** | `WEB_SEARCH_PROVIDER=searxng` |
-| **Tavily** | `WEB_SEARCH_PROVIDER=tavily` |
-| **Exa** | `WEB_SEARCH_PROVIDER=exa` |
-| **Brave Search** | `WEB_SEARCH_PROVIDER=brave` |
-| **Serper** | `WEB_SEARCH_PROVIDER=serper` |
+| <img src="https://img.shields.io/badge/-SearXNG-EF6C00?logo=searxng&logoColor=white&style=flat-square" height="20"/> **SearXNG** | `WEB_SEARCH_PROVIDER=searxng` |
+| <img src="https://img.shields.io/badge/-Tavily-00B4D8?logo=tavily&logoColor=white&style=flat-square" height="20"/> **Tavily** | `WEB_SEARCH_PROVIDER=tavily` |
+| <img src="https://img.shields.io/badge/-Exa-6467F2?logo=exa&logoColor=white&style=flat-square" height="20"/> **Exa** | `WEB_SEARCH_PROVIDER=exa` |
+| <img src="https://img.shields.io/badge/-Brave_Search-FB542B?logo=brave&logoColor=white&style=flat-square" height="20"/> **Brave Search** | `WEB_SEARCH_PROVIDER=brave` |
+| <img src="https://img.shields.io/badge/-Serper-4CAF50?logo=google&logoColor=white&style=flat-square" height="20"/> **Serper** | `WEB_SEARCH_PROVIDER=serper` |
 
 ---
 
