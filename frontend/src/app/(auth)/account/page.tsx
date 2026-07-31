@@ -99,7 +99,7 @@ export default function AccountPage() {
                                 <h4 className="font-semibold text-gray-900">Windows PC • Chrome</h4>
                                 <span className="px-2.5 py-0.5 rounded-full bg-green-100 text-green-700 text-[10px] font-bold uppercase tracking-wide">Current Session</span>
                               </div>
-                              <p className="text-sm text-gray-500 mt-1">New York, USA • Active now</p>
+                              <p className="text-sm text-gray-500 mt-1">Bhopal, Madhya Pradesh, Kothri Kalan • Active now</p>
                             </div>
                           </div>
                         </div>
@@ -111,8 +111,8 @@ export default function AccountPage() {
                               <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" /></svg>
                             </div>
                             <div>
-                              <h4 className="font-semibold text-gray-900">iPhone 14 Pro • Safari</h4>
-                              <p className="text-sm text-gray-500 mt-1">New York, USA • Active 2 hours ago</p>
+                              <h4 className="font-semibold text-gray-900">Vivo V27 Pro • Safari</h4>
+                              <p className="text-sm text-gray-500 mt-1">Bhopal, Madhya Pradesh, Kothri Kalan • Active today</p>
                             </div>
                           </div>
                           <button className="text-sm text-red-500 hover:text-red-700 font-medium px-2">Revoke</button>
@@ -125,8 +125,8 @@ export default function AccountPage() {
                               <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
                             </div>
                             <div>
-                              <h4 className="font-semibold text-gray-900">MacBook Air • Edge</h4>
-                              <p className="text-sm text-gray-500 mt-1">Boston, USA • Active yesterday</p>
+                              <h4 className="font-semibold text-gray-900">Samsung F23 • Edge</h4>
+                              <p className="text-sm text-gray-500 mt-1">Bhopal, Madhya Pradesh, Kothri Kalan • Active today</p>
                             </div>
                           </div>
                           <button className="text-sm text-red-500 hover:text-red-700 font-medium px-2">Revoke</button>
