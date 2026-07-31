@@ -75,15 +75,15 @@ export default function VideoStories() {
           </div>
         </article>
 
-        {/* Highlight 3: FastMCP Integration (Deep tech flex) */}
+        {/* Highlight 3: App Builder CLI (Multi-agent autonomous code gen) */}
         <article className="story-card">
           <video className="story-card__media" autoPlay muted loop playsInline>
-            <source src="/IDE.mp4" type="video/mp4" />
+            <source src="/hac-kit cli demo.mp4" type="video/mp4" />
           </video>
           <div className="story-card__content">
-            <p>03 · FastMCP Integration & Context Server</p>
-            <h3>Seamlessly connect AI coding assistants directly to your backend workspace using our native Model Context Protocol (FastMCP) server.</h3>
-            <span>Development · FastMCP Server</span>
+            <p>03 · App Builder CLI &amp; Multi-Agent Orchestrator</p>
+            <h3>Autonomously generate a complete full-stack project from a single prompt using 6 specialized AI agents — Coach, Builder, Validator, and Pitch Generator.</h3>
+            <span>Code Gen · Multi-Agent Pipeline</span>
           </div>
         </article>
 

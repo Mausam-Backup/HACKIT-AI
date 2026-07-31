@@ -48,42 +48,62 @@
 
 ## 📽️ Platform Demos
 
-> All 6 demos autoplay — covering every major platform feature.
+> All 6 demos below — click to watch or they autoplay where supported.
+
+### 🎬 Full Platform Showcase
+
+<a href="frontend/public/assets/modal-video.mp4">
+  <img src="frontend/public/assets/Hero section Visual.png" alt="Platform Showcase" width="100%" style="border-radius:8px"/>
+</a>
+
+---
 
 <table>
   <tr>
     <td align="center" width="50%">
       <b>🎬 Presentation Generator</b><br/><br/>
-      <video src="frontend/public/ppt-demo.mp4" autoplay loop muted playsinline width="100%"></video>
+      <a href="frontend/public/ppt-demo.mp4">
+        <img src="frontend/public/assets/work1.png" alt="Presentation Generator Demo" width="100%" style="border-radius:8px"/>
+      </a>
       <br/><sub>AI slide deck creation from prompt or document upload</sub>
     </td>
     <td align="center" width="50%">
       <b>🤖 AI Hackathon Coach</b><br/><br/>
-      <video src="frontend/public/hack-coach-demo.mp4" autoplay loop muted playsinline width="100%"></video>
+      <a href="frontend/public/hack-coach-demo.mp4">
+        <img src="frontend/public/assets/work2.png" alt="AI Hackathon Coach Demo" width="100%" style="border-radius:8px"/>
+      </a>
       <br/><sub>Strategic advisor powered by OpenRouter OSS 120B</sub>
     </td>
   </tr>
   <tr>
     <td align="center" width="50%">
       <b>🎙️ AI Interview Prep</b><br/><br/>
-      <video src="frontend/public/ai-interview-demo.mp4" autoplay loop muted playsinline width="100%"></video>
+      <a href="frontend/public/ai-interview-demo.mp4">
+        <img src="frontend/public/assets/card2.png" alt="AI Interview Demo" width="100%" style="border-radius:8px"/>
+      </a>
       <br/><sub>Voice-enabled mock interviews with real-time AI feedback</sub>
     </td>
     <td align="center" width="50%">
       <b>🏆 Hackathons &amp; Resources</b><br/><br/>
-      <video src="frontend/public/hacakthon-video.mp4" autoplay loop muted playsinline width="100%"></video>
+      <a href="frontend/public/hacakthon-video.mp4">
+        <img src="frontend/public/assets/card3.png" alt="Hackathons Demo" width="100%" style="border-radius:8px"/>
+      </a>
       <br/><sub>Live hackathon browser with filters &amp; resource library</sub>
     </td>
   </tr>
   <tr>
     <td align="center" width="50%">
       <b>⚡ AI Workflow Builder</b><br/><br/>
-      <video src="frontend/public/Ai-automation.mp4" autoplay loop muted playsinline width="100%"></video>
+      <a href="frontend/public/Ai-automation.mp4">
+        <img src="frontend/public/assets/card4.png" alt="Workflow Builder Demo" width="100%" style="border-radius:8px"/>
+      </a>
       <br/><sub>Visual drag-and-drop multi-agent workflow designer</sub>
     </td>
     <td align="center" width="50%">
       <b>💬 Chat UI &amp; Slide Editor</b><br/><br/>
-      <video src="frontend/public/chat-ui-video.mp4" autoplay loop muted playsinline width="100%"></video>
+      <a href="frontend/public/chat-ui-video.mp4">
+        <img src="frontend/public/assets/peoject2.png" alt="Chat UI Demo" width="100%" style="border-radius:8px"/>
+      </a>
       <br/><sub>Real-time SSE streaming chat with context-aware slide editing</sub>
     </td>
   </tr>
@@ -216,6 +236,10 @@ python tui.py
 | `Up` / `Down` | Scroll live pipeline build logs |
 | `/new` | Reset workspace and start fresh project |
 | `Ctrl+C` | Safely exit and restore terminal |
+
+### 🖥️ CLI in Action
+
+https://github.com/Rachit-Tiwari-7/HACKIT-AI/raw/main/frontend/public/hac-kit%20cli%20demo.mp4
 
 ---
 
