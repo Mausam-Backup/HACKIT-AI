@@ -132,44 +132,45 @@
 > **HACKIT** ships with a complete autonomous multi-agent system (`app_builder/`) — a React/Ink TUI that orchestrates **6 specialized AI agents** to take a hackathon idea from concept to a fully-built, scored, and pitch-ready full-stack project.
 
 ```mermaid
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#EEF2FF', 'primaryTextColor': '#1e1b4b', 'primaryBorderColor': '#818CF8', 'lineColor': '#6366F1', 'secondaryColor': '#F0FDF4', 'tertiaryColor': '#FFF7ED', 'clusterBkg': '#F8FAFC', 'clusterBorder': '#CBD5E1', 'fontFamily': 'ui-sans-serif, system-ui, sans-serif', 'fontSize': '13px'}}}%%
 flowchart TD
-    User(["User Prompt: Build me a fintech app for hackathon"])
+    User(["🚀 User Prompt\nBuild me a fintech hackathon app"])
 
-    subgraph ORCHESTRATOR["Orchestrator Engine - orchestrator.py"]
-        Router{{"Agent Router and Task Decomposer"}}
+    subgraph ORCHESTRATOR["⚙️  Orchestrator Engine — orchestrator.py"]
+        Router{{"🔀 Agent Router & Task Decomposer"}}
     end
 
-    subgraph COACH_PHASE["Phase 1 - Coach Agent"]
-        Coach["Coach Agent - coach.md spec"]
-        Plan["PLAN.md - MVP Scope and Architecture"]
-        Arch["ARCHITECTURE.md - DB Schema and Component Map"]
-        Tasks["TASKS.md - Checkbox Task Tracking"]
+    subgraph COACH_PHASE["📋  Phase 1 · Coach Agent"]
+        Coach["🎯 Coach Agent\ncoach.md spec"]
+        Plan["📄 PLAN.md\nMVP Scope & Architecture"]
+        Arch["🏗️ ARCHITECTURE.md\nDB Schema & Component Map"]
+        Tasks["✅ TASKS.md\nCheckbox Task Tracking"]
     end
 
-    subgraph BUILD_PHASE["Phase 2 - Parallel Builder Agents"]
-        FE_Agent["Frontend Agent - frontend.md spec\nVite + React 18 + Lucide Icons"]
-        BE_Agent["Backend Agent - backend.md spec\nNode.js + Express + SQLite"]
+    subgraph BUILD_PHASE["🔨  Phase 2 · Parallel Builder Agents"]
+        FE_Agent["⚛️ Frontend Agent\nVite + React 18 + Lucide Icons"]
+        BE_Agent["🐍 Backend Agent\nNode.js + Express + SQLite"]
     end
 
-    subgraph VALIDATE_PHASE["Phase 3 - Validation and Self-Repair"]
-        Build["npm run build + Lint + Tests"]
-        Repair{{"Build Failed?"}}
-        Fix["Auto-Repair Agent - up to 2 iterations"]
-        Pass["Build Passed"]
+    subgraph VALIDATE_PHASE["🧪  Phase 3 · Validation & Self-Repair"]
+        Build["🔧 npm run build + Lint + Tests"]
+        Repair{{"❓ Build Failed?"}}
+        Fix["🔁 Auto-Repair Agent\nup to 2 iterations"]
+        Pass["✅ Build Passed"]
     end
 
-    subgraph PITCH_PHASE["Phase 4 - Pitch Generator"]
-        Pitch["HACKATHON.md - 3-minute Demo Script"]
-        Score["JUDGE_SCORE.md - Rubric Evaluation"]
+    subgraph PITCH_PHASE["🏆  Phase 4 · Pitch Generator"]
+        Pitch["🎤 HACKATHON.md\n3-minute Demo Script"]
+        Score["📊 JUDGE_SCORE.md\nRubric Evaluation"]
     end
 
-    subgraph MCP_LAYER["FastMCP Context Server - Port 8001"]
-        MCP["FastMCP - OpenAPI to Tool Definitions"]
-        Mem0["Mem0 OSS - Vector Memory Store"]
+    subgraph MCP_LAYER["🔌  FastMCP Context Server · Port 8001"]
+        MCP["⚡ FastMCP\nOpenAPI → Tool Definitions"]
+        Mem0["🧠 Mem0 OSS\nVector Memory Store"]
     end
 
-    subgraph HACKIT_CLIENT["HackIt Client - hackit_client.py"]
-        Client["REST API Client to FastAPI Backend Port 8000"]
+    subgraph HACKIT_CLIENT["📡  HackIt Client — hackit_client.py"]
+        Client["🔗 REST API Client\nFastAPI Backend Port 8000"]
     end
 
     User --> ORCHESTRATOR
@@ -183,6 +184,24 @@ flowchart TD
     Repair -->|No| Pass --> PITCH_PHASE
     ORCHESTRATOR --> HACKIT_CLIENT
     MCP_LAYER --> Mem0
+
+    classDef userNode fill:#EDE9FE,stroke:#7C3AED,color:#3B0764,stroke-width:2px
+    classDef orchestNode fill:#FEF3C7,stroke:#D97706,color:#78350F,stroke-width:2px
+    classDef coachNode fill:#DBEAFE,stroke:#2563EB,color:#1E3A8A,stroke-width:1.5px
+    classDef buildNode fill:#D1FAE5,stroke:#059669,color:#064E3B,stroke-width:1.5px
+    classDef validateNode fill:#FEE2E2,stroke:#DC2626,color:#7F1D1D,stroke-width:1.5px
+    classDef pitchNode fill:#FCE7F3,stroke:#DB2777,color:#831843,stroke-width:1.5px
+    classDef mcpNode fill:#CCFBF1,stroke:#0D9488,color:#134E4A,stroke-width:1.5px
+    classDef clientNode fill:#F5F3FF,stroke:#7C3AED,color:#3B0764,stroke-width:1.5px
+
+    class User userNode
+    class Router orchestNode
+    class Coach,Plan,Arch,Tasks coachNode
+    class FE_Agent,BE_Agent buildNode
+    class Build,Repair,Fix,Pass validateNode
+    class Pitch,Score pitchNode
+    class MCP,Mem0 mcpNode
+    class Client clientNode
 ```
 
 ### Agent Specifications
