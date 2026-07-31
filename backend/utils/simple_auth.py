@@ -20,7 +20,7 @@ from utils.user_config_store import read_user_config_file, update_user_config_fi
 SESSION_COOKIE_NAME = "presenton_session"
 PBKDF2_ITERATIONS = 200_000
 SESSION_TTL_SECONDS = 60 * 60 * 24 * 30
-AUTH_CONFIG_FIELDS = ("AUTH_USERNAME", "AUTH_PASSWORD_HASH", "AUTH_SECRET_KEY", "AUTH_TOTP_SECRET", "PENDING_AUTH_USERNAME", "PENDING_AUTH_PASSWORD_HASH", "AUTH_VERIFICATION_CODE")
+AUTH_CONFIG_FIELDS = ("USERS", "PENDING_USERS", "AUTH_SECRET_KEY")
 
 
 def _base64url_encode(data: bytes) -> str:
@@ -109,14 +109,15 @@ def _get_or_create_auth_secret(config: dict) -> str:
 
 def is_auth_configured() -> bool:
     config = _load_user_config()
-    return bool(config.get("AUTH_USERNAME") and config.get("AUTH_PASSWORD_HASH"))
+    users = config.get("USERS", {})
+    return bool(users)
 
 
 def get_configured_auth_username() -> Optional[str]:
     config = _load_user_config()
-    username = config.get("AUTH_USERNAME")
-    if isinstance(username, str) and username.strip():
-        return username.strip()
+    users = config.get("USERS", {})
+    if users:
+        return list(users.keys())[0]
     return None
 
 
@@ -129,8 +130,10 @@ def setup_initial_credentials(username: str, password: str) -> dict:
         raise ValueError("Password must be at least 6 characters")
 
     config = _load_user_config()
-    if config.get("AUTH_USERNAME") and config.get("AUTH_PASSWORD_HASH"):
-        raise ValueError("Credentials already configured")
+    users = config.setdefault("USERS", {})
+    
+    if cleaned_username in users:
+        raise ValueError("Username already exists")
 
     resend_key = get_resend_api_key_env()
     if resend_key:
@@ -138,9 +141,11 @@ def setup_initial_credentials(username: str, password: str) -> dict:
         import resend
         code = f"{random.randint(0, 999999):06d}"
         
-        config["PENDING_AUTH_USERNAME"] = cleaned_username
-        config["PENDING_AUTH_PASSWORD_HASH"] = _encode_password_hash(password)
-        config["AUTH_VERIFICATION_CODE"] = code
+        pending_users = config.setdefault("PENDING_USERS", {})
+        pending_users[cleaned_username] = {
+            "password_hash": _encode_password_hash(password),
+            "verification_code": code
+        }
         _save_user_config(config)
         
         resend.api_key = resend_key
@@ -156,31 +161,52 @@ def setup_initial_credentials(username: str, password: str) -> dict:
             
         return {"email_verification_required": True}
 
-    config["AUTH_USERNAME"] = cleaned_username
-    config["AUTH_PASSWORD_HASH"] = _encode_password_hash(password)
+    users[cleaned_username] = {
+        "password_hash": _encode_password_hash(password)
+    }
     _get_or_create_auth_secret(config)
     _save_user_config(config)
     return {"email_verification_required": False}
 
 
-def verify_email_code(code: str) -> None:
+def provision_judge_account() -> str:
+    """Automatically provision a judge user so their token is valid in the multi-user system."""
     config = _load_user_config()
-    stored_code = config.get("AUTH_VERIFICATION_CODE")
-    if not stored_code:
-        raise ValueError("No verification pending")
+    users = config.setdefault("USERS", {})
+    username = "Judge_Evaluator"
+    
+    if username not in users:
+        users[username] = {
+            "password_hash": "judge_bypass_no_hash"
+        }
+        _get_or_create_auth_secret(config)
+        _save_user_config(config)
         
-    if stored_code != code.strip():
+    return username
+
+
+def verify_email_code(code: str) -> None:
+    # Need to find which pending user has this code.
+    config = _load_user_config()
+    pending_users = config.get("PENDING_USERS", {})
+    
+    matched_username = None
+    for uname, data in pending_users.items():
+        if data.get("verification_code") == code.strip():
+            matched_username = uname
+            break
+            
+    if not matched_username:
         raise ValueError("Invalid verification code")
         
-    config["AUTH_USERNAME"] = config.get("PENDING_AUTH_USERNAME")
-    config["AUTH_PASSWORD_HASH"] = config.get("PENDING_AUTH_PASSWORD_HASH")
+    users = config.setdefault("USERS", {})
+    users[matched_username] = {
+        "password_hash": pending_users[matched_username]["password_hash"]
+    }
     
-    config.pop("PENDING_AUTH_USERNAME", None)
-    config.pop("PENDING_AUTH_PASSWORD_HASH", None)
-    config.pop("AUTH_VERIFICATION_CODE", None)
-    
+    del pending_users[matched_username]
     _get_or_create_auth_secret(config)
-    _save_user_config(config, removed_keys=("PENDING_AUTH_USERNAME", "PENDING_AUTH_PASSWORD_HASH", "AUTH_VERIFICATION_CODE"))
+    _save_user_config(config)
 
 
 def force_set_credentials(username: str, password: str) -> None:
@@ -193,8 +219,11 @@ def force_set_credentials(username: str, password: str) -> None:
         raise ValueError("Password must be at least 6 characters")
 
     config = _load_user_config()
-    config["AUTH_USERNAME"] = cleaned_username
-    config["AUTH_PASSWORD_HASH"] = _encode_password_hash(password)
+    users = config.setdefault("USERS", {})
+    users[cleaned_username] = {
+        "password_hash": _encode_password_hash(password)
+    }
+    
     # Rotate the signing secret so any previously-issued tokens stop validating.
     config["AUTH_SECRET_KEY"] = _base64url_encode(secrets.token_bytes(32))
     _save_user_config(config)
@@ -214,32 +243,38 @@ def clear_stored_credentials() -> None:
 
 def verify_credentials(username: str, password: str) -> bool:
     config = _load_user_config()
-    stored_username = config.get("AUTH_USERNAME")
-    stored_hash = config.get("AUTH_PASSWORD_HASH")
-
-    if not stored_username or not stored_hash:
+    users = config.get("USERS", {})
+    
+    cleaned_username = (username or "").strip()
+    if cleaned_username not in users:
         return False
 
-    cleaned_username = (username or "").strip()
-    if not hmac.compare_digest(cleaned_username, stored_username):
+    stored_hash = users[cleaned_username].get("password_hash")
+    if not stored_hash:
         return False
 
     return _verify_password_hash(password or "", stored_hash)
 
 
-def is_2fa_configured() -> bool:
+def is_2fa_configured(username: str) -> bool:
     config = _load_user_config()
-    return bool(config.get("AUTH_TOTP_SECRET"))
+    users = config.get("USERS", {})
+    if username not in users:
+        return False
+    return bool(users[username].get("totp_secret"))
 
 
-def generate_2fa_secret() -> dict:
+def generate_2fa_secret(username: str) -> dict:
     config = _load_user_config()
+    users = config.get("USERS", {})
+    if username not in users:
+        raise ValueError("User not found")
+        
     secret = pyotp.random_base32()
-    config["AUTH_TOTP_SECRET"] = secret
+    users[username]["totp_secret"] = secret
     _save_user_config(config)
     
     totp = pyotp.TOTP(secret)
-    username = config.get("AUTH_USERNAME", "User")
     uri = totp.provisioning_uri(name=username, issuer_name="Hack-It AI")
     
     factory = qrcode.image.svg.SvgPathImage
@@ -255,20 +290,25 @@ def generate_2fa_secret() -> dict:
     return {"secret": secret, "qr_code_svg": svg_data}
 
 
-def verify_2fa_code(code: str) -> bool:
+def verify_2fa_code(username: str, code: str) -> bool:
     config = _load_user_config()
-    secret = config.get("AUTH_TOTP_SECRET")
+    users = config.get("USERS", {})
+    if username not in users:
+        return False
+        
+    secret = users[username].get("totp_secret")
     if not secret:
         return True
     totp = pyotp.TOTP(secret)
     return totp.verify(code)
 
 
-def disable_2fa() -> None:
+def disable_2fa(username: str) -> None:
     config = _load_user_config()
-    if "AUTH_TOTP_SECRET" in config:
-        config.pop("AUTH_TOTP_SECRET")
-        _save_user_config(config, removed_keys=("AUTH_TOTP_SECRET",))
+    users = config.get("USERS", {})
+    if username in users and "totp_secret" in users[username]:
+        users[username].pop("totp_secret")
+        _save_user_config(config)
 
 
 def _sign_payload(payload_encoded: str, secret: str) -> str:
@@ -302,8 +342,8 @@ def validate_session_token(token: Optional[str]) -> Optional[str]:
         return None
 
     config = _load_user_config()
-    stored_username = config.get("AUTH_USERNAME")
-    if not stored_username:
+    users = config.get("USERS", {})
+    if not users:
         return None
 
     secret = config.get("AUTH_SECRET_KEY")
@@ -334,7 +374,7 @@ def validate_session_token(token: Optional[str]) -> Optional[str]:
     if version != 1:
         return None
 
-    if not hmac.compare_digest(username, stored_username):
+    if username not in users:
         return None
 
     if expires_at < int(time.time()):
@@ -380,7 +420,7 @@ def get_basic_auth_credentials_from_request(
 
 def get_auth_status(session_token: Optional[str] = None) -> dict:
     config = _load_user_config()
-    configured = bool(config.get("AUTH_USERNAME") and config.get("AUTH_PASSWORD_HASH"))
+    configured = is_auth_configured()
 
     if not configured:
         return {
@@ -394,7 +434,7 @@ def get_auth_status(session_token: Optional[str] = None) -> dict:
         "configured": True,
         "authenticated": bool(username),
         "username": username,
-        "2fa_enabled": is_2fa_configured(),
+        "2fa_enabled": is_2fa_configured(username) if username else False,
     }
 
 

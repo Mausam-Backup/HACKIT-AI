@@ -282,6 +282,7 @@ export default function AuthGate() {
         });
         setPassword("");
         setConfirmPassword("");
+        setIsSetupMode(false);
         notify.success("Account created", "Sign in with your new username and password to continue.", {
           duration: 6000,
         });
@@ -396,13 +397,13 @@ export default function AuthGate() {
           <div className="w-full p-5 rounded-md text-gray-900 dark:text-white">
 
             <h1 className="text-3xl tracking-tight text-gray-900 dark:text-white font-bold mb-2 text-center sm:text-left">
-              {isVerifyMode ? "Verify your email" : isSetupMode ? "Create your admin login" : "Log in to continue"}
+              {isVerifyMode ? "Verify your email" : isSetupMode ? "Create your account" : "Log in to continue"}
             </h1>
             <p className="mb-8 text-center sm:text-left text-sm text-gray-500 dark:text-white/60 font-normal">
               {isVerifyMode
                 ? "Enter the 6-digit code sent to your email."
                 : isSetupMode
-                ? "One-time setup for this deployment."
+                ? "Sign up for a new account."
                 : "This deployment is protected."}
             </p>
 
@@ -496,11 +497,7 @@ export default function AuthGate() {
                 </>
               )}
 
-              {!isSetupMode && status.configured && !is2faMode ? (
-                <p className="text-xs text-gray-400 dark:text-white/40 font-normal">
-                  Setup is complete for this instance. Use the username and password you configured.
-                </p>
-              ) : null}
+
 
               <button
                 type="submit"
@@ -536,7 +533,7 @@ export default function AuthGate() {
                 <div className="mt-6 text-center text-sm">
                   {isSetupMode ? (
                     <p className="text-gray-500 dark:text-white/60">
-                      Already have an admin account?{" "}
+                      Already have an account?{" "}
                       <button
                         type="button"
                         onClick={() => setIsSetupMode(false)}
@@ -547,7 +544,7 @@ export default function AuthGate() {
                     </p>
                   ) : (
                     <p className="text-gray-500 dark:text-white/60">
-                      Need to set up the deployment?{" "}
+                      Need an account?{" "}
                       <button
                         type="button"
                         onClick={() => setIsSetupMode(true)}

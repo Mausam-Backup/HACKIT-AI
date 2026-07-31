@@ -17,7 +17,7 @@ from utils.simple_auth import (
     verify_2fa_code,
     disable_2fa,
     verify_email_code,
-    get_configured_auth_username,
+    provision_judge_account,
 )
 from utils.get_env import is_disable_auth_enabled
 
@@ -66,8 +66,6 @@ async def verify_session(request: Request):
 
 @API_V1_AUTH_ROUTER.post("/setup")
 async def setup_credentials(body: AuthCredentialsRequest, request: Request):
-    if is_auth_configured():
-        raise HTTPException(status_code=409, detail="Credentials already configured")
 
     try:
         result = setup_initial_credentials(body.username, body.password)
@@ -130,10 +128,10 @@ async def login(body: AuthCredentialsRequest, request: Request):
     if not verify_credentials(body.username, body.password):
         raise HTTPException(status_code=401, detail="Unauthorized")
 
-    if is_2fa_configured():
+    if is_2fa_configured(body.username.strip()):
         if not body.code:
             return JSONResponse({"configured": True, "2fa_required": True, "username": body.username.strip()})
-        if not verify_2fa_code(body.code):
+        if not verify_2fa_code(body.username.strip(), body.code):
             raise HTTPException(status_code=401, detail="Invalid 2FA code")
 
     username = body.username.strip()
@@ -153,10 +151,7 @@ async def login(body: AuthCredentialsRequest, request: Request):
 
 @API_V1_AUTH_ROUTER.post("/judge-login")
 async def judge_login(request: Request):
-    username = get_configured_auth_username()
-    if not username:
-        raise HTTPException(status_code=428, detail="Setup required before judge access")
-        
+    username = provision_judge_account()
     token = create_session_token(username)
     response = JSONResponse(
         {
@@ -185,7 +180,7 @@ async def setup_2fa(request: Request):
     if not auth_status.get("authenticated"):
         raise HTTPException(status_code=401, detail="Unauthorized")
     
-    return generate_2fa_secret()
+    return generate_2fa_secret(auth_status["username"])
 
 
 class VerifySetup2FARequest(BaseModel):
@@ -199,7 +194,7 @@ async def verify_setup_2fa(body: VerifySetup2FARequest, request: Request):
     if not auth_status.get("authenticated"):
         raise HTTPException(status_code=401, detail="Unauthorized")
         
-    if verify_2fa_code(body.code):
+    if verify_2fa_code(auth_status["username"], body.code):
         return {"success": True}
     raise HTTPException(status_code=400, detail="Invalid code")
 
@@ -211,5 +206,5 @@ async def disable_2fa_route(request: Request):
     if not auth_status.get("authenticated"):
         raise HTTPException(status_code=401, detail="Unauthorized")
         
-    disable_2fa()
+    disable_2fa(auth_status["username"])
     return {"success": True}
