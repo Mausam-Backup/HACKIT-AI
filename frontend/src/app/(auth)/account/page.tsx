@@ -61,13 +61,79 @@ export default function AccountPage() {
                 className="absolute top-0 h-full w-px bg-gradient-to-b from-[#EDEEEF] to-transparent left-[0.6rem]" 
               />
 
-              <div className="flex flex-col gap-5">
+              <div className="flex flex-col gap-5 pb-10">
                 <div className="relative pl-8 transition duration-200 ease-in-out">
                   <div className="bg-white absolute -left-[4px] top-7 z-10 block h-5 w-5 rounded-full shadow-sm">
                     <div className="ml-1 mt-1 h-3 w-3 rounded-full border-2 transition duration-200 ease-in-out border-[#7C51F8]"></div>
                   </div>
                   <div>
                     <EnableMfa />
+                  </div>
+                </div>
+
+                <div className="relative pl-8 pt-6 mt-4 transition duration-200 ease-in-out">
+                  <div className="bg-white absolute -left-[4px] top-10 z-10 block h-5 w-5 rounded-full shadow-sm">
+                    <div className="ml-1 mt-1 h-3 w-3 rounded-full border-2 transition duration-200 ease-in-out border-[#7C51F8]"></div>
+                  </div>
+                  <div>
+                    <div className="flex flex-col gap-4 bg-white border border-[#EDEEEF] rounded-[20px] p-6 shadow-sm">
+                      <div className="flex justify-between items-start">
+                        <div>
+                          <h3 className="text-xl font-bold text-[#000509e3] tracking-tight">Active Sessions</h3>
+                          <p className="text-sm text-[#494A4D] mt-1">Review and manage devices currently logged into your account.</p>
+                        </div>
+                        <button className="text-sm text-red-500 hover:text-red-600 font-medium px-4 py-2 bg-red-50 hover:bg-red-100 rounded-full transition-colors hidden sm:block">
+                          Revoke All Other Sessions
+                        </button>
+                      </div>
+
+                      <div className="mt-4 flex flex-col gap-4">
+                        {/* Current Session */}
+                        <div className="flex items-center justify-between p-4 bg-gray-50 rounded-2xl border border-[#EDEEEF]">
+                          <div className="flex items-center gap-4">
+                            <div className="w-12 h-12 bg-[#7C51F8]/10 rounded-full flex items-center justify-center text-[#7C51F8] shrink-0">
+                              <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
+                            </div>
+                            <div>
+                              <div className="flex flex-wrap items-center gap-2">
+                                <h4 className="font-semibold text-gray-900">Windows PC • Chrome</h4>
+                                <span className="px-2.5 py-0.5 rounded-full bg-green-100 text-green-700 text-[10px] font-bold uppercase tracking-wide">Current Session</span>
+                              </div>
+                              <p className="text-sm text-gray-500 mt-1">New York, USA • Active now</p>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Other Session 1 */}
+                        <div className="flex items-center justify-between p-4 bg-white rounded-2xl border border-[#EDEEEF]">
+                          <div className="flex items-center gap-4">
+                            <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center text-gray-500 shrink-0">
+                              <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" /></svg>
+                            </div>
+                            <div>
+                              <h4 className="font-semibold text-gray-900">iPhone 14 Pro • Safari</h4>
+                              <p className="text-sm text-gray-500 mt-1">New York, USA • Active 2 hours ago</p>
+                            </div>
+                          </div>
+                          <button className="text-sm text-red-500 hover:text-red-700 font-medium px-2">Revoke</button>
+                        </div>
+
+                        {/* Other Session 2 */}
+                        <div className="flex items-center justify-between p-4 bg-white rounded-2xl border border-[#EDEEEF]">
+                          <div className="flex items-center gap-4">
+                            <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center text-gray-500 shrink-0">
+                              <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
+                            </div>
+                            <div>
+                              <h4 className="font-semibold text-gray-900">MacBook Air • Edge</h4>
+                              <p className="text-sm text-gray-500 mt-1">Boston, USA • Active yesterday</p>
+                            </div>
+                          </div>
+                          <button className="text-sm text-red-500 hover:text-red-700 font-medium px-2">Revoke</button>
+                        </div>
+
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
