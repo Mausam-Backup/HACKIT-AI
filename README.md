@@ -588,46 +588,41 @@ graph TB
 
 ### Authentication Architecture
 
+### 1. Registration Flow
+
 ```mermaid
 flowchart TD
-    subgraph REGISTRATION["Registration Flow"]
-        A(["User submits username and password"])
-        B{{"RESEND_API_KEY set?"}}
-        C["Hash password - PBKDF2-HMAC-SHA256\n200,000 iterations + 16-byte salt"]
-        D["Store in PENDING_USERS temporarily"]
-        E["Send 6-digit OTP via Resend Email API"]
-        F["User submits OTP - verify_email_code()"]
-        G["Promote to USERS - store in user-config.json"]
-    end
+    A(["User submits credentials"]) --> B{{"RESEND_API_KEY set?"}}
+    B -->|Yes| C["Hash password - PBKDF2-HMAC-SHA256"]
+    C --> D["Store in PENDING_USERS"]
+    D --> E["Send 6-digit OTP via Email"]
+    E --> F["User submits OTP"]
+    F --> G["Promote to USERS store"]
+    B -->|No| C2["Hash password"] --> G
+```
 
-    subgraph LOGIN["Login Flow"]
-        H(["User submits credentials"])
-        I["Verify PBKDF2 hash - hmac.compare_digest() constant time"]
-        J{{"2FA enabled for user?"}}
-        K["Prompt TOTP 6-digit code"]
-        L["pyotp.TOTP.verify(code)"]
-        M["Generate HMAC-SHA256 signed session token"]
-        N["Set HttpOnly cookie presenton_session"]
-    end
+### 2. Login Flow
 
-    subgraph SESSION["Session Validation - Every /api/* Request"]
-        O["Extract token from cookie or Bearer header"]
-        P["Verify HMAC signature"]
-        Q["Check expiry - 30 days TTL"]
-        R["Look up username in USERS store"]
-        T["Request authorized 200 OK"]
-        U["401 Unauthorized - redirect to login"]
-    end
+```mermaid
+flowchart TD
+    H(["User submits credentials"]) --> I["Verify PBKDF2 hash"]
+    I --> J{{"2FA enabled?"}}
+    J -->|Yes| K["Prompt TOTP 6-digit code"]
+    K --> L["pyotp.TOTP.verify(code)"]
+    L --> M["Generate HMAC-SHA256 signed session token"]
+    M --> N["Set HttpOnly cookie presenton_session"]
+    J -->|No| M
+```
 
-    A --> B
-    B -->|Yes| C --> D --> E --> F --> G
-    B -->|No| C --> G
-    H --> I --> J
-    J -->|Yes| K --> L --> M --> N
-    J -->|No| M --> N
-    O --> P --> Q --> R
-    R -->|Found| T
-    R -->|Not found| U
+### 3. Session Validation (Every API Request)
+
+```mermaid
+flowchart TD
+    O(["Extract token from cookie or header"]) --> P["Verify HMAC signature"]
+    P --> Q{{"Check expiry (30 days)"}}
+    Q -->|Valid| R{{"Look up username in store"}}
+    R -->|Found| T(["Authorized 200 OK"])
+    R -->|Not found| U(["401 Unauthorized - redirect to login"])
     Q -->|Expired| U
 ```
 
