@@ -14,6 +14,7 @@ export default function FloatingNav() {
   const [isHovered, setIsHovered] = useState(false);
   const [isHidden, setIsHidden] = useState(false);
   const [authStatus, setAuthStatus] = useState<AuthStatus | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -25,6 +26,8 @@ export default function FloatingNav() {
         }
       } catch (e) {
         console.error("Auth check failed", e);
+      } finally {
+        setIsLoading(false);
       }
     };
     checkAuth();
@@ -55,7 +58,7 @@ export default function FloatingNav() {
   }, []);
 
   return (
-    <div className={`fixed left-1/2 -translate-x-1/2 z-[100] w-[95vw] max-w-fit transition-all duration-500 ease-in-out ${isHidden ? '-top-32 opacity-0 pointer-events-none' : 'top-8 opacity-100'}`}>
+    <div className={`fixed left-1/2 -translate-x-1/2 z-[100] w-[95vw] max-w-fit transition-all duration-500 ease-in-out ${isHidden || isLoading ? '-top-32 opacity-0 pointer-events-none' : 'top-8 opacity-100'}`}>
       <div 
         className="flex items-center justify-between rounded-full border border-black/5 shadow-2xl transition-all duration-500 ease-out overflow-x-auto no-scrollbar text-black w-full bg-white"
         style={{
