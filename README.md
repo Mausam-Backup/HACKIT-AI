@@ -48,63 +48,31 @@
 
 ## 📽️ Platform Demos
 
-> All 6 demos below — click to watch or they autoplay where supported.
-
-### 🎬 Full Platform Showcase
-
-<a href="frontend/public/assets/modal-video.mp4">
-  <img src="frontend/public/assets/Hero section Visual.png" alt="Platform Showcase" width="100%" style="border-radius:8px"/>
-</a>
-
----
+> Key platform feature demos showcasing core functionality.
 
 <table>
   <tr>
     <td align="center" width="50%">
-      <b>🎬 Presentation Generator</b><br/><br/>
-      <a href="frontend/public/ppt-demo.mp4">
-        <img src="frontend/public/assets/work1.png" alt="Presentation Generator Demo" width="100%" style="border-radius:8px"/>
-      </a>
+      <b>💻 CLI DEMO</b><br/><br/>
+      <img src="frontend/public/GIFS/CLI%20DEMO.gif" alt="CLI DEMO" width="100%" />
+      <br/><sub>Autonomous TUI agent CLI orchestration &amp; multi-agent execution</sub>
+    </td>
+    <td align="center" width="50%">
+      <b>🎬 Presentation Maker</b><br/><br/>
+      <img src="frontend/public/GIFS/PPT%20DEMO.gif" alt="Presentation Maker" width="100%" />
       <br/><sub>AI slide deck creation from prompt or document upload</sub>
     </td>
+  </tr>
+  <tr>
     <td align="center" width="50%">
-      <b>🤖 AI Hackathon Coach</b><br/><br/>
-      <a href="frontend/public/hack-coach-demo.mp4">
-        <img src="frontend/public/assets/work2.png" alt="AI Hackathon Coach Demo" width="100%" style="border-radius:8px"/>
-      </a>
+      <b>🤖 AI Coach</b><br/><br/>
+      <img src="frontend/public/GIFS/COACH%20DEMO.gif" alt="AI Coach" width="100%" />
       <br/><sub>Strategic advisor powered by OpenRouter OSS 120B</sub>
     </td>
-  </tr>
-  <tr>
     <td align="center" width="50%">
-      <b>🎙️ AI Interview Prep</b><br/><br/>
-      <a href="frontend/public/ai-interview-demo.mp4">
-        <img src="frontend/public/assets/card2.png" alt="AI Interview Demo" width="100%" style="border-radius:8px"/>
-      </a>
+      <b>🎙️ AI Interview</b><br/><br/>
+      <img src="frontend/public/GIFS/INTERVIEW%20demo.gif" alt="AI Interview" width="100%" />
       <br/><sub>Voice-enabled mock interviews with real-time AI feedback</sub>
-    </td>
-    <td align="center" width="50%">
-      <b>🏆 Hackathons &amp; Resources</b><br/><br/>
-      <a href="frontend/public/hacakthon-video.mp4">
-        <img src="frontend/public/assets/card3.png" alt="Hackathons Demo" width="100%" style="border-radius:8px"/>
-      </a>
-      <br/><sub>Live hackathon browser with filters &amp; resource library</sub>
-    </td>
-  </tr>
-  <tr>
-    <td align="center" width="50%">
-      <b>⚡ AI Workflow Builder</b><br/><br/>
-      <a href="frontend/public/Ai-automation.mp4">
-        <img src="frontend/public/assets/card4.png" alt="Workflow Builder Demo" width="100%" style="border-radius:8px"/>
-      </a>
-      <br/><sub>Visual drag-and-drop multi-agent workflow designer</sub>
-    </td>
-    <td align="center" width="50%">
-      <b>💬 Chat UI &amp; Slide Editor</b><br/><br/>
-      <a href="frontend/public/chat-ui-video.mp4">
-        <img src="frontend/public/assets/peoject2.png" alt="Chat UI Demo" width="100%" style="border-radius:8px"/>
-      </a>
-      <br/><sub>Real-time SSE streaming chat with context-aware slide editing</sub>
     </td>
   </tr>
 </table>
