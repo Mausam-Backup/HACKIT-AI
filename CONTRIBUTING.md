@@ -1,14 +1,18 @@
 # Contributing to HACKIT-AI
 
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com)
+[![Open Source Love](https://badges.frapsoft.com/os/v1/open-source.svg?v=103)](https://github.com/ellerbrock/open-source-badges/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 A huge thank you to all the amazing people who are helping build HACKIT-AI! 🎉
 
 ## 🏛️ Project Leads
 
 | Role | Name | Affiliation |
 | :--- | :--- | :--- |
-| **Lead Developer** | [Rachit Tiwari](https://github.com/Rachit-Tiwari-7) | HACKIT-AI Core |
-| **Core Maintainer** | Mausam Kar | HACKIT-AI Core |
-| **Core Maintainer** | Shaikh Mohhamad Warsi | HACKIT-AI Core |
+| **Lead Developer & Project Lead** | [Rachit Tiwari](https://github.com/Rachit-Tiwari-7) | VIT Bhopal University |
+| **Project Lead & Core Maintainer** | Mausam Kar | VIT Bhopal University |
+| **Project Lead & Core Maintainer** | Shaikh Mohhamad Warsi | VIT Bhopal University |
 
 <br/>
 
@@ -43,6 +47,28 @@ A huge thank you to all the amazing people who are helping build HACKIT-AI! 🎉
       </td>
     </tr>
   </table>
+</div>
+
+<br/>
+
+## 📈 HACKIT-AI Repo Stats & Activity
+
+<div align="center">
+  <img src="https://github-readme-stats.vercel.app/api?username=Rachit-Tiwari-7&repo=HACKIT-AI&show_icons=true&theme=radical&hide_border=true" alt="HACKIT-AI Repo Stats" />
+</div>
+
+<br/>
+
+## ⭐ Star History Chart
+
+<div align="center">
+  <a href="https://star-history.com/#Rachit-Tiwari-7/HACKIT-AI&Date">
+    <picture>
+      <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=Rachit-Tiwari-7/HACKIT-AI&type=Date&theme=dark" />
+      <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=Rachit-Tiwari-7/HACKIT-AI&type=Date" />
+      <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=Rachit-Tiwari-7/HACKIT-AI&type=Date" />
+    </picture>
+  </a>
 </div>
 
 <br/>
@@ -88,5 +114,16 @@ When contributing to the AI components, please ensure your changes are compatibl
 ## 🤝 Code of Conduct
 
 By participating in this project, you agree to maintain a welcoming, inclusive, and harassment-free environment for everyone. Please be respectful in all interactions.
+
+---
+
+## 📧 Contact Us
+
+**HACKIT-AI Core Team** • VIT Bhopal University
+
+If you have any questions, want to collaborate, or need assistance, feel free to reach out via GitHub issues or connect with the Project Leads directly on their GitHub profiles:
+- [Rachit Tiwari](https://github.com/Rachit-Tiwari-7)
+- Mausam Kar
+- Shaikh Mohhamad Warsi
 
 Thank you for helping us build the ultimate hackathon winning kit!

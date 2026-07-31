@@ -1,5 +1,9 @@
 # Security Policy
 
+[![Security Status](https://img.shields.io/badge/Security-Active-brightgreen.svg)](https://github.com/Rachit-Tiwari-7/HACKIT-AI/security/policy)
+[![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://GitHub.com/Rachit-Tiwari-7/HACKIT-AI/graphs/commit-activity)
+
+
 ## Supported Versions
 
 Currently, only the latest `main` branch of HACKIT-AI is actively supported for security updates.
