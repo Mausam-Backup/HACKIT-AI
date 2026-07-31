@@ -49,7 +49,10 @@ CRITICAL DIRECTIVES:
 - Be energetic, confident, direct, and focused strictly on WINNING.
 - ALWAYS tailor recommendations based on [Tournament & Team Context].
 - Respond in clear, beautifully formatted Markdown with headers (##, ###), bold text, bullet points (- ), and code blocks (\`code\`).
-- At the end of your response, include a JSON block enclosed in \`\`\`json_analysis ... \`\`\` for a single recommended strategy OR \`\`\`json_comparison ... \`\`\` if comparing multiple problem statements.
+
+CRITICAL INSTRUCTION: You MUST append a JSON block at the very end of your response containing the structured data.
+Failure to include this JSON block will break the application.
+Always enclose it in \`\`\`json_analysis ... \`\`\` (or \`\`\`json_comparison ... \`\`\` if comparing).
 
 Format for json_analysis:
 \`\`\`json_analysis
@@ -178,8 +181,11 @@ Format for json_comparison (if user asks to compare 2+ options):
           const { text, analysis, comparison } = parseCoachResponse(rawText, userLastMsg, criteria, attachments);
           return NextResponse.json({ text, analysis, comparison });
         }
-      } catch (groqErr) {
+      } catch (groqErr: any) {
         console.error('Groq SDK call failed:', groqErr);
+        // Include error in fallback response for debugging
+        const mockResult = generateFallbackCoachResponse(userLastMsg, criteria, attachments);
+        return NextResponse.json({ ...mockResult, errorDebug: groqErr.message });
       }
     }
 
@@ -220,17 +226,22 @@ function parseCoachResponse(
   let comparison: any = undefined;
   let cleanText = rawText;
 
-  const jsonAnalysisMatch = rawText.match(/```json_analysis\s*([\s\S]*?)\s*```/);
+  // Try json_analysis or just json
+  const jsonAnalysisMatch = rawText.match(/```(?:json_analysis|json)\s*([\s\S]*?)\s*```/);
   if (jsonAnalysisMatch && jsonAnalysisMatch[1]) {
     try {
-      analysis = JSON.parse(jsonAnalysisMatch[1]);
-      cleanText = cleanText.replace(/```json_analysis\s*[\s\S]*?\s*```/, '').trim();
+      // Check if it's actually an analysis object (has winScore)
+      const parsed = JSON.parse(jsonAnalysisMatch[1]);
+      if (parsed.winScore) {
+        analysis = parsed;
+        cleanText = cleanText.replace(/```(?:json_analysis|json)\s*[\s\S]*?\s*```/, '').trim();
+      }
     } catch (e) {
       console.warn('Could not parse JSON analysis block from response', e);
     }
   }
 
-  const jsonCompMatch = rawText.match(/```json_comparison\s*([\s\S]*?)\s*```/);
+  const jsonCompMatch = rawText.match(/```(?:json_comparison)\s*([\s\S]*?)\s*```/);
   if (jsonCompMatch && jsonCompMatch[1]) {
     try {
       comparison = JSON.parse(jsonCompMatch[1]);
