@@ -14,13 +14,13 @@ import qrcode.image.svg
 from fastapi import Request
 from starlette.responses import Response
 
-from utils.get_env import get_user_config_path_env, is_disable_auth_enabled
+from utils.get_env import get_user_config_path_env, is_disable_auth_enabled, get_resend_api_key_env
 from utils.user_config_store import read_user_config_file, update_user_config_file
 
 SESSION_COOKIE_NAME = "presenton_session"
 PBKDF2_ITERATIONS = 200_000
 SESSION_TTL_SECONDS = 60 * 60 * 24 * 30
-AUTH_CONFIG_FIELDS = ("AUTH_USERNAME", "AUTH_PASSWORD_HASH", "AUTH_SECRET_KEY", "AUTH_TOTP_SECRET")
+AUTH_CONFIG_FIELDS = ("AUTH_USERNAME", "AUTH_PASSWORD_HASH", "AUTH_SECRET_KEY", "AUTH_TOTP_SECRET", "PENDING_AUTH_USERNAME", "PENDING_AUTH_PASSWORD_HASH", "AUTH_VERIFICATION_CODE")
 
 
 def _base64url_encode(data: bytes) -> str:
@@ -120,7 +120,7 @@ def get_configured_auth_username() -> Optional[str]:
     return None
 
 
-def setup_initial_credentials(username: str, password: str) -> None:
+def setup_initial_credentials(username: str, password: str) -> dict:
     cleaned_username = (username or "").strip()
     if len(cleaned_username) < 3:
         raise ValueError("Username must be at least 3 characters")
@@ -132,10 +132,55 @@ def setup_initial_credentials(username: str, password: str) -> None:
     if config.get("AUTH_USERNAME") and config.get("AUTH_PASSWORD_HASH"):
         raise ValueError("Credentials already configured")
 
+    resend_key = get_resend_api_key_env()
+    if resend_key:
+        import random
+        import resend
+        code = f"{random.randint(0, 999999):06d}"
+        
+        config["PENDING_AUTH_USERNAME"] = cleaned_username
+        config["PENDING_AUTH_PASSWORD_HASH"] = _encode_password_hash(password)
+        config["AUTH_VERIFICATION_CODE"] = code
+        _save_user_config(config)
+        
+        resend.api_key = resend_key
+        try:
+            resend.Emails.send({
+                "from": "no-reply <onboarding@resend.dev>",
+                "to": cleaned_username,
+                "subject": "Verify your Hack-It AI Account",
+                "html": f"<h2>Verification Code</h2><p>Your one-time code is: <strong>{code}</strong></p>"
+            })
+        except Exception as e:
+            raise ValueError(f"Failed to send email: {e}")
+            
+        return {"email_verification_required": True}
+
     config["AUTH_USERNAME"] = cleaned_username
     config["AUTH_PASSWORD_HASH"] = _encode_password_hash(password)
     _get_or_create_auth_secret(config)
     _save_user_config(config)
+    return {"email_verification_required": False}
+
+
+def verify_email_code(code: str) -> None:
+    config = _load_user_config()
+    stored_code = config.get("AUTH_VERIFICATION_CODE")
+    if not stored_code:
+        raise ValueError("No verification pending")
+        
+    if stored_code != code.strip():
+        raise ValueError("Invalid verification code")
+        
+    config["AUTH_USERNAME"] = config.get("PENDING_AUTH_USERNAME")
+    config["AUTH_PASSWORD_HASH"] = config.get("PENDING_AUTH_PASSWORD_HASH")
+    
+    config.pop("PENDING_AUTH_USERNAME", None)
+    config.pop("PENDING_AUTH_PASSWORD_HASH", None)
+    config.pop("AUTH_VERIFICATION_CODE", None)
+    
+    _get_or_create_auth_secret(config)
+    _save_user_config(config, removed_keys=("PENDING_AUTH_USERNAME", "PENDING_AUTH_PASSWORD_HASH", "AUTH_VERIFICATION_CODE"))
 
 
 def force_set_credentials(username: str, password: str) -> None:
@@ -159,7 +204,7 @@ def clear_stored_credentials() -> None:
     """Remove stored credentials; next boot will request setup again."""
     config = _load_user_config()
     removed = False
-    for key in ("AUTH_USERNAME", "AUTH_PASSWORD_HASH", "AUTH_SECRET_KEY", "AUTH_TOTP_SECRET"):
+    for key in AUTH_CONFIG_FIELDS:
         if key in config:
             config.pop(key, None)
             removed = True
@@ -197,11 +242,15 @@ def generate_2fa_secret() -> dict:
     username = config.get("AUTH_USERNAME", "User")
     uri = totp.provisioning_uri(name=username, issuer_name="Hack-It AI")
     
-    factory = qrcode.image.svg.SvgImage
+    factory = qrcode.image.svg.SvgPathImage
     img = qrcode.make(uri, image_factory=factory)
     stream = io.BytesIO()
     img.save(stream)
     svg_data = stream.getvalue().decode('utf-8')
+    
+    start_idx = svg_data.find("<svg")
+    if start_idx != -1:
+        svg_data = svg_data[start_idx:]
     
     return {"secret": secret, "qr_code_svg": svg_data}
 

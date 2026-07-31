@@ -32,7 +32,13 @@ export default function AuthGate() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [is2faMode, setIs2faMode] = useState(false);
   const [twoFaCode, setTwoFaCode] = useState("");
-  const isSetupMode = useMemo(() => !status.configured, [status.configured]);
+  const [isSetupMode, setIsSetupMode] = useState(false);
+  const [isVerifyMode, setIsVerifyMode] = useState(false);
+  const [emailCode, setEmailCode] = useState("");
+
+  useEffect(() => {
+    setIsSetupMode(!status.configured);
+  }, [status.configured]);
 
 
 
@@ -133,6 +139,38 @@ export default function AuthGate() {
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
+    if (isVerifyMode) {
+      if (emailCode.length < 6) {
+        notify.warning("Code too short", "Verification code must be 6 digits.");
+        return;
+      }
+      setIsSubmitting(true);
+      try {
+        const response = await fetch(getApiUrl("/api/v1/auth/verify-email"), {
+          method: "POST",
+          credentials: "include",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ code: emailCode, username: username.trim() }),
+        });
+        const payload = await response.json();
+        if (!response.ok) {
+           notify.error("Verification failed", formatFastApiDetail(payload?.detail));
+           return;
+        }
+        setStatus({
+          configured: true,
+          authenticated: true,
+          username: payload.username ?? username.trim(),
+        });
+        notify.success("Account created", "Your email has been verified and you are now logged in.");
+      } catch (e) {
+        notify.error("Verification unavailable", "Could not verify your code.");
+      } finally {
+        setIsSubmitting(false);
+      }
+      return;
+    }
+
     const cleanedUsername = username.trim();
     if (cleanedUsername.length < 3) {
       notify.warning(
@@ -218,6 +256,12 @@ export default function AuthGate() {
             detail || "Something went wrong. Please try again."
           );
         }
+        return;
+      }
+
+      if (payload.email_verification_required) {
+        setIsVerifyMode(true);
+        notify.info("Verification Required", "Please enter the 6-digit code sent to your email.");
         return;
       }
 
@@ -327,16 +371,36 @@ export default function AuthGate() {
           <div className="w-full p-5 rounded-md text-gray-900 dark:text-white">
 
             <h1 className="text-3xl tracking-tight text-gray-900 dark:text-white font-bold mb-2 text-center sm:text-left">
-              {isSetupMode ? "Create your admin login" : "Log in to continue"}
+              {isVerifyMode ? "Verify your email" : isSetupMode ? "Create your admin login" : "Log in to continue"}
             </h1>
             <p className="mb-8 text-center sm:text-left text-sm text-gray-500 dark:text-white/60 font-normal">
-              {isSetupMode
+              {isVerifyMode
+                ? "Enter the 6-digit code sent to your email."
+                : isSetupMode
                 ? "One-time setup for this deployment."
                 : "This deployment is protected."}
             </p>
 
             <form onSubmit={handleSubmit} className="space-y-5">
-              {is2faMode ? (
+              {isVerifyMode ? (
+                <div className="mb-4 space-y-2">
+                  <label htmlFor="emailCode" className="block text-sm font-medium text-gray-900 dark:text-white">
+                    Verification Code
+                  </label>
+                  <input
+                    id="emailCode"
+                    type="text"
+                    autoComplete="one-time-code"
+                    maxLength={6}
+                    value={emailCode}
+                    onChange={(event) => setEmailCode(event.target.value)}
+                    placeholder="000000"
+                    className="w-full rounded-lg bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 px-4 py-3 h-12 text-center tracking-widest text-gray-900 dark:text-white outline-none transition placeholder:text-gray-400 dark:placeholder:text-white/40 focus-visible:ring-1 focus-visible:ring-[#7e57c2]"
+                    disabled={isSubmitting}
+                    autoFocus
+                  />
+                </div>
+              ) : is2faMode ? (
                 <div className="mb-4 space-y-2">
                   <label htmlFor="twoFaCode" className="block text-sm font-medium text-gray-900 dark:text-white">
                     Authenticator Code
@@ -419,13 +483,45 @@ export default function AuthGate() {
                 className="w-full text-[15px] h-12 mt-6 bg-[#7e57c2] hover:bg-[#6847a3] text-white rounded-lg font-semibold transition-colors flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
               >
                 {isSubmitting
-                  ? isSetupMode
+                  ? isVerifyMode
+                    ? "Verifying…"
+                    : isSetupMode
                     ? "Saving credentials…"
                     : is2faMode ? "Verifying…" : "Signing in…"
-                  : isSetupMode
+                  : isVerifyMode
+                    ? "Verify Email"
+                    : isSetupMode
                     ? "Create account"
                     : is2faMode ? "Verify Code" : "Log in"}
               </button>
+
+              {!is2faMode && !isVerifyMode && (
+                <div className="mt-6 text-center text-sm">
+                  {isSetupMode ? (
+                    <p className="text-gray-500 dark:text-white/60">
+                      Already have an admin account?{" "}
+                      <button
+                        type="button"
+                        onClick={() => setIsSetupMode(false)}
+                        className="text-[#7e57c2] hover:underline font-medium"
+                      >
+                        Log in
+                      </button>
+                    </p>
+                  ) : (
+                    <p className="text-gray-500 dark:text-white/60">
+                      Need to set up the deployment?{" "}
+                      <button
+                        type="button"
+                        onClick={() => setIsSetupMode(true)}
+                        className="text-[#7e57c2] hover:underline font-medium"
+                      >
+                        Create account
+                      </button>
+                    </p>
+                  )}
+                </div>
+              )}
             </form>
           </div>
         </div>

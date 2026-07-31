@@ -54,6 +54,10 @@ def get_disable_auth_env():
     return os.getenv("DISABLE_AUTH")
 
 
+def get_resend_api_key_env():
+    return os.getenv("RESEND_API_KEY")
+
+
 def is_disable_auth_enabled():
     val = get_disable_auth_env()
     if val is None or val.strip() == "":

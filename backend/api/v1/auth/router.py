@@ -16,6 +16,7 @@ from utils.simple_auth import (
     generate_2fa_secret,
     verify_2fa_code,
     disable_2fa,
+    verify_email_code,
 )
 from utils.get_env import is_disable_auth_enabled
 
@@ -68,11 +69,19 @@ async def setup_credentials(body: AuthCredentialsRequest, request: Request):
         raise HTTPException(status_code=409, detail="Credentials already configured")
 
     try:
-        setup_initial_credentials(body.username, body.password)
+        result = setup_initial_credentials(body.username, body.password)
     except ValueError as exc:
-        raise HTTPException(status_code=400, detail=str(exc)) from exc
+        raise HTTPException(status_code=400, detail=str(exc))
 
     username = body.username.strip()
+    
+    if result.get("email_verification_required"):
+        return JSONResponse({
+            "configured": False,
+            "email_verification_required": True,
+            "username": username
+        })
+        
     return JSONResponse(
         {
             "configured": True,
@@ -80,6 +89,36 @@ async def setup_credentials(body: AuthCredentialsRequest, request: Request):
             "username": username,
         }
     )
+
+
+class VerifyEmailRequest(BaseModel):
+    code: str
+    username: str
+
+
+@API_V1_AUTH_ROUTER.post("/verify-email")
+async def verify_email(body: VerifyEmailRequest, request: Request):
+    if is_auth_configured():
+        raise HTTPException(status_code=409, detail="Credentials already configured")
+        
+    try:
+        verify_email_code(body.code)
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc))
+        
+    username = body.username.strip()
+    token = create_session_token(username)
+    response = JSONResponse(
+        {
+            "configured": True,
+            "authenticated": True,
+            "username": username,
+            "access_token": token,
+            "token_type": "bearer",
+        }
+    )
+    set_session_cookie(response, token, request)
+    return response
 
 
 @API_V1_AUTH_ROUTER.post("/login")
