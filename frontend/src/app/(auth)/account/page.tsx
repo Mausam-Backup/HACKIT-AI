@@ -7,6 +7,7 @@ import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { getApiUrl } from "@/utils/api";
 import { useRouter } from "next/navigation";
+import FloatingNav from "@/components/ui/FloatingNav";
 
 export default function AccountPage() {
   const router = useRouter();
@@ -36,7 +37,8 @@ export default function AccountPage() {
 
   return (
     <div className="min-h-screen bg-gray-50/50 flex flex-col font-syne">
-      <div className="w-full max-w-5xl mx-auto px-6 py-8">
+      <FloatingNav />
+      <div className="w-full max-w-5xl mx-auto px-6 py-8 pt-24">
         <Link 
           href="/" 
           className="inline-flex items-center gap-2 text-sm text-[#494A4D] hover:text-black mb-8 transition-colors"
@@ -55,28 +57,12 @@ export default function AccountPage() {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-          <div className="lg:col-span-8">
-            <div className="relative w-full">
-              <div 
-                className="absolute top-0 h-full w-px bg-gradient-to-b from-[#EDEEEF] to-transparent left-[0.6rem]" 
-              />
+          <div className="lg:col-span-8 flex flex-col gap-8">
+            <div className="bg-white border border-[#EDEEEF] rounded-[20px] shadow-sm">
+              <EnableMfa />
+            </div>
 
-              <div className="flex flex-col gap-5 pb-10">
-                <div className="relative pl-8 transition duration-200 ease-in-out">
-                  <div className="bg-white absolute -left-[4px] top-7 z-10 block h-5 w-5 rounded-full shadow-sm">
-                    <div className="ml-1 mt-1 h-3 w-3 rounded-full border-2 transition duration-200 ease-in-out border-[#7C51F8]"></div>
-                  </div>
-                  <div>
-                    <EnableMfa />
-                  </div>
-                </div>
-
-                <div className="relative pl-8 pt-6 mt-4 transition duration-200 ease-in-out">
-                  <div className="bg-white absolute -left-[4px] top-10 z-10 block h-5 w-5 rounded-full shadow-sm">
-                    <div className="ml-1 mt-1 h-3 w-3 rounded-full border-2 transition duration-200 ease-in-out border-[#7C51F8]"></div>
-                  </div>
-                  <div>
-                    <div className="flex flex-col gap-4 bg-white border border-[#EDEEEF] rounded-[20px] p-6 shadow-sm">
+            <div className="flex flex-col gap-4 bg-white border border-[#EDEEEF] rounded-[20px] p-6 shadow-sm">
                       <div className="flex justify-between items-start">
                         <div>
                           <h3 className="text-xl font-bold text-[#000509e3] tracking-tight">Active Sessions</h3>
@@ -133,10 +119,6 @@ export default function AccountPage() {
                         </div>
 
                       </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
             </div>
           </div>
 
